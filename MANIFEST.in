@@ -5,6 +5,7 @@ include CHANGELOG
 include COPYRIGHT
 include LICENSE
 include tryton.cfg
+include view/*.xml
 include *.xml
 include locale/*.po
 include doc/*

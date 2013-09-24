@@ -8,6 +8,13 @@ import re
 import os
 import ConfigParser
 
+MODULE = 'carrier_send_shipments'
+PREFIX = 'trytonzz'
+MODULE2PREFIX = {}
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 config = ConfigParser.ConfigParser()
 config.readfp(open('tryton.cfg'))
 info = dict(config.items('tryton'))
@@ -21,27 +28,31 @@ minor_version = int(minor_version)
 requires = []
 for dep in info.get('depends', []):
     if not re.match(r'(ir|res|webdav)(\W|$)', dep):
-        requires.append('trytond_%s >= %s.%s, < %s.%s' %
-                (dep, major_version, minor_version, major_version,
-                    minor_version + 1))
+        prefix = MODULE2PREFIX.get(dep, 'trytond')
+        requires.append('%s_%s >= %s.%s, < %s.%s' %
+                (prefix, dep, major_version, minor_version,
+                major_version, minor_version + 1))
 requires.append('trytond >= %s.%s, < %s.%s' %
         (major_version, minor_version, major_version, minor_version + 1))
 
-setup(name='trytonzz_carrier_send_shipments',
+tests_require = ['proteus >= %s.%s, < %s.%s' %
+    (major_version, minor_version, major_version, minor_version + 1)]
+
+setup(name='%s_%s' % (PREFIX, MODULE),
     version=info.get('version', '0.0.1'),
-    description='Tryton module to send shipments using API from carrier',
+    description='Tryton module to send shipments out using API carrier',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
     download_url="https://bitbucket.org/zikzakmedia/trytond-carrier_send_shipments",
-    package_dir={'trytond.modules.carrier_send_shipments': '.'},
+    package_dir={'trytond.modules.%s' % MODULE: '.'},
     packages=[
-        'trytond.modules.carrier_send_shipments',
-        'trytond.modules.carrier_send_shipments.tests',
+        'trytond.modules.%s' % MODULE,
+        'trytond.modules.%s.tests' % MODULE,
         ],
     package_data={
-        'trytond.modules.carrier_send_shipments': info.get('xml', []) \
-            + ['tryton.cfg', 'locale/*.po'],
+        'trytond.modules.%s' % MODULE: (info.get('xml', [])
+            + ['tryton.cfg', 'view/*.xml', 'locale/*.po', ]),
         },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -64,8 +75,8 @@ setup(name='trytonzz_carrier_send_shipments',
     zip_safe=False,
     entry_points="""
     [trytond.modules]
-    carrier_send_shipments = trytond.modules.carrier_send_shipments
-    """,
+    %s = trytond.modules.%s
+    """ % (MODULE, MODULE),
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',
 )
