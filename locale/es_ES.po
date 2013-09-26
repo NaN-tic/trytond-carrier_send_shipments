@@ -1,0 +1,97 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:carrier.send.shipments:"
+msgid "Not available method API in carrier \"%(carrier)s\""
+msgstr "No se encuentra el método API del transportista \"%(carrier)s\""
+
+msgctxt "error:carrier.send.shipments:"
+msgid "Select a carrier in shipment \"%(shipment)s\""
+msgstr "Selecciona en los albaranes un transportista para enviar \"%(shipment)s\""
+
+msgctxt "error:carrier.send.shipments:"
+msgid ""
+"Send shipments:\n"
+"Codes: %(codes)s\n"
+"Carrier: \"%(carrier)s\"\n"
+"Service \"%(service)s\""
+msgstr ""
+"Envio de albaranes:\n"
+"Códigos: %(codes)s\n"
+"Transportista: \"%(carrier)s\"\n"
+"Servicio: \"%(service)s\""
+
+msgctxt "error:carrier.send.shipments:"
+msgid "Shipment \"%(code)s\" not available to send zip \"%(zip)s\""
+msgstr "El envío \"%(code)s\" no se puede enviar a este código postal \"%(zip)s\""
+
+msgctxt "error:carrier.send.shipments:"
+msgid "Shipment (%(shipment)s) was sended"
+msgstr "El envío (%(shipment)s) ya se ha enviado anteriormente"
+
+msgctxt "error:carrier.send.shipments:"
+msgid "Shipment ID (%(shipment)s) not state \"%(state)s\""
+msgstr ""
+"El envío ID (%(shipment)s) no se encuentra en el estado del albarán "
+"\"%(state)s\""
+
+msgctxt "error:carrier.send.shipments:"
+msgid ""
+"You select different shipments to send %(methods)s. Select shipment grouped "
+"by carrier"
+msgstr ""
+"Ha seleccionado diferentes tipos de envío %(methods)s. Selecciona los "
+"albaranes por transportista."
+
+msgctxt "field:carrier.send.shipments.result,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.send.shipments.result,info:"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "field:carrier.send.shipments.start,carrier:"
+msgid "Carrier"
+msgstr "Transportista"
+
+msgctxt "field:carrier.send.shipments.start,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.send.shipments.start,service:"
+msgid "Service"
+msgstr "Servicio"
+
+msgctxt "field:stock.shipment.out,carrier_service:"
+msgid "Carrier service"
+msgstr "Servicio transportista"
+
+msgctxt "field:stock.shipment.out,cash_ondelivery:"
+msgid "Cash OnDelivery"
+msgstr "Total a pagar a la entrega"
+
+msgctxt "model:carrier.send.shipments.result,name:"
+msgid "Carrier Send Shipments Result"
+msgstr "Resultado envío albaranes a mensajero"
+
+msgctxt "model:carrier.send.shipments.start,name:"
+msgid "Carrier Send Shipments Start"
+msgstr "Inicio envío albaranes a mensajero"
+
+msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
+msgid "Send a carrier"
+msgstr "Enviar a un transportista"
+
+msgctxt "wizard_button:carrier.send.shipments,result,end:"
+msgid "Close"
+msgstr "Cerrar"
+
+msgctxt "wizard_button:carrier.send.shipments,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:carrier.send.shipments,start,send:"
+msgid "Send"
+msgstr "Enviar"
