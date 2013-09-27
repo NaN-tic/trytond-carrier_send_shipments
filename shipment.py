@@ -29,6 +29,10 @@ class ShipmentOut:
             readonly=True,
             depends=['carrier', 'state'],
             domain=[('carrier', '=', Eval('carrier'))])
+    carrier_delivery = fields.Boolean('Delivered', readonly=True,
+            states={
+                'invisible': ~Eval('carrier'),
+            }, help='The package has been delivered')
 
 
 class CarrierSendShipmentsStart(ModelView):
@@ -127,7 +131,7 @@ class CarrierSendShipments(Wizard):
                 self.raise_user_error('add_carrier', {
                         'shipment': shipment.code,
                         })
-            if shipment.carrier_service:
+            if shipment.carrier_delivery:
                 self.raise_user_error('shipment_sended', {
                         'shipment': shipment.code,
                         })
