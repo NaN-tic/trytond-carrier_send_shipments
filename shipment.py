@@ -93,7 +93,7 @@ class CarrierSendShipments(Wizard):
         shipments = Shipment.search([
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
-        send_shipment = getattr(self, 'send_%s' % method)
+        send_shipment = getattr(Shipment, 'send_%s' % method)
         send_shipment(api, shipments, service)
 
         codes = []
