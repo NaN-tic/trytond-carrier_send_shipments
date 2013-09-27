@@ -62,6 +62,10 @@ msgctxt "field:carrier.send.shipments.start,service:"
 msgid "Service"
 msgstr "Servei"
 
+msgctxt "field:stock.shipment.out,carrier_delivery:"
+msgid "Delivered"
+msgstr "Enviat"
+
 msgctxt "field:stock.shipment.out,carrier_service:"
 msgid "Carrier service"
 msgstr "Servei transportista"
@@ -69,6 +73,10 @@ msgstr "Servei transportista"
 msgctxt "field:stock.shipment.out,cash_ondelivery:"
 msgid "Cash OnDelivery"
 msgstr "Total a pagar a l'entrega"
+
+msgctxt "help:stock.shipment.out,carrier_delivery:"
+msgid "The package has been delivered"
+msgstr "El paquet ya s'ha enviat"
 
 msgctxt "model:carrier.send.shipments.result,name:"
 msgid "Carrier Send Shipments Result"
