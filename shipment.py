@@ -1,6 +1,6 @@
-#This file is part carrier_send_shipments module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains 
-#the full copyright notices and license terms.
+# This file is part of the carrier_send_shipments module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool, PoolMeta
@@ -38,8 +38,9 @@ class ShipmentOut:
 class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
     __name__ = 'carrier.send.shipments.start'
-    carrier = fields.Many2One('carrier', 'Carrier', required=True, readonly=True)
-    service = fields.Many2One('carrier.service', 'Service', required=True, 
+    carrier = fields.Many2One('carrier', 'Carrier', required=True,
+        readonly=True)
+    service = fields.Many2One('carrier.service', 'Service', required=True,
             depends=['carrier'], domain=[('carrier', '=', Eval('carrier'))])
 
 
@@ -67,15 +68,16 @@ class CarrierSendShipments(Wizard):
     def __setup__(cls):
         super(CarrierSendShipments, cls).__setup__()
         cls._error_messages.update({
-            'shipment_state': 'Shipment ID (%(shipment)s) not state "%(state)s"',
+            'shipment_state': 'Shipment ID (%(shipment)s) not state '
+                '"%(state)s"',
             'shipment_sended': 'Shipment (%(shipment)s) was sended',
             'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
             'carrier_api': 'Not available method API in carrier "%(carrier)s"',
             'send_shipment_info': 'Send shipments:\nCodes: %(codes)s\n' \
                 'Carrier: "%(carrier)s"\nService "%(service)s"',
-            'shipment_different_carrier': 'You select different shipments to ' \
+            'shipment_different_carrier': 'You select different shipments to '
                 'send %(methods)s. Select shipment grouped by carrier',
-            'shipment_zip': 'Shipment "%(code)s" not available to send zip ' \
+            'shipment_zip': 'Shipment "%(code)s" not available to send zip '
                 '"%(zip)s"',
         })
 
@@ -145,7 +147,8 @@ class CarrierSendShipments(Wizard):
 
             if api.zips:
                 zips = api.zips.split(',')
-                if shipment.delivery_address.zip and shipment.delivery_address.zip in zips:
+                if (shipment.delivery_address.zip
+                        and shipment.delivery_address.zip in zips):
                     self.raise_user_error('shipment_zip', {
                             'code': shipment.code,
                             'zip': shipment.delivery_address.zip,
@@ -154,7 +157,7 @@ class CarrierSendShipments(Wizard):
             if not api.method in methods:
                 methods.append(api.method)
 
-        if len(methods)>1:
+        if len(methods) > 1:
             self.raise_user_error('shipment_different_carrier', {
                     'methods': ', '.join(methods),
                     })
