@@ -8,7 +8,9 @@ from trytond.transaction import Transaction
 from trytond.pyson import Eval
 
 __all__ = ['ShipmentOut', 'CarrierSendShipmentsStart',
-        'CarrierSendShipmentsResult', 'CarrierSendShipments']
+        'CarrierSendShipmentsResult', 'CarrierSendShipments',
+        'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
+        'CarrierPrintShipment']
 __metaclass__ = PoolMeta
 _SHIPMENT_STATES = ['packed', 'done']
 
@@ -33,6 +35,8 @@ class ShipmentOut:
             states={
                 'invisible': ~Eval('carrier'),
             }, help='The package has been delivered')
+    printed = fields.Boolean('Printed', help='Picking is already printed',
+        readonly=True)
 
 
 class CarrierSendShipmentsStart(ModelView):
@@ -171,3 +175,125 @@ class CarrierSendShipments(Wizard):
         return {
             'info': self.result.info,
             }
+
+
+class CarrierPrintShipmentStart(ModelView):
+    'Carrier Print Shipment Start'
+    __name__ = 'carrier.print.shipment.start'
+    carrier = fields.Many2One('carrier', 'Carrier', required=True,
+        readonly=True)
+    printed = fields.Boolean('Printed', help='Picking is already printed.',
+        readonly=True)
+
+
+class CarrierPrintShipmentResult(ModelView):
+    'Carrier Print Shipment Result'
+    __name__ = 'carrier.print.shipment.result'
+    archive = fields.Binary('Archive')
+    name = fields.Char('Archive Name')
+
+
+class CarrierPrintShipment(Wizard):
+    'Carrier Print Shipment'
+    __name__ = "carrier.print.shipment"
+    start = StateView('carrier.print.shipment.start',
+        'carrier_send_shipments.carrier_print_shipment_start', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Print', 'print_', 'tryton-ok', default=True),
+            ])
+    print_ = StateTransition()
+    result = StateView('carrier.print.shipment.result',
+        'carrier_send_shipments.carrier_print_shipment_result', [
+            Button('Close', 'end', 'tryton-close'),
+            ])
+
+    @classmethod
+    def __setup__(cls):
+        super(CarrierPrintShipment, cls).__setup__()
+        cls._error_messages.update({
+            'shipment_state_mismatch': 'The shipment %(shipment)s is not in '
+                'any of these states "%(state)s".',
+            'no_carrier_assigned': 'The shipment "%(shipment)s" has not any '
+                'carrier assigned. Please, select one carrier before trying '
+                'to print the label.',
+            'shipment_already_sent': 'The shipment (%(shipment)s) is already '
+                'sent.',
+            'carrier_without_api': 'The carrier "%(carrier)s" has not any '
+                'API method available.',
+            'shipment_zip_unavailable': 'The zip "%(zip)s" of the shipment '
+                '"%(shipment)s" is not available for this carrier.',
+            'method_mismatch': 'You\'ve selected shipments with different '
+                'methods of shipping. Please, select shipments of a unique '
+                'carrier.',
+        })
+
+    def default_start(self, fields):
+        Shipment = Pool().get('stock.shipment.out')
+        API = Pool().get('carrier.api')
+
+        methods = set()
+        default = {}
+        shipments = Shipment.search([
+                ('id', 'in', Transaction().context['active_ids']),
+                ])
+
+        for shipment in shipments:
+            if not shipment.state in _SHIPMENT_STATES:
+                self.raise_user_error('shipment_state_mismatch', {
+                        'shipment': shipment.code,
+                        'state': ', '.join(_SHIPMENT_STATES)
+                        })
+
+            carrier = shipment.carrier
+            if not carrier:
+                self.raise_user_error('no_carrier_assigned', {
+                        'shipment': shipment.code,
+                        })
+
+            apis = API.search([('carrier', '=', carrier)], limit=1)
+            if not apis:
+                self.raise_user_error('carrier_without_api', {
+                        'carrier': carrier.rec_name,
+                        })
+
+            api = apis[0]
+            if api.zips:
+                zips = [z.strip() for z in api.zips.split(',')]
+                zip_code = (shipment.delivery_address
+                    and shipment.delivery_address.zip or 0)
+                if zip_code and zip_code in zips:
+                    self.raise_user_error('shipment_zip_unavailable', {
+                            'shipment': shipment.code,
+                            'zip': zip_code,
+                            })
+
+            if shipment.carrier_delivery:
+                default['printed'] = True
+
+            methods.add(api.method)
+            if len(methods) > 1:
+                self.raise_user_error('method_mismatch')
+
+        default['carrier'] = carrier.id
+        default['printed'] = bool([s for s in shipments if s.printed])
+
+        return default
+
+    def transition_print_(self):
+        Shipment = Pool().get('stock.shipment.out')
+        API = Pool().get('carrier.api')
+
+        carrier = self.start.carrier
+        api, = API.search([('carrier', '=', carrier)], limit=1)
+        method = api.method
+
+        print_label = getattr(Shipment, 'print_labels_%s' % method)
+        shipments = Shipment.search([
+                ('id', 'in', Transaction().context['active_ids']),
+                ])
+        labels = print_label(shipments, api)
+
+        self.result.archive = ''.join(labels)
+        self.result.name = 'carrier.pdf'
+
+        return 'result'

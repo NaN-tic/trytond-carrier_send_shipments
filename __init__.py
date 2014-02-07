@@ -4,13 +4,16 @@
 from trytond.pool import Pool
 from .shipment import *
 
+
 def register():
     Pool.register(
         ShipmentOut,
         CarrierSendShipmentsStart,
         CarrierSendShipmentsResult,
+        CarrierPrintShipmentStart,
+        CarrierPrintShipmentResult,
         module='carrier_send_shipments', type_='model')
     Pool.register(
         CarrierSendShipments,
+        CarrierPrintShipment,
         module='carrier_send_shipments', type_='wizard')
-
