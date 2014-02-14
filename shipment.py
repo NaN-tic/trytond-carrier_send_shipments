@@ -35,8 +35,10 @@ class ShipmentOut:
             states={
                 'invisible': ~Eval('carrier'),
             }, help='The package has been delivered')
-    carrier_printed = fields.Boolean('Printed', help='Picking is already printed',
-        readonly=True)
+    carrier_printed = fields.Boolean('Printed', readonly=True
+            states={
+                'invisible': ~Eval('carrier'),
+            }, help='Picking is already printed')
 
 
 class CarrierSendShipmentsStart(ModelView):
