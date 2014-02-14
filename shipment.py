@@ -35,7 +35,7 @@ class ShipmentOut:
             states={
                 'invisible': ~Eval('carrier'),
             }, help='The package has been delivered')
-    printed = fields.Boolean('Printed', help='Picking is already printed',
+    carrier_printed = fields.Boolean('Printed', help='Picking is already printed',
         readonly=True)
 
 
@@ -268,7 +268,7 @@ class CarrierPrintShipment(Wizard):
                             })
 
             if shipment.carrier_delivery:
-                default['printed'] = True
+                default['carrier_printed'] = True
 
             methods.add(api.method)
             if len(methods) > 1:
