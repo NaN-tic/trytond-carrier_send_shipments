@@ -2,7 +2,8 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from trytond.model import ModelView, fields
-from trytond.wizard import Wizard, StateTransition, StateView, Button
+from trytond.wizard import Wizard, StateTransition, StateView, Button, \
+    StateAction
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.pyson import Eval
@@ -68,7 +69,10 @@ class CarrierSendShipments(Wizard):
     result = StateView('carrier.send.shipments.result',
         'carrier_send_shipments.carrier_send_shipments_result', [
             Button('Close', 'end', 'tryton-close'),
+            Button('Print label', 'print_', 'tryton-ok'),
             ])
+    print_ = StateAction(
+        'carrier_send_shipments.wizard_carrier_print_shipment')
 
     @classmethod
     def __setup__(cls):
@@ -177,6 +181,10 @@ class CarrierSendShipments(Wizard):
         return {
             'info': self.result.info,
             }
+
+    def do_print_(self, action):
+        active_ids = Transaction().context['active_ids']
+        return action, {'ids': active_ids}
 
 
 class CarrierPrintShipmentStart(ModelView):
