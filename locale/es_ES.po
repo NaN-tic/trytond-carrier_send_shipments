@@ -72,9 +72,13 @@ msgctxt "field:stock.shipment.out,carrier_service:"
 msgid "Carrier service"
 msgstr "Servicio transportista"
 
-msgctxt "field:stock.shipment.out,cash_ondelivery:"
-msgid "Cash OnDelivery"
-msgstr "Total a pagar a la entrega"
+msgctxt "field:stock.shipment.out,carrier_cashondelivery:"
+msgid "Carrier Cash OnDelivery"
+msgstr "Contrarembolso"
+
+msgctxt "field:stock.shipment.out,carrier_cashondelivery_total:"
+msgid "Carrier Cash OnDelivery Total"
+msgstr "Total contrarembolso"
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"

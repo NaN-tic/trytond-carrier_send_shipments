@@ -3,8 +3,10 @@
 The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/form/notebook" position="after">
-        <label name="cash_ondelivery"/>
-        <field name="cash_ondelivery"/>
+        <label name="carrier_cashondelivery"/>
+        <field name="carrier_cashondelivery"/>
+        <label name="carrier_cashondelivery_total"/>
+        <field name="carrier_cashondelivery_total"/>
         <label name="carrier_service"/>
         <field name="carrier_service"/>
         <label name="carrier_delivery"/>

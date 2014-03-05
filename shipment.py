@@ -19,9 +19,13 @@ _SHIPMENT_STATES = ['packed', 'done']
 class ShipmentOut:
     "Customer Shipment"
     __name__ = 'stock.shipment.out'
-    cash_ondelivery = fields.Numeric('Cash OnDelivery',
+    carrier_cashondelivery = fields.Boolean('Carrier Cash OnDelivery', 
+            states={
+                'invisible': ~Eval('carrier'),
+            }, help='Paid package when carrier delivery')
+    carrier_cashondelivery_total = fields.Numeric('Carrier Cash OnDelivery Total',
             digits=(16, Eval('cost_currency_digits', 2)), states={
-            'invisible': ~Eval('carrier'),
+            'invisible': ~Eval('carrier_cashondelivery'),
             'readonly': ~Eval('state').in_(['draft', 'waiting', 'assigned',
                     'packed']),
             }, depends=['carrier', 'state', 'cost_currency_digits'])
