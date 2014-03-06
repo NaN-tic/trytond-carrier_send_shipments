@@ -50,6 +50,27 @@ class ShipmentOut:
                 'invisible': ~Eval('carrier'),
             }, help='Picking is already printed')
 
+    @classmethod
+    def __setup__(cls):
+        super(ShipmentOut, cls).__setup__()
+        cls._buttons.update({
+                'wizard_carrier_send_shipments': {
+                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) | (Eval('carrier_delivery')),
+                    },
+                'wizard_carrier_print_shipment': {
+                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) | (Eval('carrier_printed')),
+                    },
+                })
+
+    @classmethod
+    @ModelView.button_action('carrier_send_shipments.wizard_carrier_send_shipments')
+    def wizard_carrier_send_shipments(cls, sales):
+        pass
+
+    @classmethod
+    @ModelView.button_action('carrier_send_shipments.wizard_carrier_print_shipment')
+    def wizard_carrier_print_shipment(cls, sales):
+        pass
 
     def on_change_with_carrier_sale_price_total(self, name=None):
         """Get Sale Total Amount if shipment origin is a sale"""
@@ -320,7 +341,7 @@ class CarrierPrintShipment(Wizard):
                 self.raise_user_error('method_mismatch')
 
         default['carrier'] = carrier.id
-        default['printed'] = bool([s for s in shipments if s.printed])
+        default['printed'] = bool([s for s in shipments if s.carrier_printed])
 
         return default
 
