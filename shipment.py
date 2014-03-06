@@ -101,16 +101,19 @@ class ShipmentOut:
 class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
     __name__ = 'carrier.send.shipments.start'
-    carrier = fields.Many2One('carrier', 'Carrier', required=True,
-        readonly=True)
-    service = fields.Many2One('carrier.service', 'Service', required=True,
-            depends=['carrier'], domain=[('carrier', '=', Eval('carrier'))])
+    shipments = fields.Many2Many('stock.shipment.out', None, None,
+        'Shipments', readonly=True)
+
+    @staticmethod
+    def default_shipments():
+        return Transaction().context['active_ids']
 
 
 class CarrierSendShipmentsResult(ModelView):
     'Carrier Send Shipments Result'
     __name__ = 'carrier.send.shipments.result'
     info = fields.Text('Info', readonly=True)
+    error = fields.Text('Error', readonly=True)
 
 
 class CarrierSendShipments(Wizard):
@@ -246,10 +249,12 @@ class CarrierSendShipments(Wizard):
 class CarrierPrintShipmentStart(ModelView):
     'Carrier Print Shipment Start'
     __name__ = 'carrier.print.shipment.start'
-    carrier = fields.Many2One('carrier', 'Carrier', required=True,
-        readonly=True)
-    printed = fields.Boolean('Printed', help='Picking is already printed.',
-        readonly=True)
+    shipments = fields.Many2Many('stock.shipment.out', None, None,
+        'Shipments', readonly=True)
+
+    @staticmethod
+    def default_shipments():
+        return Transaction().context['active_ids']
 
 
 class CarrierPrintShipmentResult(ModelView):

@@ -2,8 +2,9 @@
 The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <form string="Print Shipment">
-    <label name="carrier"/>
-    <field name="carrier"/>
-    <label name="printed"/>
-    <field name="printed"/>
+    <separator string="Print label from carrier" id="send_shipments" colspan="4"/>
+    <newline/>
+    <label string="Download a shipment label (PDF) from API carrier (when API carrier available download option)" id="send_details"/>
+    <newline/>
+    <field name="shipments" view_ids="carrier_send_shipments.stock_shipment_to_print_carrier_view_tree" colspan="4"/>
 </form>

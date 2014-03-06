@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- This file is part carrier_send_shipments module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<form string="Send Shipment">
+    <separator string="Send shipments to carrier" id="send_shipments" colspan="4"/>
+    <newline/>
+    <label string="Send shipments in state package or done, related a carrier and not deliveried" id="send_details"/>
+    <newline/>
+    <field name="shipments" view_ids="carrier_send_shipments.stock_shipment_to_carrier_view_tree" colspan="4"/>
+</form>

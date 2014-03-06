@@ -17,30 +17,21 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
         </record>
 
         <!-- Carrier Send Shipments - Wizard Views -->
+        <record model="ir.ui.view" id="stock_shipment_to_carrier_view_tree">
+            <field name="model">stock.shipment.out</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="name">stock_shipment_to_carrier</field>
+        </record>
         <record model="ir.ui.view" id="carrier_send_shipments_start">
             <field name="model">carrier.send.shipments.start</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Send Shipment">
-                    <label name="carrier"/>
-                    <field name="carrier"/>
-                    <label name="service"/>
-                    <field name="service" widget="selection"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">carrier_send_shipments_start</field>
         </record>
         <record model="ir.ui.view" id="carrier_send_shipments_result">
             <field name="model">carrier.send.shipments.result</field>
             <field name="type">form</field>
-            <field name="arch" type="xml">
-                <![CDATA[
-                <form string="Send Shipment">
-                    <field name="info"/>
-                </form>
-                ]]>
-            </field>
+            <field name="name">carrier_send_shipments_result</field>
         </record>
 
         <!-- Carrier Send Shipments - Wizard -->
@@ -56,6 +47,12 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
         </record>
 
         <!-- Carrier Print Shipments - Wizard Views -->
+        <record model="ir.ui.view" id="stock_shipment_to_print_carrier_view_tree">
+            <field name="model">stock.shipment.out</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="name">stock_shipment_to_print_carrier</field>
+        </record>
         <record model="ir.ui.view" id="carrier_print_shipment_start">
             <field name="model">carrier.print.shipment.start</field>
             <field name="type">form</field>
