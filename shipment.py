@@ -7,6 +7,7 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button, \
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.pyson import Eval
+from decimal import Decimal
 
 __all__ = ['ShipmentOut', 'CarrierSendShipmentsStart',
         'CarrierSendShipmentsResult', 'CarrierSendShipments',
@@ -29,12 +30,14 @@ class ShipmentOut:
             'readonly': ~Eval('state').in_(['draft', 'waiting', 'assigned',
                     'packed']),
             }, depends=['carrier', 'state', 'cost_currency_digits'])
+    carrier_sale_price_total = fields.Function(fields.Numeric('Sale Total',
+            digits=(16, Eval('currency_digits', 2)), states={
+            'invisible': ~Eval('carrier_cashondelivery'),
+            }, depends=['carrier_cashondelivery']), 'get_carrier_sale_price_total')
     carrier_service = fields.Many2One('carrier.service', 'Carrier service',
             states={
                 'invisible': ~Eval('carrier'),
-            },
-            readonly=True,
-            depends=['carrier', 'state'],
+            }, depends=['carrier', 'state'],
             domain=[('carrier', '=', Eval('carrier'))])
     carrier_delivery = fields.Boolean('Delivered', readonly=True,
             states={
@@ -44,6 +47,32 @@ class ShipmentOut:
             states={
                 'invisible': ~Eval('carrier'),
             }, help='Picking is already printed')
+
+    @classmethod
+    def get_carrier_sale_price_total(cls, shipments, names):
+        """Get Sale Total Amount if shipment origin is a sale"""
+        carrier_sale_price_total = {}
+
+        for shipment in shipments:
+            price = Decimal(0)
+            if shipment.origin_cache:
+                origin = shipment.origin_cache
+            else:
+                origin = shipment.origin
+            if origin and origin.__name__ == 'sale.sale':
+                if origin.total_amount_cache:
+                    price = origin.total_amount_cache
+                else:
+                    price = origin.total_amount
+            carrier_sale_price_total[shipment.id] = price
+
+        result = {
+            'carrier_sale_price_total': carrier_sale_price_total,
+            }
+        for key in result.keys():
+            if key not in names:
+                del result[key]
+        return result
 
 
 class CarrierSendShipmentsStart(ModelView):
