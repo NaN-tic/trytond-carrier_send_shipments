@@ -33,7 +33,9 @@ class ShipmentOut:
     carrier_sale_price_total = fields.Function(fields.Numeric('Sale Total',
             digits=(16, Eval('currency_digits', 2)), states={
             'invisible': ~Eval('carrier_cashondelivery'),
-            }, depends=['carrier_cashondelivery']), 'get_carrier_sale_price_total')
+            }, on_change_with=['carrier_cashondelivery', 'origin_cache', 'origin'],
+            depends=['carrier_cashondelivery']),
+            'on_change_with_carrier_sale_price_total')
     carrier_service = fields.Many2One('carrier.service', 'Carrier service',
             states={
                 'invisible': ~Eval('carrier'),
@@ -48,31 +50,31 @@ class ShipmentOut:
                 'invisible': ~Eval('carrier'),
             }, help='Picking is already printed')
 
-    @classmethod
-    def get_carrier_sale_price_total(cls, shipments, names):
+
+    def on_change_with_carrier_sale_price_total(self, name=None):
         """Get Sale Total Amount if shipment origin is a sale"""
-        carrier_sale_price_total = {}
+        price = Decimal(0)
 
-        for shipment in shipments:
-            price = Decimal(0)
-            if shipment.origin_cache:
-                origin = shipment.origin_cache
-            else:
-                origin = shipment.origin
-            if origin and origin.__name__ == 'sale.sale':
-                if origin.total_amount_cache:
-                    price = origin.total_amount_cache
-                else:
-                    price = origin.total_amount
-            carrier_sale_price_total[shipment.id] = price
+        if self.origin_cache:
+            origin = self.origin_cache
+        else:
+            origin = self.origin
 
-        result = {
-            'carrier_sale_price_total': carrier_sale_price_total,
-            }
-        for key in result.keys():
-            if key not in names:
-                del result[key]
-        return result
+        if origin and origin.__name__ == 'sale.sale':
+            price = origin.total_amount
+        return price
+
+    def get_carrier_price_total(shipment):
+        '''
+        Return the total price shipment
+        '''
+        if shipment.carrier_cashondelivery_total:
+            price = shipment.carrier_cashondelivery_total
+        elif shipment.carrier_sale_price_total:
+            price = shipment.carrier_sale_price_total
+        else:
+            price = shipment.total_amount_func #stock valued
+        return price
 
 
 class CarrierSendShipmentsStart(ModelView):
