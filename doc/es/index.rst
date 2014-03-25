@@ -1,5 +1,6 @@
-==============================
-API para el envio de albaranes
-==============================
+=====================================
+Stock. API para el envío de albaranes
+=====================================
 
-TODO
+Asistente para el envío de albaranes a nuestros mensajeros. Estos envíos se
+envian según la API del transportista (webservices del mensajero).
