@@ -5,4 +5,5 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
     <separator name="labels" id="labels"/>
     <field name="labels" colspan="6"/>
     <field name="info" colspan="6"/>
+    <field name="file_name" invisible="1"/>
 </form>

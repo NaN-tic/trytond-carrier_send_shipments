@@ -125,7 +125,8 @@ class CarrierSendShipmentsResult(ModelView):
     'Carrier Send Shipments Result'
     __name__ = 'carrier.send.shipments.result'
     info = fields.Text('Info', readonly=True)
-    labels = fields.Binary('Labels')
+    labels = fields.Binary('Labels', filename='file_name')
+    file_name = fields.Text('File Name')
 
 
 class CarrierSendShipments(Wizard):
@@ -195,18 +196,23 @@ class CarrierSendShipments(Wizard):
 
         #  Save file label in labels field
         if len(labels) == 1: # A label generate simple file
-            carrier_labels = buffer(open(labels[0], "rb").read())
+            label, = labels
+            carrier_labels = buffer(open(label, "rb").read())
+            file_name = label.split('/')[2]
         elif len(labels) > 1: # Multiple labels generate tgz
-            temp = tempfile.NamedTemporaryFile(prefix='%s-seur-' % dbname, delete=False)
+            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname, delete=False)
             temp.close()
             with tarfile.open(temp.name, "w:gz") as tar:
                 for path_label in labels:
                     tar.add(path_label)
             tar.close()
             carrier_labels = buffer(open(temp.name, "rb").read())
+            file_name = '%s.tgz' % temp.name.split('/')[2]
         else:
             carrier_labels = None
+            file_name = None
         self.result.labels = carrier_labels
+        self.result.file_name = file_name
             
         return 'result'
 
@@ -268,6 +274,7 @@ class CarrierSendShipments(Wizard):
         return {
             'info': self.result.info,
             'labels': self.result.labels,
+            'file_name': self.result.file_name,
             }
 
     def do_print_(self, action):
