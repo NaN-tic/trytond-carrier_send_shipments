@@ -9,6 +9,8 @@ from trytond.transaction import Transaction
 from trytond.pyson import Eval
 from decimal import Decimal
 import logging
+import tarfile
+import tempfile
 
 __all__ = ['ShipmentOut', 'CarrierSendShipmentsStart',
         'CarrierSendShipmentsResult', 'CarrierSendShipments',
@@ -19,7 +21,6 @@ _SHIPMENT_STATES = ['packed', 'done']
 
 
 class ShipmentOut:
-    "Customer Shipment"
     __name__ = 'stock.shipment.out'
     carrier_cashondelivery = fields.Boolean('Carrier Cash OnDelivery', 
             states={
@@ -115,6 +116,7 @@ class CarrierSendShipmentsResult(ModelView):
     'Carrier Send Shipments Result'
     __name__ = 'carrier.send.shipments.result'
     info = fields.Text('Info', readonly=True)
+    labels = fields.Binary('Labels')
 
 
 class CarrierSendShipments(Wizard):
@@ -143,7 +145,7 @@ class CarrierSendShipments(Wizard):
             'shipment_sended': 'Shipment (%(shipment)s) was sended',
             'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
             'carrier_api': 'Not available method API in carrier "%(carrier)s"',
-            'shipment_info': 'Successfully: %(references)s\nErrors: %(errors)s',
+            'shipment_info': 'Successfully:\n%(references)s\n\nErrors:\n%(errors)s',
             'shipment_different_carrier': 'You select different shipments to '
                 'send %(methods)s. Select shipment grouped by carrier',
             'shipment_zip': 'Shipment "%(code)s" not available to send zip '
@@ -153,6 +155,11 @@ class CarrierSendShipments(Wizard):
     def transition_send(self):
         Shipment = Pool().get('stock.shipment.out')
         API = Pool().get('carrier.api')
+
+        dbname = Transaction().cursor.dbname
+        references = []
+        labels = []
+        errors = []
 
         shipments = Shipment.search([
                 ('id', 'in', Transaction().context['active_ids']),
@@ -166,12 +173,32 @@ class CarrierSendShipments(Wizard):
             api, = apis
 
             send_shipment = getattr(Shipment, 'send_%s' % api.method)
-            references, labels, errors = send_shipment(api, shipments)
+            refs, labs, errs = send_shipment(api, [shipment])
+            references += refs
+            labels += labs
+            errors += errs
 
-            self.result.info = self.raise_user_error('shipment_info', {
-                        'references': ', '.join(references) if references else '',
-                        'errors': ', '.join(errors) if errors else '',
-                        }, raise_exception=False)
+        #  Save results in info and labels fields
+        self.result.info = self.raise_user_error('shipment_info', {
+                    'references': ', '.join(references) if references else '',
+                    'errors': ', '.join(errors) if errors else '',
+                    }, raise_exception=False)
+
+        #  Save file label in labels field
+        if len(labels) == 1: # A label generate simple file
+            carrier_labels = buffer(open(labels[0], "rb").read())
+        elif len(labels) > 1: # Multiple labels generate tgz
+            temp = tempfile.NamedTemporaryFile(prefix='%s-seur-' % dbname, delete=False)
+            temp.close()
+            with tarfile.open(temp.name, "w:gz") as tar:
+                for path_label in labels:
+                    tar.add(path_label)
+            tar.close()
+            carrier_labels = buffer(open(temp.name, "rb").read())
+        else:
+            carrier_labels = None
+        self.result.labels = carrier_labels
+            
         return 'result'
 
     def default_start(self, fields):
@@ -231,6 +258,7 @@ class CarrierSendShipments(Wizard):
     def default_result(self, fields):
         return {
             'info': self.result.info,
+            'labels': self.result.labels,
             }
 
     def do_print_(self, action):
