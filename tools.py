@@ -11,7 +11,7 @@ def unaccent(text):
         return str(text)
     if isinstance(text, str):
         text = unicode(text, 'utf-8')
-    text = text.lower()
+    #~ text = text.lower()
     for c in xrange(len(SRC_CHARS)):
         text = text.replace(SRC_CHARS[c], '')
     return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore')

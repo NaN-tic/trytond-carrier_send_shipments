@@ -8,6 +8,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.pyson import Eval
 from decimal import Decimal
+import logging
 
 __all__ = ['ShipmentOut', 'CarrierSendShipmentsStart',
         'CarrierSendShipmentsResult', 'CarrierSendShipments',
@@ -114,7 +115,6 @@ class CarrierSendShipmentsResult(ModelView):
     'Carrier Send Shipments Result'
     __name__ = 'carrier.send.shipments.result'
     info = fields.Text('Info', readonly=True)
-    error = fields.Text('Error', readonly=True)
 
 
 class CarrierSendShipments(Wizard):
@@ -143,8 +143,7 @@ class CarrierSendShipments(Wizard):
             'shipment_sended': 'Shipment (%(shipment)s) was sended',
             'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
             'carrier_api': 'Not available method API in carrier "%(carrier)s"',
-            'send_shipment_info': 'Send shipments:\nCodes: %(codes)s\n' \
-                'Carrier: "%(carrier)s"\nService "%(service)s"',
+            'shipment_info': 'Successfully: %(references)s\nErrors: %(errors)s',
             'shipment_different_carrier': 'You select different shipments to '
                 'send %(methods)s. Select shipment grouped by carrier',
             'shipment_zip': 'Shipment "%(code)s" not available to send zip '
@@ -155,32 +154,24 @@ class CarrierSendShipments(Wizard):
         Shipment = Pool().get('stock.shipment.out')
         API = Pool().get('carrier.api')
 
-        carrier = self.start.carrier
-        service = self.start.service
-
-        apis = API.search([('carrier', '=', carrier)], limit=1)
-        if not apis:
-            self.raise_user_error('carrier_api', {
-                    'carrier': carrier,
-                    })
-        api = apis[0]
-        method = apis[0].method
-
         shipments = Shipment.search([
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
-        send_shipment = getattr(Shipment, 'send_%s' % method)
-        send_shipment(api, shipments, service)
-
-        codes = []
         for shipment in shipments:
-            codes.append(shipment.code)
+            apis = API.search([('carrier', '=', shipment.carrier)], limit=1)
+            if not apis:
+                message = 'Carrier %s not have API' % shipment.carrier.rec_name
+                logging.getLogger('carrier_send_shipments').warning(message)
+                continue
+            api, = apis
 
-        self.result.info = self.raise_user_error('send_shipment_info', {
-                    'codes': ', '.join(codes),
-                    'carrier': carrier.rec_name,
-                    'service': service.name,
-                    }, raise_exception=False)
+            send_shipment = getattr(Shipment, 'send_%s' % api.method)
+            references, labels, errors = send_shipment(api, shipments)
+
+            self.result.info = self.raise_user_error('shipment_info', {
+                        'references': ', '.join(references) if references else '',
+                        'errors': ', '.join(errors) if errors else '',
+                        }, raise_exception=False)
         return 'result'
 
     def default_start(self, fields):
@@ -203,7 +194,7 @@ class CarrierSendShipments(Wizard):
                 self.raise_user_error('add_carrier', {
                         'shipment': shipment.code,
                         })
-            if shipment.carrier_delivery:
+            if shipment.carrier_tracking_ref:
                 self.raise_user_error('shipment_sended', {
                         'shipment': shipment.code,
                         })
