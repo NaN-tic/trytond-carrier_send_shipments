@@ -295,8 +295,8 @@ class CarrierPrintShipmentStart(ModelView):
 class CarrierPrintShipmentResult(ModelView):
     'Carrier Print Shipment Result'
     __name__ = 'carrier.print.shipment.result'
-    archive = fields.Binary('Archive')
-    name = fields.Char('Archive Name')
+    labels = fields.Binary('Labels')
+    file_name = fields.Char('File Name')
 
 
 class CarrierPrintShipment(Wizard):
@@ -334,8 +334,9 @@ class CarrierPrintShipment(Wizard):
         })
 
     def default_start(self, fields):
-        Shipment = Pool().get('stock.shipment.out')
-        API = Pool().get('carrier.api')
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.out')
+        API = pool.get('carrier.api')
 
         methods = set()
         default = {}
@@ -356,7 +357,7 @@ class CarrierPrintShipment(Wizard):
                         'shipment': shipment.code,
                         })
 
-            apis = API.search([('carrier', '=', carrier)], limit=1)
+            apis = API.search([('carriers', 'in', [carrier.id])], limit=1)
             if not apis:
                 self.raise_user_error('carrier_without_api', {
                         'carrier': carrier.rec_name,
@@ -386,20 +387,44 @@ class CarrierPrintShipment(Wizard):
         return default
 
     def transition_print_(self):
-        Shipment = Pool().get('stock.shipment.out')
-        API = Pool().get('carrier.api')
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.out')
+        API = pool.get('carrier.api')
 
-        carrier = self.start.carrier
-        api, = API.search([('carrier', '=', carrier)], limit=1)
-        method = api.method
+        dbname = Transaction().cursor.dbname
+        labels = []
 
-        print_label = getattr(Shipment, 'print_labels_%s' % method)
         shipments = Shipment.search([
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
-        labels = print_label(shipments, api)
+        for shipment in shipments:
+            apis = API.search([('carriers', 'in', [shipment.carrier.id])], limit=1)
+            if not apis:
+                continue
+            api, = apis
 
-        self.result.archive = ''.join(labels)
-        self.result.name = 'carrier.pdf'
+            print_label = getattr(Shipment, 'print_labels_%s' % api.method)
+            labs = print_label(api, [shipment])
+            labels += labs
+
+        #  Save file label in labels field
+        if len(labels) == 1: # A label generate simple file
+            label, = labels
+            carrier_labels = buffer(open(label, "rb").read())
+            file_name = label.split('/')[2]
+        elif len(labels) > 1: # Multiple labels generate tgz
+            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname, delete=False)
+            temp.close()
+            with tarfile.open(temp.name, "w:gz") as tar:
+                for path_label in labels:
+                    tar.add(path_label)
+            tar.close()
+            carrier_labels = buffer(open(temp.name, "rb").read())
+            file_name = '%s.tgz' % temp.name.split('/')[2]
+        else:
+            carrier_labels = None
+            file_name = None
+        self.result.labels = carrier_labels
+        self.result.file_name = file_name
 
         return 'result'

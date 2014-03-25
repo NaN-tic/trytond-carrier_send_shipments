@@ -2,8 +2,7 @@
 The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <form string="Print Shipment">
-    <label name="archive"/>
-    <field name="archive"/>
-    <label name="name"/>
-    <field name="name"/>
+    <label name="labels"/>
+    <field name="labels"/>
+    <field name="file_name" invisible="1"/>
 </form>

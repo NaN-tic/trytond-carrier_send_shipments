@@ -36,7 +36,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
 
         <!-- Carrier Send Shipments - Wizard -->
         <record model="ir.action.wizard" id="wizard_carrier_send_shipments">
-            <field name="name">Send a carrier</field>
+            <field name="name">Send Shipment to Carrier</field>
             <field name="wiz_name">carrier.send.shipments</field>
             <field name="model">stock.shipment.out</field>
         </record>
@@ -66,7 +66,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
 
         <!-- Carrier Print Shipments - Wizard -->
         <record model="ir.action.wizard" id="wizard_carrier_print_shipment">
-            <field name="name">Print Shipments</field>
+            <field name="name">Get Label from Carrier</field>
             <field name="wiz_name">carrier.print.shipment</field>
             <field name="model">stock.shipment.out</field>
         </record>
