@@ -49,6 +49,7 @@ class ShipmentOut:
             states={
                 'invisible': ~Eval('carrier'),
             }, help='Picking is already printed')
+    carrier_notes = fields.Char('Carrier Notes', help='Notes to add carrier')
 
     @classmethod
     def __setup__(cls):

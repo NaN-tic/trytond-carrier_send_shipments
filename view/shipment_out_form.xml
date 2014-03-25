@@ -16,11 +16,12 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="carrier_sale_price_total"/>
             <label name="carrier_cashondelivery_total"/>
             <field name="carrier_cashondelivery_total"/>
+            <label name="carrier_notes"/>
+            <field name="carrier_notes"/>
         </page>
     </xpath>
 
-    <xpath expr="/form/group[@id=&quot;state_buttons&quot;]/group[@id=&quot;buttons&quot;]/button[@name=&quot;done&quot;]" position="after">
+    <xpath expr="/form/group[@id=&quot;state_buttons&quot;]/group[@id=&quot;buttons&quot;]/button[@name=&quot;done&quot;]" position="before">
         <button string="Send Carrier" name="wizard_carrier_send_shipments" icon="tryton-ok"/>
-        <button string="Print Carrier" name="wizard_carrier_print_shipment" icon="tryton-ok"/>
     </xpath>
 </data>
