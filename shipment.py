@@ -174,7 +174,7 @@ class CarrierSendShipments(Wizard):
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
         for shipment in shipments:
-            apis = API.search([('carrier', '=', shipment.carrier)], limit=1)
+            apis = API.search([('carriers', 'in', [shipment.carrier.id])], limit=1)
             if not apis:
                 message = 'Carrier %s not have API' % shipment.carrier.rec_name
                 logging.getLogger('carrier_send_shipments').warning(message)
@@ -240,7 +240,7 @@ class CarrierSendShipments(Wizard):
                         'shipment': shipment.code,
                         })
             carrier = shipment.carrier.rec_name
-            apis = API.search([('carrier', '=', shipment.carrier)], limit=1)
+            apis = API.search([('carriers', 'in', [shipment.carrier.id])], limit=1)
             if not apis:
                 self.raise_user_error('carrier_api', {
                         'carrier': carrier,
