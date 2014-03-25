@@ -141,7 +141,6 @@ class CarrierSendShipments(Wizard):
     result = StateView('carrier.send.shipments.result',
         'carrier_send_shipments.carrier_send_shipments_result', [
             Button('Close', 'end', 'tryton-close'),
-            Button('Print label', 'print_', 'tryton-ok'),
             ])
     print_ = StateAction(
         'carrier_send_shipments.wizard_carrier_print_shipment')
