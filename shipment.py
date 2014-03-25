@@ -75,6 +75,15 @@ class ShipmentOut:
     def wizard_carrier_print_shipment(cls, sales):
         pass
 
+    @classmethod
+    def copy(cls, shipments, default=None):
+        if default is None:
+            default = {}
+        default = default.copy()
+        default['carrier_delivery'] = None
+        default['carrier_printed'] = None
+        return super(ShipmentOut, cls).copy(shipments, default=default)
+
     def on_change_with_carrier_sale_price_total(self, name=None):
         """Get Sale Total Amount if shipment origin is a sale"""
         price = Decimal(0)
