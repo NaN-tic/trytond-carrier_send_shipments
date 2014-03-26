@@ -38,11 +38,10 @@ class ShipmentOut:
             }, on_change_with=['carrier_cashondelivery', 'origin_cache', 'origin'],
             depends=['carrier_cashondelivery']),
             'on_change_with_carrier_sale_price_total')
-    carrier_service = fields.Many2One('carrier.service', 'Carrier service',
+    carrier_service = fields.Many2One('carrier.api.service', 'Carrier API Service',
             states={
                 'invisible': ~Eval('carrier'),
-            }, depends=['carrier', 'state'],
-            domain=[('carrier', '=', Eval('carrier'))])
+            }, depends=['carrier', 'state'])
     carrier_delivery = fields.Boolean('Delivered', readonly=True,
             states={
                 'invisible': ~Eval('carrier'),
@@ -186,6 +185,7 @@ class CarrierSendShipments(Wizard):
             references += refs
             labels += labs
             errors += errs
+            print refs, labs, errs
 
         #  Save results in info and labels fields
         self.result.info = self.raise_user_error('shipment_info', {
@@ -265,8 +265,8 @@ class CarrierSendShipments(Wizard):
                     })
 
         default['carrier'] = shipment.carrier.id
-        if api.service:
-            default['service'] = api.service.id
+        if api.default_service:
+            default['service'] = api.default_service.id
         return default
 
     def default_result(self, fields):
