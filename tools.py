@@ -15,3 +15,7 @@ def unaccent(text):
     for c in xrange(len(SRC_CHARS)):
         text = text.replace(SRC_CHARS[c], '')
     return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore')
+
+
+def unspaces(text):
+    return text.replace(" ", "")
