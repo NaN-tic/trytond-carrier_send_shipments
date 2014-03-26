@@ -295,7 +295,7 @@ class CarrierPrintShipmentStart(ModelView):
 class CarrierPrintShipmentResult(ModelView):
     'Carrier Print Shipment Result'
     __name__ = 'carrier.print.shipment.result'
-    labels = fields.Binary('Labels')
+    labels = fields.Binary('Labels', filename='file_name')
     file_name = fields.Char('File Name')
 
 
@@ -385,6 +385,12 @@ class CarrierPrintShipment(Wizard):
         default['printed'] = bool([s for s in shipments if s.carrier_printed])
 
         return default
+
+    def default_result(self, fields):
+        return {
+            'labels': self.result.labels,
+            'file_name': self.result.file_name,
+            }
 
     def transition_print_(self):
         pool = Pool()
