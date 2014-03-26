@@ -185,7 +185,6 @@ class CarrierSendShipments(Wizard):
             references += refs
             labels += labs
             errors += errs
-            print refs, labs, errs
 
         #  Save results in info and labels fields
         self.result.info = self.raise_user_error('shipment_info', {
