@@ -22,6 +22,6 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
     </xpath>
 
     <xpath expr="/form/group[@id=&quot;state_buttons&quot;]/group[@id=&quot;buttons&quot;]/button[@name=&quot;done&quot;]" position="before">
-        <button string="Send Carrier" name="wizard_carrier_send_shipments" icon="tryton-ok"/>
+        <button string="Send API Carrier" name="wizard_carrier_send_shipments" icon="tryton-ok"/>
     </xpath>
 </data>
