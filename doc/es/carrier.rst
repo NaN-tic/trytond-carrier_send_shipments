@@ -20,6 +20,10 @@ en el albarán. Si selecciona varios transportistas al disponer de varias etique
 de un fichero único dispondrá de un "TAR GZ" (fichero comprimido) que lo podrá descargar y descomprimir
 en su ordenador local y enviar a la impresora.
 
+Muchas de las APIs de mensajería no permiten la duplicación de envios con la misma referencia. Si ha enviado un
+albarán de cliente y debe volver a enviar, se recomienda hacer un albarán de abono y volver a crear un nuevo
+albarán nuevo o usar la propia plataforma del transportista para rectificar el albarán enviado via API.
+
 Configuración
 =============
 
