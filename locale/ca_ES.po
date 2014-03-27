@@ -47,18 +47,6 @@ msgid "Select a carrier in shipment \"%(shipment)s\""
 msgstr "Selecciona un transportista per l'enviament \"%(shipment)s\""
 
 msgctxt "error:carrier.send.shipments:"
-msgid ""
-"Send shipments:\n"
-"Codes: %(codes)s\n"
-"Carrier: \"%(carrier)s\"\n"
-"Service \"%(service)s\""
-msgstr ""
-"Enviat albarans:\n"
-"Codis: %(codes)s\n"
-"Transportista: \"%(carrier)s\"\n"
-"Servei: \"%(service)s\""
-
-msgctxt "error:carrier.send.shipments:"
 msgid "Shipment \"%(code)s\" not available to send zip \"%(zip)s\""
 msgstr "Enviament \"%(code)s\" no es pot enviar aquest codi postal \"%(zip)s\""
 
@@ -72,35 +60,44 @@ msgstr "L'albarà ID (%(shipment)s) no es troba en els estats \"%(state)s\""
 
 msgctxt "error:carrier.send.shipments:"
 msgid ""
+"Successfully:\n"
+"%(references)s\n"
+"\n"
+"Errors:\n"
+"%(errors)s"
+msgstr "Amb éxit:"
+
+msgctxt "error:carrier.send.shipments:"
+msgid ""
 "You select different shipments to send %(methods)s. Select shipment grouped "
 "by carrier"
 msgstr ""
 "Has seleccionat varis albarans per diferents mètodes %(methods)s. Agrupa els"
 " albarans per transportista"
 
-msgctxt "field:carrier.print.shipment.result,archive:"
-msgid "Archive"
-msgstr "Arxiu"
+msgctxt "field:carrier.print.shipment.result,file_name:"
+msgid "File Name"
+msgstr "Nom de fitxer"
 
 msgctxt "field:carrier.print.shipment.result,id:"
 msgid "ID"
 msgstr "ID"
 
-msgctxt "field:carrier.print.shipment.result,name:"
-msgid "Archive Name"
-msgstr "Nom d'arxiu"
-
-msgctxt "field:carrier.print.shipment.start,carrier:"
-msgid "Carrier"
-msgstr "Transportista"
+msgctxt "field:carrier.print.shipment.result,labels:"
+msgid "Labels"
+msgstr "Etiquetes"
 
 msgctxt "field:carrier.print.shipment.start,id:"
 msgid "ID"
 msgstr "ID"
 
-msgctxt "field:carrier.print.shipment.start,printed:"
-msgid "Printed"
-msgstr "Imprimit"
+msgctxt "field:carrier.print.shipment.start,shipments:"
+msgid "Shipments"
+msgstr "Enviaments"
+
+msgctxt "field:carrier.send.shipments.result,file_name:"
+msgid "File Name"
+msgstr "Nom de fitxer"
 
 msgctxt "field:carrier.send.shipments.result,id:"
 msgid "ID"
@@ -110,29 +107,17 @@ msgctxt "field:carrier.send.shipments.result,info:"
 msgid "Info"
 msgstr "Info"
 
-msgctxt "field:carrier.send.shipments.start,carrier:"
-msgid "Carrier"
-msgstr "Transportista"
+msgctxt "field:carrier.send.shipments.result,labels:"
+msgid "Labels"
+msgstr "Etiquetes"
 
 msgctxt "field:carrier.send.shipments.start,id:"
 msgid "ID"
 msgstr "ID"
 
-msgctxt "field:carrier.send.shipments.start,service:"
-msgid "Service"
-msgstr "Servei"
-
-msgctxt "field:stock.shipment.out,carrier_delivery:"
-msgid "Delivered"
-msgstr "Enviat"
-
-msgctxt "field:stock.shipment.out,carrier_printed:"
-msgid "Printed"
-msgstr "Imprimit"
-
-msgctxt "field:stock.shipment.out,carrier_service:"
-msgid "Carrier service"
-msgstr "Servei transportista"
+msgctxt "field:carrier.send.shipments.start,shipments:"
+msgid "Shipments"
+msgstr "Enviaments"
 
 msgctxt "field:stock.shipment.out,carrier_cashondelivery:"
 msgid "Carrier Cash OnDelivery"
@@ -142,13 +127,37 @@ msgctxt "field:stock.shipment.out,carrier_cashondelivery_total:"
 msgid "Carrier Cash OnDelivery Total"
 msgstr "Total contrareemborsament"
 
-msgctxt "help:carrier.print.shipment.start,printed:"
-msgid "Picking is already printed."
-msgstr "L'albarà ja està imprimit."
+msgctxt "field:stock.shipment.out,carrier_delivery:"
+msgid "Delivered"
+msgstr "Enviat"
+
+msgctxt "field:stock.shipment.out,carrier_notes:"
+msgid "Carrier Notes"
+msgstr "Notes transportista"
+
+msgctxt "field:stock.shipment.out,carrier_printed:"
+msgid "Printed"
+msgstr "Imprimit"
+
+msgctxt "field:stock.shipment.out,carrier_sale_price_total:"
+msgid "Sale Total"
+msgstr "Venda total"
+
+msgctxt "field:stock.shipment.out,carrier_service:"
+msgid "Carrier API Service"
+msgstr "Servei transportista"
+
+msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
+msgid "Paid package when carrier delivery"
+msgstr "Paga paquet a la entrega del transportista."
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
 msgstr "El paquet ja s'ha enviat"
+
+msgctxt "help:stock.shipment.out,carrier_notes:"
+msgid "Notes to add carrier"
+msgstr "Notes per afegir al transpostista."
 
 msgctxt "help:stock.shipment.out,carrier_printed:"
 msgid "Picking is already printed"
@@ -183,14 +192,58 @@ msgid "Print Shipment"
 msgstr "Impressió d'enviament"
 
 msgctxt "view:carrier.print.shipment.start:"
+msgid ""
+"Download a shipment label (PDF) from API carrier (when API carrier available"
+" download option)"
+msgstr ""
+"Descarrega una etiqueta d'enviament (PDF) des de l'API del transportista "
+"(quan la opció de descàrrega des de l'API està disponible)"
+
+msgctxt "view:carrier.print.shipment.start:"
 msgid "Print Shipment"
 msgstr "Impressió d'enviament"
+
+msgctxt "view:carrier.print.shipment.start:"
+msgid "Print label from carrier"
+msgstr "Imprimeix etiqueta del transportista"
+
+msgctxt "view:carrier.send.shipments.result:"
+msgid "Labels"
+msgstr "Etiquetes"
 
 msgctxt "view:carrier.send.shipments.result:"
 msgid "Send Shipment"
 msgstr "Envia albarà"
 
 msgctxt "view:carrier.send.shipments.start:"
+msgid "Send Shipment"
+msgstr "Envia albarà"
+
+msgctxt "view:carrier.send.shipments.start:"
+msgid ""
+"Send shipments in state package or done, related a carrier and not "
+"deliveried"
+msgstr ""
+"Envia albarà en estat empaquetat o realitzat, relacionat amb un "
+"transportista i no entregat."
+
+msgctxt "view:carrier.send.shipments.start:"
+msgid "Send shipments to carrier"
+msgstr "Envia albarà al transportista"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Carrier Delivery"
+msgstr "Entrega transportista"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Print Shipment"
+msgstr "Impressió d'enviament"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Send API Carrier"
+msgstr "Envia a la API del transportista"
+
+msgctxt "view:stock.shipment.out:"
 msgid "Send Shipment"
 msgstr "Envia albarà"
 
@@ -209,10 +262,6 @@ msgstr "Imprimeix"
 msgctxt "wizard_button:carrier.send.shipments,result,end:"
 msgid "Close"
 msgstr "Tanca"
-
-msgctxt "wizard_button:carrier.send.shipments,result,print_:"
-msgid "Print label"
-msgstr "Imprimeix etiqueta"
 
 msgctxt "wizard_button:carrier.send.shipments,start,end:"
 msgid "Cancel"
