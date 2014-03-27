@@ -13,42 +13,45 @@ import tarfile
 import tempfile
 
 __all__ = ['ShipmentOut', 'CarrierSendShipmentsStart',
-        'CarrierSendShipmentsResult', 'CarrierSendShipments',
-        'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
-        'CarrierPrintShipment']
+    'CarrierSendShipmentsResult', 'CarrierSendShipments',
+    'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
+    'CarrierPrintShipment']
 __metaclass__ = PoolMeta
 _SHIPMENT_STATES = ['packed', 'done']
 
 
 class ShipmentOut:
     __name__ = 'stock.shipment.out'
-    carrier_cashondelivery = fields.Boolean('Carrier Cash OnDelivery', 
-            states={
-                'invisible': ~Eval('carrier'),
+    carrier_cashondelivery = fields.Boolean('Carrier Cash OnDelivery',
+        states={
+            'invisible': ~Eval('carrier'),
             }, help='Paid package when carrier delivery')
-    carrier_cashondelivery_total = fields.Numeric('Carrier Cash OnDelivery Total',
-            digits=(16, Eval('cost_currency_digits', 2)), states={
+    carrier_cashondelivery_total = fields.Numeric(
+        'Carrier Cash OnDelivery Total',
+        digits=(16, Eval('cost_currency_digits', 2)), states={
             'invisible': ~Eval('carrier_cashondelivery'),
             'readonly': ~Eval('state').in_(['draft', 'waiting', 'assigned',
-                    'packed']),
+                'packed']),
             }, depends=['carrier', 'state', 'cost_currency_digits'])
     carrier_sale_price_total = fields.Function(fields.Numeric('Sale Total',
-            digits=(16, Eval('currency_digits', 2)), states={
+        digits=(16, Eval('currency_digits', 2)), states={
             'invisible': ~Eval('carrier_cashondelivery'),
-            }, on_change_with=['carrier_cashondelivery', 'origin_cache', 'origin'],
-            depends=['carrier_cashondelivery']),
-            'on_change_with_carrier_sale_price_total')
-    carrier_service = fields.Many2One('carrier.api.service', 'Carrier API Service',
-            states={
-                'invisible': ~Eval('carrier'),
+            },
+        on_change_with=['carrier_cashondelivery', 'origin_cache', 'origin'],
+        depends=['carrier_cashondelivery']),
+        'on_change_with_carrier_sale_price_total')
+    carrier_service = fields.Many2One('carrier.api.service',
+        'Carrier API Service',
+        states={
+            'invisible': ~Eval('carrier'),
             }, depends=['carrier', 'state'])
     carrier_delivery = fields.Boolean('Delivered', readonly=True,
-            states={
-                'invisible': ~Eval('carrier'),
+        states={
+            'invisible': ~Eval('carrier'),
             }, help='The package has been delivered')
     carrier_printed = fields.Boolean('Printed', readonly=True,
-            states={
-                'invisible': ~Eval('carrier'),
+        states={
+            'invisible': ~Eval('carrier'),
             }, help='Picking is already printed')
     carrier_notes = fields.Char('Carrier Notes', help='Notes to add carrier')
 
@@ -57,20 +60,24 @@ class ShipmentOut:
         super(ShipmentOut, cls).__setup__()
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
-                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) | (Eval('carrier_delivery')),
+                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
+                        (Eval('carrier_delivery')),
                     },
                 'wizard_carrier_print_shipment': {
-                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) | (Eval('carrier_printed')),
+                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
+                        (Eval('carrier_printed')),
                     },
                 })
 
     @classmethod
-    @ModelView.button_action('carrier_send_shipments.wizard_carrier_send_shipments')
+    @ModelView.button_action('carrier_send_shipments.'
+        'wizard_carrier_send_shipments')
     def wizard_carrier_send_shipments(cls, sales):
         pass
 
     @classmethod
-    @ModelView.button_action('carrier_send_shipments.wizard_carrier_print_shipment')
+    @ModelView.button_action('carrier_send_shipments.'
+        'wizard_carrier_print_shipment')
     def wizard_carrier_print_shipment(cls, sales):
         pass
 
@@ -96,7 +103,8 @@ class ShipmentOut:
             price = origin.total_amount
         return price
 
-    def get_carrier_price_total(shipment):
+    @classmethod
+    def get_carrier_price_total(cls, shipment):
         '''
         Return the total price shipment
         '''
@@ -105,7 +113,7 @@ class ShipmentOut:
         elif shipment.carrier_sale_price_total:
             price = shipment.carrier_sale_price_total
         else:
-            price = shipment.total_amount_func #stock valued
+            price = shipment.total_amount_func  # stock valued
         return price
 
 
@@ -153,7 +161,8 @@ class CarrierSendShipments(Wizard):
             'shipment_sended': 'Shipment (%(shipment)s) was sended',
             'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
             'carrier_api': 'Not available method API in carrier "%(carrier)s"',
-            'shipment_info': 'Successfully:\n%(references)s\n\nErrors:\n%(errors)s',
+            'shipment_info':
+                'Successfully:\n%(references)s\n\nErrors:\n%(errors)s',
             'shipment_different_carrier': 'You select different shipments to '
                 'send %(methods)s. Select shipment grouped by carrier',
             'shipment_zip': 'Shipment "%(code)s" not available to send zip '
@@ -173,7 +182,8 @@ class CarrierSendShipments(Wizard):
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
         for shipment in shipments:
-            apis = API.search([('carriers', 'in', [shipment.carrier.id])], limit=1)
+            apis = API.search([('carriers', 'in', [shipment.carrier.id])],
+                limit=1)
             if not apis:
                 message = 'Carrier %s not have API' % shipment.carrier.rec_name
                 logging.getLogger('carrier_send_shipments').warning(message)
@@ -188,17 +198,18 @@ class CarrierSendShipments(Wizard):
 
         #  Save results in info and labels fields
         self.result.info = self.raise_user_error('shipment_info', {
-                    'references': ', '.join(references) if references else '',
-                    'errors': ', '.join(errors) if errors else '',
-                    }, raise_exception=False)
+                'references': ', '.join(references) if references else '',
+                'errors': ', '.join(errors) if errors else '',
+                }, raise_exception=False)
 
         #  Save file label in labels field
-        if len(labels) == 1: # A label generate simple file
+        if len(labels) == 1:  # A label generate simple file
             label, = labels
             carrier_labels = buffer(open(label, "rb").read())
             file_name = label.split('/')[2]
-        elif len(labels) > 1: # Multiple labels generate tgz
-            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname, delete=False)
+        elif len(labels) > 1:  # Multiple labels generate tgz
+            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
+                delete=False)
             temp.close()
             with tarfile.open(temp.name, "w:gz") as tar:
                 for path_label in labels:
@@ -211,7 +222,7 @@ class CarrierSendShipments(Wizard):
             file_name = None
         self.result.labels = carrier_labels
         self.result.file_name = file_name
-            
+
         return 'result'
 
     def default_start(self, fields):
@@ -239,7 +250,8 @@ class CarrierSendShipments(Wizard):
                         'shipment': shipment.code,
                         })
             carrier = shipment.carrier.rec_name
-            apis = API.search([('carriers', 'in', [shipment.carrier.id])], limit=1)
+            apis = API.search([('carriers', 'in', [shipment.carrier.id])],
+                limit=1)
             if not apis:
                 self.raise_user_error('carrier_api', {
                         'carrier': carrier,
@@ -403,7 +415,8 @@ class CarrierPrintShipment(Wizard):
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
         for shipment in shipments:
-            apis = API.search([('carriers', 'in', [shipment.carrier.id])], limit=1)
+            apis = API.search([('carriers', 'in', [shipment.carrier.id])],
+                limit=1)
             if not apis:
                 continue
             api, = apis
@@ -413,12 +426,13 @@ class CarrierPrintShipment(Wizard):
             labels += labs
 
         #  Save file label in labels field
-        if len(labels) == 1: # A label generate simple file
+        if len(labels) == 1:  # A label generate simple file
             label, = labels
             carrier_labels = buffer(open(label, "rb").read())
             file_name = label.split('/')[2]
-        elif len(labels) > 1: # Multiple labels generate tgz
-            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname, delete=False)
+        elif len(labels) > 1:  # Multiple labels generate tgz
+            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
+                delete=False)
             temp.close()
             with tarfile.open(temp.name, "w:gz") as tar:
                 for path_label in labels:
