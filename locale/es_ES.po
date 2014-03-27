@@ -2,6 +2,42 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "error:carrier.print.shipment:"
+msgid "The carrier \"%(carrier)s\" has not any API method available."
+msgstr "El transportista \"%(carrier)s\" no tiene ninguna API disponible."
+
+msgctxt "error:carrier.print.shipment:"
+msgid ""
+"The shipment \"%(shipment)s\" has not any carrier assigned. Please, select "
+"one carrier before trying to print the label."
+msgstr ""
+"El envío \"%(shipment)s\" no tiene ningún transportista asignado. Por favor,"
+" seleccione uno antes de intentar imprimir la etiqueta."
+
+msgctxt "error:carrier.print.shipment:"
+msgid "The shipment %(shipment)s is not in any of these states \"%(state)s\"."
+msgstr "El envío %(shipment)s no está en ninguno de estos estados \"%(state)s\"."
+
+msgctxt "error:carrier.print.shipment:"
+msgid "The shipment (%(shipment)s) is already sent."
+msgstr "El envío (%(shipment)s) ya está enviado."
+
+msgctxt "error:carrier.print.shipment:"
+msgid ""
+"The zip \"%(zip)s\" of the shipment \"%(shipment)s\" is not available for "
+"this carrier."
+msgstr ""
+"El código postal \"%(zip)s\" del envío \"%(shipment)s\" no está disponible "
+"para este transpostista."
+
+msgctxt "error:carrier.print.shipment:"
+msgid ""
+"You've selected shipments with different methods of shipping. Please, select"
+" shipments of a unique carrier."
+msgstr ""
+"Ha seleccionado envíos con diferentes métodos. Por favor, seleccione envíos "
+"de un único transportista."
+
 msgctxt "error:carrier.send.shipments:"
 msgid "Not available method API in carrier \"%(carrier)s\""
 msgstr "No se encuentra el método API del transportista \"%(carrier)s\""
@@ -44,6 +80,30 @@ msgstr ""
 "Ha seleccionado diferentes tipos de envío %(methods)s. Selecciona los "
 "albaranes por transportista."
 
+msgctxt "field:carrier.print.shipment.result,archive:"
+msgid "Archive"
+msgstr "Archivo"
+
+msgctxt "field:carrier.print.shipment.result,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.print.shipment.result,name:"
+msgid "Archive Name"
+msgstr "Nombre de archivo"
+
+msgctxt "field:carrier.print.shipment.start,carrier:"
+msgid "Carrier"
+msgstr "Transportista"
+
+msgctxt "field:carrier.print.shipment.start,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.print.shipment.start,printed:"
+msgid "Printed"
+msgstr "Imprimido"
+
 msgctxt "field:carrier.send.shipments.result,id:"
 msgid "ID"
 msgstr "ID"
@@ -68,6 +128,10 @@ msgctxt "field:stock.shipment.out,carrier_delivery:"
 msgid "Delivered"
 msgstr "Enviado"
 
+msgctxt "field:stock.shipment.out,carrier_printed:"
+msgid "Printed"
+msgstr "Imprimido"
+
 msgctxt "field:stock.shipment.out,carrier_service:"
 msgid "Carrier service"
 msgstr "Servicio transportista"
@@ -76,9 +140,25 @@ msgctxt "field:stock.shipment.out,cash_ondelivery:"
 msgid "Cash OnDelivery"
 msgstr "Total a pagar a la entrega"
 
+msgctxt "help:carrier.print.shipment.start,printed:"
+msgid "Picking is already printed."
+msgstr "El albarán ya está imprimido."
+
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
 msgstr "El paquete ha sido enviado"
+
+msgctxt "help:stock.shipment.out,carrier_printed:"
+msgid "Picking is already printed"
+msgstr "El albarán ya está imprimido."
+
+msgctxt "model:carrier.print.shipment.result,name:"
+msgid "Carrier Print Shipment Result"
+msgstr "Resultado impresión albarán transportista"
+
+msgctxt "model:carrier.print.shipment.start,name:"
+msgid "Carrier Print Shipment Start"
+msgstr "Inicio impresión albarán transportista"
 
 msgctxt "model:carrier.send.shipments.result,name:"
 msgid "Carrier Send Shipments Result"
@@ -88,13 +168,49 @@ msgctxt "model:carrier.send.shipments.start,name:"
 msgid "Carrier Send Shipments Start"
 msgstr "Inicio envío albaranes a mensajero"
 
+msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
+msgid "Print Shipments"
+msgstr "Imprimier albaranes"
+
 msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
 msgid "Send a carrier"
 msgstr "Enviar a un transportista"
 
+msgctxt "view:carrier.print.shipment.result:"
+msgid "Print Shipment"
+msgstr "Imprimier albarán"
+
+msgctxt "view:carrier.print.shipment.start:"
+msgid "Print Shipment"
+msgstr "Imprimier albarán"
+
+msgctxt "view:carrier.send.shipments.result:"
+msgid "Send Shipment"
+msgstr "Enviar albarán"
+
+msgctxt "view:carrier.send.shipments.start:"
+msgid "Send Shipment"
+msgstr "Enviar albarán"
+
+msgctxt "wizard_button:carrier.print.shipment,result,end:"
+msgid "Close"
+msgstr "Cerrar"
+
+msgctxt "wizard_button:carrier.print.shipment,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:carrier.print.shipment,start,print_:"
+msgid "Print"
+msgstr "Imprimir"
+
 msgctxt "wizard_button:carrier.send.shipments,result,end:"
 msgid "Close"
 msgstr "Cerrar"
+
+msgctxt "wizard_button:carrier.send.shipments,result,print_:"
+msgid "Print label"
+msgstr "Imprimir etiqueta"
 
 msgctxt "wizard_button:carrier.send.shipments,start,end:"
 msgid "Cancel"
