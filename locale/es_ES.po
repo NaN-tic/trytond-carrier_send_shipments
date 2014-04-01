@@ -182,11 +182,11 @@ msgid "Carrier Send Shipments Start"
 msgstr "Inicio envío albaranes a mensajero"
 
 msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
-msgid "Print Shipments"
-msgstr "Imprimier albaranes"
+msgid "Label API Carrier"
+msgstr "Imprimir etiquetas del transportista"
 
 msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
-msgid "Send a carrier"
+msgid "Send API Carrier"
 msgstr "Enviar a un transportista"
 
 msgctxt "view:carrier.print.shipment.result:"
@@ -234,10 +234,6 @@ msgid "Send shipments to carrier"
 msgstr "Envía albaranes al transportista"
 
 msgctxt "view:stock.shipment.out:"
-msgid "Carrier Delivery"
-msgstr "Entrega transportista"
-
-msgctxt "view:stock.shipment.out:"
 msgid "Print Shipment"
 msgstr "Imprimier albarán"
 
@@ -245,7 +241,6 @@ msgctxt "view:stock.shipment.out:"
 msgid "Send API Carrier"
 msgstr "Envia a la API del transportista"
 
-#, fuzzy
 msgctxt "view:stock.shipment.out:"
 msgid "Send Shipment"
 msgstr "Enviar albarán"

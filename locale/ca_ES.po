@@ -180,11 +180,11 @@ msgid "Carrier Send Shipments Start"
 msgstr "Inici enviament albarà a transportista"
 
 msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
-msgid "Print Shipments"
-msgstr "Impressió d'enviaments"
+msgid "Label API Carrier"
+msgstr "Etiqueta de la API del transportista"
 
 msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
-msgid "Send a carrier"
+msgid "Send API Carrier"
 msgstr "Envia a un transportista"
 
 msgctxt "view:carrier.print.shipment.result:"
@@ -230,10 +230,6 @@ msgstr ""
 msgctxt "view:carrier.send.shipments.start:"
 msgid "Send shipments to carrier"
 msgstr "Envia albarà al transportista"
-
-msgctxt "view:stock.shipment.out:"
-msgid "Carrier Delivery"
-msgstr "Entrega transportista"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Print Shipment"
