@@ -22,24 +22,6 @@ _SHIPMENT_STATES = ['packed', 'done']
 
 class ShipmentOut:
     __name__ = 'stock.shipment.out'
-    carrier_cashondelivery = fields.Boolean('Carrier Cash OnDelivery',
-        states={
-            'invisible': ~Eval('carrier'),
-            }, help='Paid package when carrier delivery')
-    carrier_cashondelivery_total = fields.Numeric(
-        'Carrier Cash OnDelivery Total',
-        digits=(16, Eval('cost_currency_digits', 2)), states={
-            'invisible': ~Eval('carrier_cashondelivery'),
-            'readonly': ~Eval('state').in_(['draft', 'waiting', 'assigned',
-                'packed']),
-            }, depends=['carrier', 'state', 'cost_currency_digits'])
-    carrier_sale_price_total = fields.Function(fields.Numeric('Sale Total',
-        digits=(16, Eval('currency_digits', 2)), states={
-            'invisible': ~Eval('carrier_cashondelivery'),
-            },
-        on_change_with=['carrier_cashondelivery', 'origin_cache', 'origin'],
-        depends=['carrier_cashondelivery']),
-        'on_change_with_carrier_sale_price_total')
     carrier_service = fields.Many2One('carrier.api.service',
         'Carrier API Service',
         states={
@@ -58,6 +40,12 @@ class ShipmentOut:
     @classmethod
     def __setup__(cls):
         super(ShipmentOut, cls).__setup__()
+        if 'carrier' not in cls.carrier_cashondelivery_total.depends:
+            cls.carrier_cashondelivery_total.depends.append('carrier')
+        if ('cost_currency_digits' not in
+                cls.carrier_cashondelivery_total.depends):
+            cls.carrier_cashondelivery_total.depends.append(
+                'cost_currency_digits')
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
@@ -89,32 +77,6 @@ class ShipmentOut:
         default['carrier_delivery'] = None
         default['carrier_printed'] = None
         return super(ShipmentOut, cls).copy(shipments, default=default)
-
-    def on_change_with_carrier_sale_price_total(self, name=None):
-        """Get Sale Total Amount if shipment origin is a sale"""
-        price = Decimal(0)
-
-        if self.origin_cache:
-            origin = self.origin_cache
-        else:
-            origin = self.origin
-
-        if origin and origin.__name__ == 'sale.sale':
-            price = origin.total_amount
-        return price
-
-    @classmethod
-    def get_carrier_price_total(cls, shipment):
-        '''
-        Return the total price shipment
-        '''
-        if shipment.carrier_cashondelivery_total:
-            price = shipment.carrier_cashondelivery_total
-        elif shipment.carrier_sale_price_total:
-            price = shipment.carrier_sale_price_total
-        else:
-            price = shipment.total_amount_func  # stock valued
-        return price
 
 
 class CarrierSendShipmentsStart(ModelView):

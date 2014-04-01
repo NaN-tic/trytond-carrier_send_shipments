@@ -2,23 +2,15 @@
 <!-- This file is part carrier_send_shipments module for Tryton.
 The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
 <data>
-    <xpath expr="/form/notebook/page[@id=&quot;outgoing_moves&quot;]" position="after">
-        <page string="Carrier Delivery" id="carrier-delivery" states="{'invisible': ~Eval('carrier')}">
-            <label name="carrier_delivery"/>
-            <field name="carrier_delivery"/>
-            <label name="carrier_printed"/>
-            <field name="carrier_printed"/>
-            <label name="carrier_service"/>
-            <field name="carrier_service"/>
-            <label name="carrier_cashondelivery"/>
-            <field name="carrier_cashondelivery"/>
-            <label name="carrier_sale_price_total"/>
-            <field name="carrier_sale_price_total"/>
-            <label name="carrier_cashondelivery_total"/>
-            <field name="carrier_cashondelivery_total"/>
-            <label name="carrier_notes"/>
-            <field name="carrier_notes"/>
-        </page>
+    <xpath expr="/form/notebook/page[@id=&quot;carrier-delivery&quot;]" position="inside">
+        <label name="carrier_delivery"/>
+        <field name="carrier_delivery"/>
+        <label name="carrier_printed"/>
+        <field name="carrier_printed"/>
+        <label name="carrier_service"/>
+        <field name="carrier_service"/>
+        <label name="carrier_notes"/>
+        <field name="carrier_notes"/>
     </xpath>
 
     <xpath expr="/form/group[@id=&quot;state_buttons&quot;]/group[@id=&quot;buttons&quot;]/button[@name=&quot;done&quot;]" position="before">
