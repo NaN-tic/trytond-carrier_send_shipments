@@ -7,7 +7,6 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button, \
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.pyson import Eval
-from decimal import Decimal
 import logging
 import tarfile
 import tempfile
