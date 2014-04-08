@@ -157,7 +157,7 @@ class CarrierSendShipments(Wizard):
                     or not shipment.delivery_address.city or not shipment.delivery_address.country:
                 message = self.raise_user_error('shipmnet_deliver_address', {
                             'code': shipment.code,
-                            })
+                            }, raise_exception=False)
                 logging.getLogger('carrier_send_shipments').warning(message)
                 refs = []
                 labs = []
