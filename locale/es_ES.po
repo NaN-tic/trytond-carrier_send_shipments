@@ -51,6 +51,13 @@ msgid "Shipment \"%(code)s\" not available to send zip \"%(zip)s\""
 msgstr "El envío \"%(code)s\" no se puede enviar a este código postal \"%(zip)s\""
 
 msgctxt "error:carrier.send.shipments:"
+msgid ""
+"Shipment %(code)s not have address details: street, zip, city or country."
+msgstr ""
+"El albarán %(code)s no dispone en la dirección: calle, código postal, ciudad"
+" o país."
+
+msgctxt "error:carrier.send.shipments:"
 msgid "Shipment (%(shipment)s) was sended"
 msgstr "El envío (%(shipment)s) ya se ha enviado anteriormente"
 
@@ -141,6 +148,10 @@ msgstr "Enviado"
 msgctxt "field:stock.shipment.out,carrier_notes:"
 msgid "Carrier Notes"
 msgstr "Notas transportista"
+
+msgctxt "field:stock.shipment.out,carrier_price_total:"
+msgid "Price Total"
+msgstr "Precio total"
 
 msgctxt "field:stock.shipment.out,carrier_printed:"
 msgid "Printed"
@@ -244,7 +255,7 @@ msgstr "Imprimier albarán"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Send API Carrier"
-msgstr "Envia a la API del transportista"
+msgstr "Enviar a la API del transportista"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Send Shipment"

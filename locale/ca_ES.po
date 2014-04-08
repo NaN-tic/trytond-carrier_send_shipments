@@ -51,6 +51,13 @@ msgid "Shipment \"%(code)s\" not available to send zip \"%(zip)s\""
 msgstr "Enviament \"%(code)s\" no es pot enviar aquest codi postal \"%(zip)s\""
 
 msgctxt "error:carrier.send.shipments:"
+msgid ""
+"Shipment %(code)s not have address details: street, zip, city or country."
+msgstr ""
+"L'albarà %(code)s no disposa a la seva adreça: carrer, codi postal, ciutat o"
+" país."
+
+msgctxt "error:carrier.send.shipments:"
 msgid "Shipment (%(shipment)s) was sended"
 msgstr "L'albarà (%(shipment)s) ja s'havia enviat en un altre moment"
 
@@ -140,12 +147,16 @@ msgctxt "field:stock.shipment.out,carrier_notes:"
 msgid "Carrier Notes"
 msgstr "Notes transportista"
 
+msgctxt "field:stock.shipment.out,carrier_price_total:"
+msgid "Price Total"
+msgstr "Preu total"
+
 msgctxt "field:stock.shipment.out,carrier_printed:"
 msgid "Printed"
 msgstr "Imprimit"
 
 msgctxt "field:stock.shipment.out,carrier_sale_price_total:"
-msgid ""
+msgid "Price Total"
 msgstr "Venda total"
 
 msgctxt "field:stock.shipment.out,carrier_service:"
