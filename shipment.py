@@ -129,6 +129,8 @@ class CarrierSendShipments(Wizard):
                 'send %(methods)s. Select shipment grouped by carrier',
             'shipment_zip': 'Shipment "%(code)s" not available to send zip '
                 '"%(zip)s"',
+            'shipmnet_deliver_address': 'Shipment %(code)s not have address details: '
+                'street, zip, city or country.',
         })
 
     def transition_send(self):
@@ -152,8 +154,19 @@ class CarrierSendShipments(Wizard):
                 continue
             api, = apis
 
-            send_shipment = getattr(Shipment, 'send_%s' % api.method)
-            refs, labs, errs = send_shipment(api, [shipment])
+            if not shipment.delivery_address.street or not shipment.delivery_address.zip \
+                    or not shipment.delivery_address.city or not shipment.delivery_address.country:
+                message = self.raise_user_error('shipmnet_deliver_address', {
+                            'code': shipment.code,
+                            })
+                logging.getLogger('carrier_send_shipments').warning(message)
+                refs = []
+                labs = []
+                errs = [message]
+            else:
+                send_shipment = getattr(Shipment, 'send_%s' % api.method)
+                refs, labs, errs = send_shipment(api, [shipment])
+
             references += refs
             labels += labs
             errors += errs
