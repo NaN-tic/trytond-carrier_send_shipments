@@ -77,6 +77,26 @@ class ShipmentOut:
         default['carrier_printed'] = None
         return super(ShipmentOut, cls).copy(shipments, default=default)
 
+    @staticmethod
+    def get_price_ondelivery_shipment_out(shipment):
+        '''Get price ondelivery from shipment out'''
+        if shipment.carrier_cashondelivery_total:
+            price_ondelivery = shipment.carrier_cashondelivery_total
+        elif shipment.carrier_sale_price_total:
+            price_ondelivery = shipment.carrier_sale_price_total
+        else:
+            price_ondelivery = shipment.total_amount
+        return price_ondelivery
+
+    @staticmethod
+    def get_phone_shipment_out(shipment):
+        '''Get default phone from shipment out'''
+        if shipment.delivery_address.mobile:
+            return shipment.delivery_address.mobile
+        if shipment.delivery_address.phone:
+            return shipment.delivery_address.phone
+        return shipment.company.party.phone if shipment.company.party.phone else ''
+
 
 class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
