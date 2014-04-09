@@ -56,6 +56,11 @@ class ShipmentOut:
                     },
                 })
 
+    def on_change_carrier(self):
+        changes = super(ShipmentOut, self).on_change_carrier()
+        changes['carrier_service'] = None
+        return changes
+
     @classmethod
     @ModelView.button_action('carrier_send_shipments.'
         'wizard_carrier_send_shipments')
