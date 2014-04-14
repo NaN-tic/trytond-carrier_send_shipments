@@ -21,11 +21,19 @@ _SHIPMENT_STATES = ['packed', 'done']
 
 class ShipmentOut:
     __name__ = 'stock.shipment.out'
+    carrier_service_domain = fields.Function(fields.One2Many(
+            'carrier.api.service', None, 'Carrier Domain',
+            on_change_with=['carrier'],
+            depends=['carrier']),
+        'on_change_with_carrier_service_domain')
     carrier_service = fields.Many2One('carrier.api.service',
         'Carrier API Service',
+        domain=[
+            ('id', 'in', Eval('carrier_service_domain')),
+            ],
         states={
             'invisible': ~Eval('carrier'),
-            }, depends=['carrier', 'state'])
+            }, depends=['carrier', 'state', 'carrier_service_domain'])
     carrier_delivery = fields.Boolean('Delivered', readonly=True,
         states={
             'invisible': ~Eval('carrier'),
@@ -55,6 +63,16 @@ class ShipmentOut:
                         (Eval('carrier_printed')),
                     },
                 })
+
+    def on_change_with_carrier_service_domain(self, name=None):
+        ApiCarrier = Pool().get('carrier.api-carrier.carrier')
+        carrier_api_services = []
+        if self.carrier:
+            api_carriers = ApiCarrier.search([
+                    ('carrier', '=', self.carrier.id)])
+            carrier_api_services = [service.id for api_carrier in api_carriers
+                for service in api_carrier.api.services]
+        return carrier_api_services
 
     def on_change_carrier(self):
         changes = super(ShipmentOut, self).on_change_carrier()
