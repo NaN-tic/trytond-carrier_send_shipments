@@ -6,7 +6,7 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button, \
     StateAction
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
-from trytond.pyson import Eval
+from trytond.pyson import Bool, Eval, Not
 import logging
 import tarfile
 import tempfile
@@ -56,11 +56,12 @@ class ShipmentOut:
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
-                        (Eval('carrier_delivery')),
+                        (Eval('carrier_delivery')) |
+                        Not(Bool(Eval('carrier'))),
                     },
                 'wizard_carrier_print_shipment': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
-                        (Eval('carrier_printed')),
+                        (Eval('carrier_printed')) | Not(Bool(Eval('carrier'))),
                     },
                 })
 
