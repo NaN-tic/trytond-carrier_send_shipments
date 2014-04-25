@@ -3,6 +3,7 @@
 #the full copyright notices and license terms.
 from trytond.pool import Pool
 from .shipment import *
+from .sale import *
 
 
 def register():
@@ -12,6 +13,7 @@ def register():
         CarrierSendShipmentsResult,
         CarrierPrintShipmentStart,
         CarrierPrintShipmentResult,
+        Sale,
         module='carrier_send_shipments', type_='model')
     Pool.register(
         CarrierSendShipments,
