@@ -12,9 +12,10 @@ class Sale:
 
     def create_shipment(self, shipment_type):
         shipments = super(Sale, self).create_shipment(shipment_type)
-        service = self.carrier and self.carrier.service or False
-        if shipment_type == 'out' and service:
+        if shipment_type == 'out':
             for shipment in shipments:
-                shipment.carrier_service = service
-                shipment.save()
+                service = self.carrier and self.carrier.service or None
+                if service:
+                    shipment.carrier_service = service
+                    shipment.save()
         return shipments
