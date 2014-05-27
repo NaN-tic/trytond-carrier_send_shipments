@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- This file is part of carrier_send_shipments module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full
+copyright notices and license terms. -->
+<form string="Send Shipment">
+    <label name="manifest"/>
+    <field name="manifest" colspan="3"/>
+</form>

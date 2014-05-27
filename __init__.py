@@ -4,6 +4,7 @@
 from trytond.pool import Pool
 from .shipment import *
 from .sale import *
+from .manifest import *
 
 
 def register():
@@ -14,8 +15,11 @@ def register():
         CarrierPrintShipmentStart,
         CarrierPrintShipmentResult,
         Sale,
+        StockManifestStart,
+        StockEnterManifest,
         module='carrier_send_shipments', type_='model')
     Pool.register(
         CarrierSendShipments,
         CarrierPrintShipment,
+        StockManifest,
         module='carrier_send_shipments', type_='wizard')
