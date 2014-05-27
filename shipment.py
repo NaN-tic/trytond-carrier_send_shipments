@@ -23,7 +23,6 @@ class ShipmentOut:
     __name__ = 'stock.shipment.out'
     carrier_service_domain = fields.Function(fields.One2Many(
             'carrier.api.service', None, 'Carrier Domain',
-            on_change_with=['carrier'],
             depends=['carrier']),
         'on_change_with_carrier_service_domain')
     carrier_service = fields.Many2One('carrier.api.service',
