@@ -15,11 +15,11 @@ def register():
         CarrierPrintShipmentStart,
         CarrierPrintShipmentResult,
         Sale,
-        StockManifestStart,
-        StockEnterManifest,
+        CarrierManifestStart,
+        CarrierEnterManifest,
         module='carrier_send_shipments', type_='model')
     Pool.register(
         CarrierSendShipments,
         CarrierPrintShipment,
-        StockManifest,
+        CarrierManifest,
         module='carrier_send_shipments', type_='wizard')

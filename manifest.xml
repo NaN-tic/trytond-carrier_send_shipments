@@ -4,29 +4,25 @@ The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <tryton>
     <data>
-        <record model="ir.ui.view" id="stock_manifest_start_view_form">
-            <field name="model">stock.manifest.start</field>
+        <record model="ir.ui.view" id="carrier_manifest_start_view_form">
+            <field name="model">carrier.manifest.start</field>
             <field name="type">form</field>
-            <field name="name">stock_manifest_start_form</field>
+            <field name="name">manifest_start_form</field>
         </record>
-        <record model="ir.action.wizard" id="act_stock_manifest">
-            <field name="name">Manifest</field>
-            <field name="wiz_name">stock.manifest</field>
-        </record>
-        <record model="ir.ui.view" id="stock_enter_manifest_view_form">
-            <field name="model">stock.enter.manifest</field>
+        <record model="ir.ui.view" id="carrier_manifest_result_view_form">
+            <field name="model">carrier.result.manifest</field>
             <field name="type">form</field>
-            <field name="name">stock_enter_manifest_form</field>
+            <field name="name">manifest_result_form</field>
         </record>
-        <record model="ir.action.wizard" id="act_stock_enter_manifest">
+        <record model="ir.action.wizard" id="act_carrier_manifest">
             <field name="name">Manifest</field>
-            <field name="wiz_name">stock.manifest</field>
+            <field name="wiz_name">carrier.manifest</field>
         </record>
         <menuitem
             name="Manifest" 
             parent="stock.menu_stock"
-            action="act_stock_manifest"
-            id="menu_stock_manifest"
+            action="act_carrier_manifest"
+            id="menu_carrier_manifest"
             sequence="50"/>
     </data>
 </tryton>
