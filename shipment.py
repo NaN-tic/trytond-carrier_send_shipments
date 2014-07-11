@@ -42,6 +42,8 @@ class ShipmentOut:
             'invisible': ~Eval('carrier'),
             }, help='Picking is already printed')
     carrier_notes = fields.Char('Carrier Notes', help='Notes to add carrier')
+    send_employee = fields.Many2One('company.employee', 'Send Employee')
+    send_date = fields.DateTime('Send Date & Time')
 
     @classmethod
     def __setup__(cls):
