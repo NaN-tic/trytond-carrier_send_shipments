@@ -1,6 +1,7 @@
 # This file is part of the carrier_send_shipments module for Tryton.
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
+from datetime import datetime
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button, \
     StateAction
@@ -65,6 +66,25 @@ class ShipmentOut:
                         (Eval('carrier_printed')) | Not(Bool(Eval('carrier'))),
                     },
                 })
+
+    @staticmethod
+    def default_send_date():
+        return datetime.now()
+
+    @staticmethod
+    def default_send_employee():
+        pool = Pool()
+        User = pool.get('res.user')
+
+        if (Transaction().user == 0
+                and Transaction().context.get('user')):
+            user = Transaction().context.get('user')
+        else:
+            user = Transaction().user
+        if user:
+            user = User(user)
+            if user.employee:
+                return user.employee.id
 
     def on_change_with_carrier_service_domain(self, name=None):
         ApiCarrier = Pool().get('carrier.api-carrier.carrier')
