@@ -123,6 +123,20 @@ class ShipmentOut:
             return shipment.delivery_address.phone
         return shipment.company.party.phone if shipment.company.party.phone else ''
 
+    @staticmethod
+    def get_carrier_employee():
+        User = Pool().get('res.user')
+        if Transaction().context.get('employee'):
+            return Transaction().context['employee']
+        else:
+            user = User(Transaction().user)
+            if user.employee:
+                return user.employee.id
+
+    @staticmethod
+    def get_carrier_date():
+        return datetime.now()
+
 
 class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
