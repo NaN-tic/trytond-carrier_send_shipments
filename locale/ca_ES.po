@@ -191,6 +191,14 @@ msgctxt "field:stock.shipment.out,carrier_sale_price_total:"
 msgid "Price Total"
 msgstr "Venda total"
 
+msgctxt "field:stock.shipment.out,carrier_send_date:"
+msgid "Carrier Send Date"
+msgstr "Data enviament transportista"
+
+msgctxt "field:stock.shipment.out,carrier_send_employee:"
+msgid "Carrier Send Employee"
+msgstr "Empleat enviament transportista"
+
 msgctxt "field:stock.shipment.out,carrier_service:"
 msgid "Carrier API Service"
 msgstr "Servei transportista"
@@ -198,14 +206,6 @@ msgstr "Servei transportista"
 msgctxt "field:stock.shipment.out,carrier_service_domain:"
 msgid "Carrier Domain"
 msgstr "Domini transportista"
-
-msgctxt "field:stock.shipment.out,send_date:"
-msgid "Send Date & Time"
-msgstr "Data i hora d'enviament"
-
-msgctxt "field:stock.shipment.out,send_employee:"
-msgid "Send Employee"
-msgstr "Empleat d'enviament"
 
 msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
 msgid ""
