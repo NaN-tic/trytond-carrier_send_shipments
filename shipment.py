@@ -12,12 +12,17 @@ import logging
 import tarfile
 import tempfile
 
-__all__ = ['ShipmentOut', 'CarrierSendShipmentsStart',
+__all__ = ['Configuration', 'ShipmentOut', 'CarrierSendShipmentsStart',
     'CarrierSendShipmentsResult', 'CarrierSendShipments',
     'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
     'CarrierPrintShipment']
 __metaclass__ = PoolMeta
 _SHIPMENT_STATES = ['packed', 'done']
+
+
+class Configuration:
+    __name__ = 'stock.configuration'
+    attach_label = fields.Property(fields.Boolean('Attach Label'))
 
 
 class ShipmentOut:
@@ -195,6 +200,7 @@ class CarrierSendShipments(Wizard):
     def transition_send(self):
         Shipment = Pool().get('stock.shipment.out')
         API = Pool().get('carrier.api')
+        Attachment = pool.get('ir.attachment')
 
         dbname = Transaction().cursor.dbname
         references = []
@@ -225,6 +231,12 @@ class CarrierSendShipments(Wizard):
             else:
                 send_shipment = getattr(Shipment, 'send_%s' % api.method)
                 refs, labs, errs = send_shipment(api, [shipment])
+                attach = Attachment(
+                    name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                    type='data',
+                    data=open(labs, "rb").read(),
+                    resource=str(shipment))
+                attach.save()
 
             references += refs
             labels += labs
@@ -441,6 +453,7 @@ class CarrierPrintShipment(Wizard):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
+        Attachment = pool.get('ir.attachment')
 
         dbname = Transaction().cursor.dbname
         labels = []
@@ -457,6 +470,12 @@ class CarrierPrintShipment(Wizard):
 
             print_label = getattr(Shipment, 'print_labels_%s' % api.method)
             labs = print_label(api, [shipment])
+            attach = Attachment(
+                name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                type='data',
+                data=open(labs, "rb").read(),
+                resource=str(shipment))
+            attach.save()
             labels += labs
 
         #  Save file label in labels field

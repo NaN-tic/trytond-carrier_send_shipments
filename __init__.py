@@ -9,6 +9,7 @@ from .manifest import *
 
 def register():
     Pool.register(
+        Configuration,
         ShipmentOut,
         CarrierSendShipmentsStart,
         CarrierSendShipmentsResult,

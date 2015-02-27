@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- This file is part of carrier_send_shipments module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full
+copyright notices and license terms. -->
+<data>
+    <xpath expr="/form///field[@name=&quot;shipment_internal_sequence&quot;]"
+            position="after">
+        <label name="attach_label"/>
+        <field name="attach_label"/>
+    </xpath>
+</data>
