@@ -22,7 +22,7 @@ _SHIPMENT_STATES = ['packed', 'done']
 
 class Configuration:
     __name__ = 'stock.configuration'
-    attach_label = fields.Property(fields.Boolean('Attach Label'))
+    attach_label = fields.Boolean('Attach Label')
 
 
 class ShipmentOut:
@@ -202,6 +202,10 @@ class CarrierSendShipments(Wizard):
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         Attachment = pool.get('ir.attachment')
+        Config = pool.get('stock.configuration')
+
+        config_stock = Config(1)
+        attach_label = config_stock.attach_label
 
         dbname = Transaction().cursor.dbname
         references = []
@@ -232,12 +236,14 @@ class CarrierSendShipments(Wizard):
             else:
                 send_shipment = getattr(Shipment, 'send_%s' % api.method)
                 refs, labs, errs = send_shipment(api, [shipment])
-                attach = Attachment(
-                    name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
-                    type='data',
-                    data=open(labs, "rb").read(),
-                    resource=str(shipment))
-                attach.save()
+
+                if attach_label and labs:
+                    attach = Attachment(
+                        name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                        type='data',
+                        data=buffer(open(labs[0], "rb").read()),
+                        resource=str(shipment))
+                    attach.save()
 
             references += refs
             labels += labs
@@ -455,6 +461,10 @@ class CarrierPrintShipment(Wizard):
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         Attachment = pool.get('ir.attachment')
+        Config = pool.get('stock.configuration')
+
+        config_stock = Config(1)
+        attach_label = config_stock.attach_label
 
         dbname = Transaction().cursor.dbname
         labels = []
@@ -471,12 +481,15 @@ class CarrierPrintShipment(Wizard):
 
             print_label = getattr(Shipment, 'print_labels_%s' % api.method)
             labs = print_label(api, [shipment])
-            attach = Attachment(
-                name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
-                type='data',
-                data=open(labs, "rb").read(),
-                resource=str(shipment))
-            attach.save()
+
+            if attach_label and labs:
+                attach = Attachment(
+                    name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                    type='data',
+                    data=buffer(open(labs[0], "rb").read()),
+                    resource=str(shipment))
+                attach.save()
+
             labels += labs
 
         #  Save file label in labels field
