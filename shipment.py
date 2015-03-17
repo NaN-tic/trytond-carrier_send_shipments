@@ -198,8 +198,9 @@ class CarrierSendShipments(Wizard):
         })
 
     def transition_send(self):
-        Shipment = Pool().get('stock.shipment.out')
-        API = Pool().get('carrier.api')
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.out')
+        API = pool.get('carrier.api')
         Attachment = pool.get('ir.attachment')
 
         dbname = Transaction().cursor.dbname
