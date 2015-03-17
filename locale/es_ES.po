@@ -165,6 +165,10 @@ msgctxt "field:carrier.send.shipments.start,shipments:"
 msgid "Shipments"
 msgstr "Envíos"
 
+msgctxt "field:stock.configuration,attach_label:"
+msgid "Attach Label"
+msgstr "Adjuntar etiqueta"
+
 msgctxt "field:stock.shipment.out,carrier_cashondelivery:"
 msgid "Carrier Cash OnDelivery"
 msgstr "Contrarembolso"
