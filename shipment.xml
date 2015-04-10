@@ -81,5 +81,31 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="model">stock.shipment.out,-1</field>
             <field name="action" ref="wizard_carrier_print_shipment"/>
         </record>
+
+        <!-- Carrier Get Labels - Wizard -->
+        <record model="ir.ui.view" id="carrier_get_label_start_view_form">
+            <field name="model">carrier.get.label.start</field>
+            <field name="type">form</field>
+            <field name="name">get_label_start_form</field>
+        </record>
+        <record model="ir.ui.view" id="carrier_get_label_result_view_form">
+            <field name="model">carrier.get.label.result</field>
+            <field name="type">form</field>
+            <field name="name">get_label_result_form</field>
+        </record>
+        <record model="ir.action.wizard" id="wizard_carrier_get_label">
+            <field name="name">Get Labels</field>
+            <field name="wiz_name">carrier.get.label</field>
+        </record>
+<!--         <record model="ir.action.keyword" id="carrier_get_label_keyword"> -->
+<!--             <field name="keyword">form_action</field> -->
+<!--             <field name="model">stock.shipment.out,-1</field> -->
+<!--             <field name="action" ref="wizard_carrier_get_label"/> -->
+<!--         </record> -->
+        <menuitem
+            name="Get Carrier Labels"
+            id="get_carrier_labels"
+            parent="stock.menu_stock"
+            action="wizard_carrier_get_label"/>
     </data>
 </tryton>

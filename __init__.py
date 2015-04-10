@@ -18,9 +18,12 @@ def register():
         Sale,
         CarrierManifestStart,
         CarrierEnterManifest,
+        CarrierGetLabelStart,
+        CarrierGetLabelResult,
         module='carrier_send_shipments', type_='model')
     Pool.register(
         CarrierSendShipments,
         CarrierPrintShipment,
         CarrierManifest,
+        CarrierGetLabel,
         module='carrier_send_shipments', type_='wizard')

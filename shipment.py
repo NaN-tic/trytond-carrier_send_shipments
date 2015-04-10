@@ -15,7 +15,8 @@ import tempfile
 __all__ = ['Configuration', 'ShipmentOut', 'CarrierSendShipmentsStart',
     'CarrierSendShipmentsResult', 'CarrierSendShipments',
     'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
-    'CarrierPrintShipment']
+    'CarrierPrintShipment', 'CarrierGetLabelStart', 'CarrierGetLabelResult',
+    'CarrierGetLabel']
 __metaclass__ = PoolMeta
 _SHIPMENT_STATES = ['packed', 'done']
 
@@ -514,3 +515,80 @@ class CarrierPrintShipment(Wizard):
         self.result.file_name = file_name
 
         return 'result'
+
+
+class CarrierGetLabelStart(ModelView):
+    'Carrier Get Label Start'
+    __name__ = 'carrier.get.label.start'
+    codes = fields.Char('Codes', required=True,
+        help='Introduce codes of shipments separated by commas.')
+    carrier_api = fields.Many2One('carrier.api', 'Carrier API', required=True)
+
+    @staticmethod
+    def default_shipments():
+        return Transaction().context['active_ids']
+
+
+class CarrierGetLabelResult(ModelView):
+    'Carrier Get Label Result'
+    __name__ = 'carrier.get.label.result'
+    attachments = fields.One2Many('ir.attachment', None, 'Attachments',
+        states={
+            'invisible': Not(Bool(Eval('attachments'))),
+            'readonly': True,
+            })
+
+
+class CarrierGetLabel(Wizard):
+    'Carrier Get Label'
+    __name__ = "carrier.get.label"
+    start = StateView('carrier.get.label.start',
+        'carrier_send_shipments.carrier_get_label_start_view_form', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Get', 'get', 'tryton-ok', default=True),
+            ])
+    get = StateTransition()
+    result = StateView('carrier.get.label.result',
+        'carrier_send_shipments.carrier_get_label_result_view_form', [
+            Button('Close', 'end', 'tryton-close'),
+            ])
+
+    def transition_get(self):
+        pool = Pool()
+        Attachment = pool.get('ir.attachment')
+        Shipment = pool.get('stock.shipment.out')
+
+        codes = [l.strip() for l in self.start.codes.split(',')]
+        shipments = Shipment.search([
+                ('code', 'in', codes)
+                ])
+
+        if not shipments:
+            return 'result'
+
+        carrier_api = self.start.carrier_api
+        print_label = getattr(Shipment, 'print_labels_%s' % carrier_api.method)
+        labels = print_label(carrier_api, shipments)
+
+        attachments = []
+        if labels and len(labels) == len(shipments):
+            for label, shipment in zip(labels, shipments):
+                attach = {
+                    'name': datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                    'type': 'data',
+                    'data': buffer(open(label, "rb").read()),
+                    'description': 'Gotten by Carrier Get Label Wizard',
+                    'resource': str(shipment)
+                    }
+                attachments.append(attach)
+            attachments = Attachment.create(attachments)
+
+        self.result.attachments = attachments
+
+        return 'result'
+
+    def default_result(self, fields):
+        return {
+            'attachments': [a.id
+                for a in getattr(self.result, 'attachments', [])],
+            }
