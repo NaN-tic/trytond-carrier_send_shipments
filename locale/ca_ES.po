@@ -91,6 +91,26 @@ msgstr ""
 "Has seleccionat varis albarans per diferents mètodes %(methods)s. Agrupa els"
 " albarans per transportista"
 
+msgctxt "field:carrier.get.label.result,attachments:"
+msgid "Attachments"
+msgstr "Adjunts"
+
+msgctxt "field:carrier.get.label.result,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.get.label.start,carrier_api:"
+msgid "Carrier API"
+msgstr "API transportista"
+
+msgctxt "field:carrier.get.label.start,codes:"
+msgid "Codes"
+msgstr "Codis"
+
+msgctxt "field:carrier.get.label.start,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:carrier.manifest.start,carrier_api:"
 msgid "Carrier API"
 msgstr "API transportista"
@@ -101,7 +121,7 @@ msgstr "Data inicial"
 
 msgctxt "field:carrier.manifest.start,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:carrier.manifest.start,to_date:"
 msgid "To Date"
@@ -133,7 +153,7 @@ msgstr "Nom de fitxer"
 
 msgctxt "field:carrier.result.manifest,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:carrier.result.manifest,manifest:"
 msgid "Manifest"
@@ -211,9 +231,13 @@ msgctxt "field:stock.shipment.out,carrier_service_domain:"
 msgid "Carrier Domain"
 msgstr "Domini transportista"
 
+msgctxt "help:carrier.get.label.start,codes:"
+msgid "Introduce codes of shipments separated by commas."
+msgstr "Introduïu codis d'enviaments separats per comes."
+
 msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
 msgid ""
-msgstr "Pagar el paquet a la entrega del transportista."
+msgstr ""
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
@@ -226,6 +250,14 @@ msgstr "Notes per afegir al transpostista."
 msgctxt "help:stock.shipment.out,carrier_printed:"
 msgid "Picking is already printed"
 msgstr "L'albarà ja està imprimit."
+
+msgctxt "model:carrier.get.label.result,name:"
+msgid "Carrier Get Label Result"
+msgstr "Resultat d'obtenció d'etiquetes de transportista"
+
+msgctxt "model:carrier.get.label.start,name:"
+msgid "Carrier Get Label Start"
+msgstr "Inici d'obtenció d'etiquetes de transportista"
 
 msgctxt "model:carrier.manifest.start,name:"
 msgid "Carrier Manifest Start"
@@ -255,6 +287,10 @@ msgctxt "model:ir.action,name:act_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifest"
 
+msgctxt "model:ir.action,name:wizard_carrier_get_label"
+msgid "Get Labels"
+msgstr "Obté etiquetes"
+
 msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
 msgid "Label API Carrier"
 msgstr "Etiqueta de la API del transportista"
@@ -263,9 +299,33 @@ msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
 msgid "Send API Carrier"
 msgstr "Envia a un transportista"
 
+msgctxt "model:ir.ui.menu,name:get_carrier_labels"
+msgid "Get Carrier Labels"
+msgstr "Obté etiquetes de transportista"
+
 msgctxt "model:ir.ui.menu,name:menu_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifest"
+
+msgctxt "view:carrier.get.label.result:"
+msgid "Print Shipment"
+msgstr "Impressió d'enviament"
+
+msgctxt "view:carrier.get.label.result:"
+msgid "There are no labels to show."
+msgstr "No hi han etiquetes per mostrar."
+
+msgctxt "view:carrier.get.label.start:"
+msgid "Download labels from the API carrier"
+msgstr "Descarrega etiquetes des de l'API del transportista"
+
+msgctxt "view:carrier.get.label.start:"
+msgid "Get labels from carrier"
+msgstr "Obté etiquetes de transportista"
+
+msgctxt "view:carrier.get.label.start:"
+msgid "Print Shipment"
+msgstr "Impressió d'enviament"
 
 msgctxt "view:carrier.manifest.start:"
 msgid "Manifest"
@@ -330,6 +390,18 @@ msgstr "Envia a la API del transportista"
 msgctxt "view:stock.shipment.out:"
 msgid "Send Shipment"
 msgstr "Envia albarà"
+
+msgctxt "wizard_button:carrier.get.label,result,end:"
+msgid "Close"
+msgstr "Tanca"
+
+msgctxt "wizard_button:carrier.get.label,start,end:"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "wizard_button:carrier.get.label,start,get:"
+msgid "Get"
+msgstr "Obté"
 
 msgctxt "wizard_button:carrier.manifest,result,end:"
 msgid "Cancel"

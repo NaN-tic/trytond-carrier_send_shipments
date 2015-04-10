@@ -93,6 +93,26 @@ msgstr ""
 "Ha seleccionado diferentes tipos de envío %(methods)s. Selecciona los "
 "albaranes por transportista."
 
+msgctxt "field:carrier.get.label.result,attachments:"
+msgid "Attachments"
+msgstr "Adjuntos"
+
+msgctxt "field:carrier.get.label.result,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:carrier.get.label.start,carrier_api:"
+msgid "Carrier API"
+msgstr "API transportista"
+
+msgctxt "field:carrier.get.label.start,codes:"
+msgid "Codes"
+msgstr "Códigos"
+
+msgctxt "field:carrier.get.label.start,id:"
+msgid "ID"
+msgstr "ID"
+
 msgctxt "field:carrier.manifest.start,carrier_api:"
 msgid "Carrier API"
 msgstr "API transportista"
@@ -103,7 +123,7 @@ msgstr "Fecha inicial"
 
 msgctxt "field:carrier.manifest.start,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:carrier.manifest.start,to_date:"
 msgid "To Date"
@@ -135,7 +155,7 @@ msgstr "Nombre de fichero"
 
 msgctxt "field:carrier.result.manifest,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:carrier.result.manifest,manifest:"
 msgid "Manifest"
@@ -195,7 +215,7 @@ msgstr "Imprimido"
 
 msgctxt "field:stock.shipment.out,carrier_sale_price_total:"
 msgid ""
-msgstr "Pagar el paquete en la entrega del transportista"
+msgstr ""
 
 msgctxt "field:stock.shipment.out,carrier_send_date:"
 msgid "Carrier Send Date"
@@ -213,9 +233,13 @@ msgctxt "field:stock.shipment.out,carrier_service_domain:"
 msgid "Carrier Domain"
 msgstr "Dominio transportista"
 
+msgctxt "help:carrier.get.label.start,codes:"
+msgid "Introduce codes of shipments separated by commas."
+msgstr "Introduzca códigos de envíos separados por comas."
+
 msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
 msgid ""
-msgstr "Pagar el paquete en la entrega del transportista"
+msgstr ""
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
@@ -228,6 +252,14 @@ msgstr "Notas para añadir al transportista"
 msgctxt "help:stock.shipment.out,carrier_printed:"
 msgid "Picking is already printed"
 msgstr "El albarán ya está imprimido."
+
+msgctxt "model:carrier.get.label.result,name:"
+msgid "Carrier Get Label Result"
+msgstr "Resultado de obtención de etiquetas de transportista"
+
+msgctxt "model:carrier.get.label.start,name:"
+msgid "Carrier Get Label Start"
+msgstr "Inicio de obtención de etiquetas de transportista"
 
 msgctxt "model:carrier.manifest.start,name:"
 msgid "Carrier Manifest Start"
@@ -257,6 +289,10 @@ msgctxt "model:ir.action,name:act_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifiesto"
 
+msgctxt "model:ir.action,name:wizard_carrier_get_label"
+msgid "Get Labels"
+msgstr "Obtener etiquetas"
+
 msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
 msgid "Label API Carrier"
 msgstr "Imprimir etiquetas del transportista"
@@ -265,9 +301,33 @@ msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
 msgid "Send API Carrier"
 msgstr "Enviar a un transportista"
 
+msgctxt "model:ir.ui.menu,name:get_carrier_labels"
+msgid "Get Carrier Labels"
+msgstr "Obtener etiquetas de transportista"
+
 msgctxt "model:ir.ui.menu,name:menu_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifiesto"
+
+msgctxt "view:carrier.get.label.result:"
+msgid "Print Shipment"
+msgstr "Imprimir albarán"
+
+msgctxt "view:carrier.get.label.result:"
+msgid "There are no labels to show."
+msgstr "No hay etiquetas que mostrar."
+
+msgctxt "view:carrier.get.label.start:"
+msgid "Download labels from the API carrier"
+msgstr "Descarga etiquetas desde la API del transportista"
+
+msgctxt "view:carrier.get.label.start:"
+msgid "Get labels from carrier"
+msgstr "Obtener etiquetas de transportista"
+
+msgctxt "view:carrier.get.label.start:"
+msgid "Print Shipment"
+msgstr "Imprimir albarán"
 
 msgctxt "view:carrier.manifest.start:"
 msgid "Manifest"
@@ -275,7 +335,7 @@ msgstr "Manifiesto"
 
 msgctxt "view:carrier.print.shipment.result:"
 msgid "Print Shipment"
-msgstr "Imprimier albarán"
+msgstr "Imprimir albarán"
 
 msgctxt "view:carrier.print.shipment.start:"
 msgid ""
@@ -287,7 +347,7 @@ msgstr ""
 
 msgctxt "view:carrier.print.shipment.start:"
 msgid "Print Shipment"
-msgstr "Imprimier albarán"
+msgstr "Imprimir albarán"
 
 msgctxt "view:carrier.print.shipment.start:"
 msgid "Print label from carrier"
@@ -323,7 +383,7 @@ msgstr "Envía albaranes al transportista"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Print Shipment"
-msgstr "Imprimier albarán"
+msgstr "Imprimir albarán"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Send API Carrier"
@@ -332,6 +392,18 @@ msgstr "Enviar a la API del transportista"
 msgctxt "view:stock.shipment.out:"
 msgid "Send Shipment"
 msgstr "Enviar albarán"
+
+msgctxt "wizard_button:carrier.get.label,result,end:"
+msgid "Close"
+msgstr "Cerrar"
+
+msgctxt "wizard_button:carrier.get.label,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:carrier.get.label,start,get:"
+msgid "Get"
+msgstr "Obtener"
 
 msgctxt "wizard_button:carrier.manifest,result,end:"
 msgid "Cancel"
