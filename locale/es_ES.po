@@ -302,8 +302,8 @@ msgid "Send API Carrier"
 msgstr "Enviar a un transportista"
 
 msgctxt "model:ir.ui.menu,name:get_carrier_labels"
-msgid "Get Carrier Labels"
-msgstr "Obtener etiquetas de transportista"
+msgid "Carrier Labels"
+msgstr "Etiquetas de transportista"
 
 msgctxt "model:ir.ui.menu,name:menu_carrier_manifest"
 msgid "Manifest"
@@ -318,16 +318,8 @@ msgid "There are no labels to show."
 msgstr "No hay etiquetas que mostrar."
 
 msgctxt "view:carrier.get.label.start:"
-msgid "Download labels from the API carrier"
-msgstr "Descarga etiquetas desde la API del transportista"
-
-msgctxt "view:carrier.get.label.start:"
 msgid "Get labels from carrier"
 msgstr "Obtener etiquetas de transportista"
-
-msgctxt "view:carrier.get.label.start:"
-msgid "Print Shipment"
-msgstr "Imprimir albarán"
 
 msgctxt "view:carrier.manifest.start:"
 msgid "Manifest"

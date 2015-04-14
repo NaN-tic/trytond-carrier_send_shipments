@@ -237,7 +237,7 @@ msgstr "Introduïu codis d'enviaments separats per comes."
 
 msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
 msgid ""
-msgstr ""
+msgstr " "
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
@@ -300,8 +300,8 @@ msgid "Send API Carrier"
 msgstr "Envia a un transportista"
 
 msgctxt "model:ir.ui.menu,name:get_carrier_labels"
-msgid "Get Carrier Labels"
-msgstr "Obté etiquetes de transportista"
+msgid "Carrier Labels"
+msgstr "Etiquetes de transportista"
 
 msgctxt "model:ir.ui.menu,name:menu_carrier_manifest"
 msgid "Manifest"
@@ -316,16 +316,8 @@ msgid "There are no labels to show."
 msgstr "No hi han etiquetes per mostrar."
 
 msgctxt "view:carrier.get.label.start:"
-msgid "Download labels from the API carrier"
-msgstr "Descarrega etiquetes des de l'API del transportista"
-
-msgctxt "view:carrier.get.label.start:"
 msgid "Get labels from carrier"
 msgstr "Obté etiquetes de transportista"
-
-msgctxt "view:carrier.get.label.start:"
-msgid "Print Shipment"
-msgstr "Impressió d'enviament"
 
 msgctxt "view:carrier.manifest.start:"
 msgid "Manifest"
