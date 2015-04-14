@@ -1,12 +1,8 @@
 <!-- The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
-<form string="Print Shipment">
-    <separator string="Get labels from carrier" id="get_labels_title" colspan="4"/>
-    <newline/>
-    <label string="Download labels from the API carrier" id="get_labels_subtitle"/>
-    <newline/>
+<form string="Get labels from carrier">
     <label name="codes"/>
-    <field name="codes" colspan="3"/>
+    <field name="codes"/>
     <label name="carrier_api"/>
-    <field name="carrier_api" colspan="3"/>
+    <field name="carrier_api" widget="selection"/>
 </form>

@@ -97,13 +97,9 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="name">Get Labels</field>
             <field name="wiz_name">carrier.get.label</field>
         </record>
-<!--         <record model="ir.action.keyword" id="carrier_get_label_keyword"> -->
-<!--             <field name="keyword">form_action</field> -->
-<!--             <field name="model">stock.shipment.out,-1</field> -->
-<!--             <field name="action" ref="wizard_carrier_get_label"/> -->
-<!--         </record> -->
+
         <menuitem
-            name="Get Carrier Labels"
+            name="Carrier Labels"
             id="get_carrier_labels"
             parent="stock.menu_stock"
             action="wizard_carrier_get_label"/>
