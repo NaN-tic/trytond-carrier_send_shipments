@@ -3,6 +3,4 @@ copyright notices and license terms. -->
 <form string="Get labels from carrier">
     <label name="codes"/>
     <field name="codes"/>
-    <label name="carrier_api"/>
-    <field name="carrier_api" widget="selection"/>
 </form>

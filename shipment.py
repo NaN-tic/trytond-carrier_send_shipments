@@ -521,12 +521,7 @@ class CarrierGetLabelStart(ModelView):
     'Carrier Get Label Start'
     __name__ = 'carrier.get.label.start'
     codes = fields.Char('Codes', required=True,
-        help='Introduce codes of shipments separated by commas.')
-    carrier_api = fields.Many2One('carrier.api', 'Carrier API', required=True)
-
-    @staticmethod
-    def default_shipments():
-        return Transaction().context['active_ids']
+        help='Introduce codes or tracking reference of shipments separated by commas.')
 
 
 class CarrierGetLabelResult(ModelView):
@@ -557,32 +552,55 @@ class CarrierGetLabel(Wizard):
         pool = Pool()
         Attachment = pool.get('ir.attachment')
         Shipment = pool.get('stock.shipment.out')
+        API = pool.get('carrier.api')
 
         codes = [l.strip() for l in self.start.codes.split(',')]
         shipments = Shipment.search([
-                ('code', 'in', codes)
-                ])
+                ('state', 'in', _SHIPMENT_STATES),
+                ['OR',
+                    ('code', 'in', codes),
+                    ('carrier_tracking_ref', 'in', codes),
+                ]])
 
         if not shipments:
             return 'result'
 
-        carrier_api = self.start.carrier_api
-        print_label = getattr(Shipment, 'print_labels_%s' % carrier_api.method)
-        labels = print_label(carrier_api, shipments)
+        apis = {}
+        for shipment in shipments:
+            if not shipment.carrier:
+                continue
+            carrier_apis = API.search([('carriers', 'in', [shipment.carrier.id])],
+                limit=1)
+            if not carrier_apis:
+                continue
+            api, = carrier_apis
+
+            if apis.get(api.method):
+                shipments = apis.get(api.method)
+                shipments.append(shipment)
+            else:
+                shipments = [shipment]
+            apis[api.method] = shipments
 
         attachments = []
-        if labels and len(labels) == len(shipments):
+        for method, shipments in apis.iteritems():
+            api, = API.search([('method', '=', method)],
+                limit=1)
+            print_label = getattr(Shipment, 'print_labels_%s' % method)
+            labels = print_label(api, shipments)
+
             for label, shipment in zip(labels, shipments):
                 attach = {
                     'name': datetime.now().strftime("%y/%m/%d %H:%M:%S"),
                     'type': 'data',
                     'data': buffer(open(label, "rb").read()),
-                    'description': 'Gotten by Carrier Get Label Wizard',
-                    'resource': str(shipment)
+                    'description': '%s - %s' % (shipment.code, method),
+                    'resource': '%s' % str(shipment),
                     }
-                attachments.append(attach)
-            attachments = Attachment.create(attachments)
 
+                attachments.append(attach)
+                
+        attachments = Attachment.create(attachments)
         self.result.attachments = attachments
 
         return 'result'
