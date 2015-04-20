@@ -99,10 +99,6 @@ msgctxt "field:carrier.get.label.result,id:"
 msgid "ID"
 msgstr "ID"
 
-msgctxt "field:carrier.get.label.start,carrier_api:"
-msgid "Carrier API"
-msgstr "API transportista"
-
 msgctxt "field:carrier.get.label.start,codes:"
 msgid "Codes"
 msgstr "Codis"
@@ -232,8 +228,9 @@ msgid "Carrier Domain"
 msgstr "Domini transportista"
 
 msgctxt "help:carrier.get.label.start,codes:"
-msgid "Introduce codes of shipments separated by commas."
-msgstr "Introduïu codis d'enviaments separats per comes."
+msgid ""
+"Introduce codes or tracking reference of shipments separated by commas."
+msgstr "Introduïu codis o referencies d'enviaments separats per comes."
 
 msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
 msgid ""
