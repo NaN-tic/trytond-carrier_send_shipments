@@ -5,10 +5,6 @@ from datetime import datetime, time
 from dateutil.relativedelta import relativedelta
 from trytond.model import ModelView, fields
 from trytond.wizard import Button, StateTransition, StateView, Wizard
-from trytond.transaction import Transaction
-from trytond.pool import Pool
-import logging
-import tempfile
 
 __all__ = ['CarrierManifestStart', 'CarrierEnterManifest', 'CarrierManifest']
 
@@ -66,26 +62,13 @@ class CarrierManifest(Wizard):
             }
 
     def transition_manifest(self):
-        Date = Pool().get('ir.date')
-
         api = self.start.carrier_api
         from_date = self.start.from_date
         to_date = self.start.to_date
-        dbname = Transaction().cursor.dbname
 
-        get_manifest = getattr(self, 'get_manifest_' + api.method, False)
-        if not get_manifest:
-            self.raise_user_error('not_manifest', api.method)
-        manifest_file = get_manifest(api, from_date, to_date)
+        get_manifest = getattr(self, 'get_manifest_' + api.method)
+        manifiest, file_name = get_manifest(api, from_date, to_date)
 
-        with tempfile.NamedTemporaryFile(
-                prefix='%s-manifest-%s-' % (dbname, api.method),
-                suffix='.pdf', delete=False) as temp:
-            temp.write(manifest_file)
-        temp.close()
-        logging.getLogger('Carrier').info(
-            'Generated manifest file %s' % (temp.name))
-
-        self.result.manifest = buffer(open(temp.name, "rb").read())
-        self.result.file_name = temp.name.split('/')[2]
+        self.result.manifest = buffer(manifiest)
+        self.result.file_name = file_name
         return 'result'
