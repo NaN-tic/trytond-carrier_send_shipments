@@ -343,6 +343,13 @@ msgid "Print label from carrier"
 msgstr "Imprime etiqueta del transportista"
 
 msgctxt "view:carrier.result.manifest:"
+msgid ""
+"API carrier return a empty file. Try again or contact to carrier suport."
+msgstr ""
+"El fichero del servicio web de la API del transportista está vacio. Vuelve a"
+" probar otra vez o contacte con el servicio de soporte del transportista."
+
+msgctxt "view:carrier.result.manifest:"
 msgid "Manifest"
 msgstr "Manifiesto"
 
@@ -404,7 +411,7 @@ msgstr "Cancelar"
 
 msgctxt "wizard_button:carrier.manifest,start,manifest:"
 msgid "Get Manifest"
-msgstr "Descargar Manifiesto"
+msgstr "Descargar manifiesto"
 
 msgctxt "wizard_button:carrier.print.shipment,result,end:"
 msgid "Close"

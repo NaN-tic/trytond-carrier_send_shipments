@@ -341,6 +341,13 @@ msgid "Print label from carrier"
 msgstr "Imprimeix etiqueta del transportista"
 
 msgctxt "view:carrier.result.manifest:"
+msgid ""
+"API carrier return a empty file. Try again or contact to carrier suport."
+msgstr ""
+"El fitxer del servei web de la API del trasnportista es troba buit. Torni a "
+"intentar o contacti amb el centre de suport del transportista."
+
+msgctxt "view:carrier.result.manifest:"
 msgid "Manifest"
 msgstr "Manifest"
 
