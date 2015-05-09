@@ -61,6 +61,12 @@ class ShipmentOut:
                 cls.carrier_cashondelivery_total.depends):
             cls.carrier_cashondelivery_total.depends.append(
                 'cost_currency_digits')
+        cls._error_messages.update({
+            'not_carrier': 'Shipment "%(name)s" not have carrier',
+            'not_carrier_api': 'Carrier "%(name)s" not have API',
+            'shipmnet_delivery_address': 'Shipment "%(name)s" not have address details: '
+                'street, zip, city or country.',
+            })
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
@@ -91,13 +97,13 @@ class ShipmentOut:
     @classmethod
     @ModelView.button_action('carrier_send_shipments.'
         'wizard_carrier_send_shipments')
-    def wizard_carrier_send_shipments(cls, sales):
+    def wizard_carrier_send_shipments(cls, shipments):
         pass
 
     @classmethod
     @ModelView.button_action('carrier_send_shipments.'
         'wizard_carrier_print_shipment')
-    def wizard_carrier_print_shipment(cls, sales):
+    def wizard_carrier_print_shipment(cls, shipments):
         pass
 
     @classmethod
@@ -142,6 +148,63 @@ class ShipmentOut:
     @staticmethod
     def get_carrier_date():
         return datetime.now()
+
+    @classmethod
+    def send_shipment_api(cls, shipment):
+        '''Send Shipmemt to carrier API'''
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.out')
+        API = pool.get('carrier.api')
+        Config = pool.get('stock.configuration')
+        Attachment = pool.get('ir.attachment')
+
+        config_stock = Config(1)
+        attach_label = config_stock.attach_label
+
+        if not shipment.carrier:
+            message = cls.raise_user_error('not_carrier', {
+                    'name': shipment.rec_name,
+                    }, raise_exception=False)
+            refs = []
+            labs = []
+            errs = [message]
+            return refs, labs, errs
+
+        apis = API.search([('carriers', 'in', [shipment.carrier.id])],
+            limit=1)
+        if not apis:
+            message = cls.raise_user_error('not_carrier_api', {
+                    'name': shipment.carrier.rec_name,
+                    }, raise_exception=False)
+            logging.getLogger('carrier_send_shipments').warning(message)
+            refs = []
+            labs = []
+            errs = [message]
+            return refs, labs, errs
+
+        api, = apis
+
+        if not shipment.delivery_address.street or not shipment.delivery_address.zip \
+                or not shipment.delivery_address.city or not shipment.delivery_address.country:
+            message = cls.raise_user_error('shipmnet_delivery_address', {
+                        'name': shipment.rec_name,
+                        }, raise_exception=False)
+            logging.getLogger('carrier_send_shipments').warning(message)
+            refs = []
+            labs = []
+            errs = [message]
+        else:
+            send_shipment = getattr(Shipment, 'send_%s' % api.method)
+            refs, labs, errs = send_shipment(api, [shipment])
+
+            if attach_label and labs:
+                attach = Attachment(
+                    name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                    type='data',
+                    data=buffer(open(labs[0], "rb").read()),
+                    resource=str(shipment))
+                attach.save()
+        return refs, labs, errs
 
 
 class CarrierSendShipmentsStart(ModelView):
@@ -194,19 +257,11 @@ class CarrierSendShipments(Wizard):
                 'send %(methods)s. Select shipment grouped by carrier',
             'shipment_zip': 'Shipment "%(code)s" not available to send zip '
                 '"%(zip)s"',
-            'shipmnet_deliver_address': 'Shipment %(code)s not have address details: '
-                'street, zip, city or country.',
-        })
+            })
 
     def transition_send(self):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
-        API = pool.get('carrier.api')
-        Attachment = pool.get('ir.attachment')
-        Config = pool.get('stock.configuration')
-
-        config_stock = Config(1)
-        attach_label = config_stock.attach_label
 
         dbname = Transaction().cursor.dbname
         references = []
@@ -217,34 +272,7 @@ class CarrierSendShipments(Wizard):
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
         for shipment in shipments:
-            apis = API.search([('carriers', 'in', [shipment.carrier.id])],
-                limit=1)
-            if not apis:
-                message = 'Carrier %s not have API' % shipment.carrier.rec_name
-                logging.getLogger('carrier_send_shipments').warning(message)
-                continue
-            api, = apis
-
-            if not shipment.delivery_address.street or not shipment.delivery_address.zip \
-                    or not shipment.delivery_address.city or not shipment.delivery_address.country:
-                message = self.raise_user_error('shipmnet_deliver_address', {
-                            'code': shipment.code,
-                            }, raise_exception=False)
-                logging.getLogger('carrier_send_shipments').warning(message)
-                refs = []
-                labs = []
-                errs = [message]
-            else:
-                send_shipment = getattr(Shipment, 'send_%s' % api.method)
-                refs, labs, errs = send_shipment(api, [shipment])
-
-                if attach_label and labs:
-                    attach = Attachment(
-                        name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
-                        type='data',
-                        data=buffer(open(labs[0], "rb").read()),
-                        resource=str(shipment))
-                    attach.save()
+            refs, labs, errs = Shipment.send_shipment_api(shipment)
 
             references += refs
             labels += labs
