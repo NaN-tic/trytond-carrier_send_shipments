@@ -55,13 +55,6 @@ msgid "Shipment \"%(code)s\" not available to send zip \"%(zip)s\""
 msgstr "El envío \"%(code)s\" no se puede enviar a este código postal \"%(zip)s\""
 
 msgctxt "error:carrier.send.shipments:"
-msgid ""
-"Shipment %(code)s not have address details: street, zip, city or country."
-msgstr ""
-"El albarán %(code)s no dispone en la dirección: calle, código postal, ciudad"
-" o país."
-
-msgctxt "error:carrier.send.shipments:"
 msgid "Shipment (%(shipment)s) was sended"
 msgstr "El envío (%(shipment)s) ya se ha enviado anteriormente"
 
@@ -92,6 +85,18 @@ msgid ""
 msgstr ""
 "Ha seleccionado diferentes tipos de envío %(methods)s. Selecciona los "
 "albaranes por transportista."
+
+msgctxt "error:stock.shipment.out:"
+msgid "Carrier \"%(name)s\" not have API"
+msgstr "El transportista \"%(name)s\" no dispone de API."
+
+msgctxt "error:stock.shipment.out:"
+msgid ""
+"Shipment \"%(name)s\" not have address details: street, zip, city or "
+"country."
+msgstr ""
+"El albarán \"%(name)s\" no dispone en la dirección de envío los campos: "
+"calle, código postal, ciudad o país."
 
 msgctxt "field:carrier.get.label.result,attachments:"
 msgid "Attachments"
