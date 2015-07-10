@@ -4,7 +4,7 @@
 # the full copyright notices and license terms.
 import unicodedata
 
-SRC_CHARS = u"""'"()/*-+?¿!&$[]{}@#`'^:;<>=~%,|\\ºª"""
+SRC_CHARS = u"""'"()/*+?¿!&$[]{}@#`'^:;<>=~%,|\\ºª"""
 
 
 def unaccent(text):
