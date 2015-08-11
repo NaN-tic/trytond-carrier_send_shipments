@@ -18,7 +18,9 @@ __all__ = ['Configuration', 'ShipmentOut', 'CarrierSendShipmentsStart',
     'CarrierPrintShipment', 'CarrierGetLabelStart', 'CarrierGetLabelResult',
     'CarrierGetLabel']
 __metaclass__ = PoolMeta
+
 _SHIPMENT_STATES = ['packed', 'done']
+logger = logging.getLogger(__name__)
 
 
 class Configuration:
@@ -176,7 +178,7 @@ class ShipmentOut:
             message = cls.raise_user_error('not_carrier_api', {
                     'name': shipment.carrier.rec_name,
                     }, raise_exception=False)
-            logging.getLogger('carrier_send_shipments').warning(message)
+            logger.warning(message)
             refs = []
             labs = []
             errs = [message]
@@ -189,7 +191,7 @@ class ShipmentOut:
             message = cls.raise_user_error('shipmnet_delivery_address', {
                         'name': shipment.rec_name,
                         }, raise_exception=False)
-            logging.getLogger('carrier_send_shipments').warning(message)
+            logger.warning(message)
             refs = []
             labs = []
             errs = [message]
