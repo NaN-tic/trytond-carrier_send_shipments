@@ -203,7 +203,7 @@ class ShipmentOut:
                 attach = Attachment(
                     name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
                     type='data',
-                    data=buffer(open(labs[0], "rb").read()),
+                    data=fields.Binary.cast(open(labs[0], "rb").read()),
                     resource=str(shipment))
                 attach.save()
         return refs, labs, errs
@@ -289,7 +289,7 @@ class CarrierSendShipments(Wizard):
         #  Save file label in labels field
         if len(labels) == 1:  # A label generate simple file
             label, = labels
-            carrier_labels = buffer(open(label, "rb").read())
+            carrier_labels = fields.Binary.cast(open(label, "rb").read())
             file_name = label.split('/')[2]
         elif len(labels) > 1:  # Multiple labels generate tgz
             temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
@@ -299,7 +299,7 @@ class CarrierSendShipments(Wizard):
                 for path_label in labels:
                     tar.add(path_label)
             tar.close()
-            carrier_labels = buffer(open(temp.name, "rb").read())
+            carrier_labels = fields.Binary.cast(open(temp.name, "rb").read())
             file_name = '%s.tgz' % temp.name.split('/')[2]
         else:
             carrier_labels = None
@@ -517,7 +517,7 @@ class CarrierPrintShipment(Wizard):
                 attach = Attachment(
                     name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
                     type='data',
-                    data=buffer(open(labs[0], "rb").read()),
+                    data=fields.Binary.cast(open(labs[0], "rb").read()),
                     resource=str(shipment))
                 attach.save()
 
@@ -526,7 +526,7 @@ class CarrierPrintShipment(Wizard):
         #  Save file label in labels field
         if len(labels) == 1:  # A label generate simple file
             label, = labels
-            carrier_labels = buffer(open(label, "rb").read())
+            carrier_labels = fields.Binary.cast(open(label, "rb").read())
             file_name = label.split('/')[2]
         elif len(labels) > 1:  # Multiple labels generate tgz
             temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
@@ -536,7 +536,7 @@ class CarrierPrintShipment(Wizard):
                 for path_label in labels:
                     tar.add(path_label)
             tar.close()
-            carrier_labels = buffer(open(temp.name, "rb").read())
+            carrier_labels = fields.Binary.cast(open(temp.name, "rb").read())
             file_name = '%s.tgz' % temp.name.split('/')[2]
         else:
             carrier_labels = None
@@ -623,7 +623,7 @@ class CarrierGetLabel(Wizard):
                 attach = {
                     'name': datetime.now().strftime("%y/%m/%d %H:%M:%S"),
                     'type': 'data',
-                    'data': buffer(open(label, "rb").read()),
+                    'data': fields.Binary.cast(open(label, "rb").read()),
                     'description': '%s - %s' % (shipment.code, method),
                     'resource': '%s' % str(shipment),
                     }
