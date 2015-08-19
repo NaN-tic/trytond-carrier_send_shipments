@@ -1,10 +1,5 @@
 <!-- The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <form string="Print Shipment">
-    <label
-        string="There are no labels to show."
-        id="no_labels_to_show"
-        yalign="0.0" xalign="0.0" xexpand="1"
-        states="{'invisible': Bool(Eval('attachments'))}"/>
     <field name="attachments"/>
 </form>

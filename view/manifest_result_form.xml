@@ -3,11 +3,6 @@
 The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
 <form string="Manifest">
-    <label
-        string="API carrier return a empty file. Try again or contact to carrier suport."
-        id="no_manifest"
-        yalign="0.0" xalign="0.0" xexpand="1"
-        states="{'invisible': Bool(Eval('manifest'))}"/>
     <label name="manifest"/>
     <field name="manifest"/>
     <field name="file_name" invisible="1"/>
