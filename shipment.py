@@ -92,9 +92,8 @@ class ShipmentOut:
         return carrier_api_services
 
     def on_change_carrier(self):
-        changes = super(ShipmentOut, self).on_change_carrier()
-        changes['carrier_service'] = None
-        return changes
+        super(ShipmentOut, self).on_change_carrier()
+        self.carrier_service = None
 
     @classmethod
     @ModelView.button_action('carrier_send_shipments.'
