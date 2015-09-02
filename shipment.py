@@ -81,6 +81,9 @@ class ShipmentOut:
                     },
                 })
 
+    def _comment2txt(self, comment):
+        return comment.replace('\n', '. ').replace('\r', '')
+
     def on_change_with_carrier_service_domain(self, name=None):
         ApiCarrier = Pool().get('carrier.api-carrier.carrier')
         carrier_api_services = []
@@ -90,6 +93,18 @@ class ShipmentOut:
             carrier_api_services = [service.id for api_carrier in api_carriers
                 for service in api_carrier.api.services]
         return carrier_api_services
+
+    def on_change_customer(self):
+        super(ShipmentOut, self).on_change_customer()
+
+        carrier_notes = None
+        if self.customer:
+            address = self.customer.address_get(type='delivery')
+            if address.comment_shipment:
+                carrier_notes = self._comment2txt(address.comment_shipment)
+            elif self.customer.comment_shipment:
+                carrier_notes = self._comment2txt(self.customer.comment_shipment)
+        self.carrier_notes = carrier_notes
 
     def on_change_carrier(self):
         super(ShipmentOut, self).on_change_carrier()
