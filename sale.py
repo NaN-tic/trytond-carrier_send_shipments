@@ -14,9 +14,20 @@ class Sale:
         shipments = super(Sale, self).create_shipment(shipment_type)
         if not shipments:
             return
-        service = self.carrier and self.carrier.service or False
-        if shipment_type == 'out' and service:
+
+        if shipment_type == 'out':
             for shipment in shipments:
-                shipment.carrier_service = service
-                shipment.save()
+                if self.carrier and self.carrier.service:
+                    shipment.carrier_service = self.carrier.service
+
+                address = shipment.customer.address_get(type='delivery')
+                if address.comment_shipment:
+                    shipment.carrier_notes = shipment._comment2txt(
+                            address.comment_shipment)
+                elif shipment.customer.comment_shipment:
+                    shipment.carrier_notes = shipment._comment2txt(
+                            shipment.customer.comment_shipment)
+                
+                if shipment.carrier_service or shipment.carrier_notes:
+                    shipment.save()
         return shipments
