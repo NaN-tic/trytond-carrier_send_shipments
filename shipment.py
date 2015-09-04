@@ -7,7 +7,7 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button, \
     StateAction
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
-from trytond.pyson import Bool, Eval, Not
+from trytond.pyson import Bool, Eval, Not, Equal
 import logging
 import tarfile
 import tempfile
@@ -40,17 +40,25 @@ class ShipmentOut:
             ('id', 'in', Eval('carrier_service_domain')),
             ],
         states={
+            'readonly': Equal(Eval('state'), 'done'),
             'invisible': ~Eval('carrier'),
             }, depends=['carrier', 'state', 'carrier_service_domain'])
     carrier_delivery = fields.Boolean('Delivered', readonly=True,
         states={
             'invisible': ~Eval('carrier'),
-            }, help='The package has been delivered')
+            },
+        help='The package has been delivered')
     carrier_printed = fields.Boolean('Printed', readonly=True,
         states={
             'invisible': ~Eval('carrier'),
-            }, help='Picking is already printed')
-    carrier_notes = fields.Char('Carrier Notes', help='Notes to add carrier')
+            },
+        help='Picking is already printed')
+    carrier_notes = fields.Char('Carrier Notes',
+        states={
+            'readonly': Equal(Eval('state'), 'done'),
+            'invisible': ~Eval('carrier'),
+            }, 
+        help='Add notes when send API shipment')
     carrier_send_employee = fields.Many2One('company.employee', 'Carrier Send Employee', readonly=True)
     carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
 
