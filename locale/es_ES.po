@@ -254,7 +254,7 @@ msgid "The package has been delivered"
 msgstr "El paquete ha sido enviado"
 
 msgctxt "help:stock.shipment.out,carrier_notes:"
-msgid "Notes to add carrier"
+msgid "Add notes when send API shipment"
 msgstr "Notas para añadir al transportista"
 
 msgctxt "help:stock.shipment.out,carrier_printed:"
@@ -321,10 +321,6 @@ msgctxt "view:carrier.get.label.result:"
 msgid "Print Shipment"
 msgstr "Imprimir albarán"
 
-msgctxt "view:carrier.get.label.result:"
-msgid "There are no labels to show."
-msgstr "No hay etiquetas que mostrar."
-
 msgctxt "view:carrier.get.label.start:"
 msgid "Get labels from carrier"
 msgstr "Obtener etiquetas de transportista"
@@ -352,13 +348,6 @@ msgstr "Imprimir albarán"
 msgctxt "view:carrier.print.shipment.start:"
 msgid "Print label from carrier"
 msgstr "Imprime etiqueta del transportista"
-
-msgctxt "view:carrier.result.manifest:"
-msgid ""
-"API carrier return a empty file. Try again or contact to carrier suport."
-msgstr ""
-"El fichero del servicio web de la API del transportista está vacio. Vuelve a"
-" probar otra vez o contacte con el servicio de soporte del transportista."
 
 msgctxt "view:carrier.result.manifest:"
 msgid "Manifest"

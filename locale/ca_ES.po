@@ -250,7 +250,7 @@ msgid "The package has been delivered"
 msgstr "El paquet ja s'ha enviat."
 
 msgctxt "help:stock.shipment.out,carrier_notes:"
-msgid "Notes to add carrier"
+msgid "Add notes when send API shipment"
 msgstr "Notes per afegir al transpostista."
 
 msgctxt "help:stock.shipment.out,carrier_printed:"
@@ -317,10 +317,6 @@ msgctxt "view:carrier.get.label.result:"
 msgid "Print Shipment"
 msgstr "Impressió d'enviament"
 
-msgctxt "view:carrier.get.label.result:"
-msgid "There are no labels to show."
-msgstr "No hi han etiquetes per mostrar."
-
 msgctxt "view:carrier.get.label.start:"
 msgid "Get labels from carrier"
 msgstr "Obté etiquetes de transportista"
@@ -348,13 +344,6 @@ msgstr "Impressió d'enviament"
 msgctxt "view:carrier.print.shipment.start:"
 msgid "Print label from carrier"
 msgstr "Imprimeix etiqueta del transportista"
-
-msgctxt "view:carrier.result.manifest:"
-msgid ""
-"API carrier return a empty file. Try again or contact to carrier suport."
-msgstr ""
-"El fitxer del servei web de la API del trasnportista es troba buit. Torni a "
-"intentar o contacti amb el centre de suport del transportista."
 
 msgctxt "view:carrier.result.manifest:"
 msgid "Manifest"
