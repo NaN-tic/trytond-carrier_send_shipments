@@ -243,7 +243,7 @@ msgstr "Introduïu codis o referencies d'enviaments separats per comes."
 
 msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
 msgid ""
-msgstr " "
+msgstr ""
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
