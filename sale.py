@@ -15,7 +15,7 @@ class Sale:
 
         shipments = super(Sale, self).create_shipment(shipment_type)
         if not shipments:
-            return shipments
+            return
 
         if shipment_type == 'out':
             to_save = []
