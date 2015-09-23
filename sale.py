@@ -14,10 +14,11 @@ class Sale:
         ShipmentOut = Pool().get('stock.shipment.out')
 
         shipments = super(Sale, self).create_shipment(shipment_type)
+        if not shipments:
+            return shipments
 
         if shipment_type == 'out':
             to_save = []
-
             for shipment in shipments:
                 if self.carrier and self.carrier.service:
                     shipment.carrier_service = self.carrier.service
