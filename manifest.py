@@ -69,7 +69,7 @@ class CarrierManifest(Wizard):
         get_manifest = getattr(self, 'get_manifest_' + api.method)
         manifest_file = get_manifest(api, from_date, to_date) #return a tuple
 
-        self.result.manifest = buffer(manifest_file[0]) if manifest_file else None
+        self.result.manifest = bytearray(manifest_file[0]) if manifest_file else None
         self.result.file_name = manifest_file[1] if manifest_file else None
             
         return 'result'
