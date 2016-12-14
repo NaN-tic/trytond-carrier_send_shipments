@@ -303,7 +303,7 @@ class CarrierSendShipments(Wizard):
                 errors += errs
 
             #  Save results in info and labels fields
-            info = self.raise_user_error('shipment_info', {
+            info = u'%s' % self.raise_user_error('shipment_info', {
                     'references': ', '.join(references) if references else '',
                     'errors': ', '.join(errors) if errors else '',
                     }, raise_exception=False)
