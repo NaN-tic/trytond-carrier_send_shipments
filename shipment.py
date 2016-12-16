@@ -151,13 +151,20 @@ class ShipmentOut:
         return price_ondelivery
 
     @staticmethod
-    def get_phone_shipment_out(shipment):
+    def get_phone_shipment_out(shipment, phone=True):
         '''Get default phone from shipment out'''
+        if phone:
+            if shipment.delivery_address.phone:
+                return shipment.delivery_address.phone
+            if shipment.customer.phone:
+                return shipment.customer.phone
+            return shipment.company.party.phone \
+                if shipment.company.party.phone else ''
         if shipment.delivery_address.mobile:
             return shipment.delivery_address.mobile
-        if shipment.delivery_address.phone:
-            return shipment.delivery_address.phone
-        return shipment.company.party.phone if shipment.company.party.phone else ''
+        if shipment.customer.mobile:
+            return shipment.customer.mobile
+        return ''
 
     @staticmethod
     def get_carrier_employee():
