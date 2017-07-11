@@ -9,21 +9,21 @@ from . import manifest
 
 def register():
     Pool.register(
-        Configuration,
-        ShipmentOut,
-        CarrierSendShipmentsStart,
-        CarrierSendShipmentsResult,
-        CarrierPrintShipmentStart,
-        CarrierPrintShipmentResult,
-        Sale,
-        CarrierManifestStart,
-        CarrierEnterManifest,
-        CarrierGetLabelStart,
-        CarrierGetLabelResult,
+        shipment.Configuration,
+        shipment.ShipmentOut,
+        shipment.CarrierSendShipmentsStart,
+        shipment.CarrierSendShipmentsResult,
+        shipment.CarrierPrintShipmentStart,
+        shipment.CarrierPrintShipmentResult,
+        sale.Sale,
+        manifest.CarrierManifestStart,
+        manifest.CarrierEnterManifest,
+        shipment.CarrierGetLabelStart,
+        shipment.CarrierGetLabelResult,
         module='carrier_send_shipments', type_='model')
     Pool.register(
-        CarrierSendShipments,
-        CarrierPrintShipment,
-        CarrierManifest,
-        CarrierGetLabel,
+        shipment.CarrierSendShipments,
+        shipment.CarrierPrintShipment,
+        manifest.CarrierManifest,
+        shipment.CarrierGetLabel,
         module='carrier_send_shipments', type_='wizard')
