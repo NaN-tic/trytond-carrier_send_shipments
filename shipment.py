@@ -17,19 +17,18 @@ __all__ = ['Configuration', 'ShipmentOut', 'CarrierSendShipmentsStart',
     'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
     'CarrierPrintShipment', 'CarrierGetLabelStart', 'CarrierGetLabelResult',
     'CarrierGetLabel']
+__metaclass__ = PoolMeta
 
 _SHIPMENT_STATES = ['packed', 'done']
 logger = logging.getLogger(__name__)
 
 
 class Configuration:
-    __metaclass__ = PoolMeta
     __name__ = 'stock.configuration'
     attach_label = fields.Boolean('Attach Label')
 
 
 class ShipmentOut:
-    __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.out'
     carrier_service_domain = fields.Function(fields.One2Many(
             'carrier.api.service', None, 'Carrier Domain',
@@ -58,7 +57,7 @@ class ShipmentOut:
         states={
             'readonly': Equal(Eval('state'), 'done'),
             'invisible': ~Eval('carrier'),
-            }, 
+            },
         help='Add notes when send API shipment')
     carrier_send_employee = fields.Many2One('company.employee', 'Carrier Send Employee', readonly=True)
     carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
@@ -152,13 +151,20 @@ class ShipmentOut:
         return price_ondelivery
 
     @staticmethod
-    def get_phone_shipment_out(shipment):
+    def get_phone_shipment_out(shipment, phone=True):
         '''Get default phone from shipment out'''
+        if phone:
+            if shipment.delivery_address.phone:
+                return shipment.delivery_address.phone
+            if shipment.customer.phone:
+                return shipment.customer.phone
+            return shipment.company.party.phone \
+                if shipment.company.party.phone else ''
         if shipment.delivery_address.mobile:
             return shipment.delivery_address.mobile
-        if shipment.delivery_address.phone:
-            return shipment.delivery_address.phone
-        return shipment.company.party.phone if shipment.company.party.phone else ''
+        if shipment.customer.mobile:
+            return shipment.customer.mobile
+        return ''
 
     @staticmethod
     def get_carrier_employee():
@@ -238,10 +244,6 @@ class CarrierSendShipmentsStart(ModelView):
     shipments = fields.Many2Many('stock.shipment.out', None, None,
         'Shipments', readonly=True)
 
-    @staticmethod
-    def default_shipments():
-        return Transaction().context['active_ids']
-
 
 class CarrierSendShipmentsResult(ModelView):
     'Carrier Send Shipments Result'
@@ -271,62 +273,65 @@ class CarrierSendShipments(Wizard):
     def __setup__(cls):
         super(CarrierSendShipments, cls).__setup__()
         cls._error_messages.update({
-            'shipment_state': 'Shipment ID (%(shipment)s) not state '
-                '"%(state)s"',
-            'shipment_sended': 'Shipment (%(shipment)s) was sended',
+            'shipment_state': 'Shipment "%(shipment)s" state is "%(state)s".'
+                'Can not delivery with this state.',
+            'shipment_sended': 'Shipment "%(shipment)s" was sended. '
+                'Can not delivery again.',
             'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
-            'carrier_api': 'Not available method API in carrier "%(carrier)s"',
+            'add_carrier_api': 'Not found an API in carrier "%(carrier)s"',
             'shipment_info':
                 'Successfully:\n%(references)s\n\nErrors:\n%(errors)s',
             'shipment_different_carrier': 'You select different shipments to '
                 'send %(methods)s. Select shipment grouped by carrier',
-            'shipment_zip': 'Shipment "%(code)s" not available to send zip '
+            'shipment_zip': 'Not available "%(code)s" to delivery at zip: '
                 '"%(zip)s"',
             })
 
     def transition_send(self):
-        pool = Pool()
-        Shipment = pool.get('stock.shipment.out')
+        Shipment = Pool().get('stock.shipment.out')
 
         dbname = Transaction().database.name
+        context = Transaction().context
+
+        info = None
+        carrier_labels = None
+        file_name = None
         references = []
         labels = []
         errors = []
 
-        shipments = Shipment.search([
-                ('id', 'in', Transaction().context['active_ids']),
-                ])
-        for shipment in shipments:
-            refs, labs, errs = Shipment.send_shipment_api(shipment)
+        active_ids = context.get('active_ids')
+        if active_ids:
+            for shipment in Shipment.browse(active_ids):
+                refs, labs, errs = Shipment.send_shipment_api(shipment)
 
-            references += refs
-            labels += labs
-            errors += errs
+                references += refs
+                labels += labs
+                errors += errs
 
-        #  Save results in info and labels fields
-        self.result.info = self.raise_user_error('shipment_info', {
-                'references': ', '.join(references) if references else '',
-                'errors': ', '.join(errors) if errors else '',
-                }, raise_exception=False)
+            #  Save results in info and labels fields
+            info = u'%s' % self.raise_user_error('shipment_info', {
+                    'references': ', '.join(references) if references else '',
+                    'errors': ', '.join(errors) if errors else '',
+                    }, raise_exception=False)
 
-        #  Save file label in labels field
-        if len(labels) == 1:  # A label generate simple file
-            label, = labels
-            carrier_labels = fields.Binary.cast(open(label, "rb").read())
-            file_name = label.split('/')[2]
-        elif len(labels) > 1:  # Multiple labels generate tgz
-            temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
-                delete=False)
-            temp.close()
-            with tarfile.open(temp.name, "w:gz") as tar:
-                for path_label in labels:
-                    tar.add(path_label)
-            tar.close()
-            carrier_labels = fields.Binary.cast(open(temp.name, "rb").read())
-            file_name = '%s.tgz' % temp.name.split('/')[2]
-        else:
-            carrier_labels = None
-            file_name = None
+            #  Save file label in labels field
+            if len(labels) == 1:  # A label generate simple file
+                label, = labels
+                carrier_labels = fields.Binary.cast(open(label, "rb").read())
+                file_name = label.split('/')[2]
+            elif len(labels) > 1:  # Multiple labels generate tgz
+                temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
+                    delete=False)
+                temp.close()
+                with tarfile.open(temp.name, "w:gz") as tar:
+                    for path_label in labels:
+                        tar.add(path_label)
+                tar.close()
+                carrier_labels = fields.Binary.cast(open(temp.name, "rb").read())
+                file_name = '%s.tgz' % temp.name.split('/')[2]
+
+        self.result.info = info
         self.result.labels = carrier_labels
         self.result.file_name = file_name
 
@@ -334,57 +339,42 @@ class CarrierSendShipments(Wizard):
 
     def default_start(self, fields):
         Shipment = Pool().get('stock.shipment.out')
-        API = Pool().get('carrier.api')
 
-        methods = []
-        default = {}
+        context = Transaction().context
 
-        shipments = Shipment.search([
-                ('id', 'in', Transaction().context['active_ids']),
-                ])
-        for shipment in shipments:
-            if not shipment.state in _SHIPMENT_STATES:
-                self.raise_user_error('shipment_state', {
-                        'shipment': shipment.id,
+        active_ids = context.get('active_ids')
+        if active_ids:
+            # validate some shipment data before to send carrier API
+            for shipment in Shipment.browse(active_ids):
+                if not shipment.state in _SHIPMENT_STATES:
+                    self.raise_user_error('shipment_state', {
+                        'shipment': shipment.code,
                         'state': ', '.join(_SHIPMENT_STATES)
                         })
-            if not shipment.carrier:
-                self.raise_user_error('add_carrier', {
+                if not shipment.carrier:
+                    self.raise_user_error('add_carrier', {
                         'shipment': shipment.code,
                         })
-            if shipment.carrier_tracking_ref:
-                self.raise_user_error('shipment_sended', {
+                if shipment.carrier_tracking_ref:
+                    self.raise_user_error('shipment_sended', {
                         'shipment': shipment.code,
                         })
-            carrier = shipment.carrier.rec_name
-            apis = API.search([('carriers', 'in', [shipment.carrier.id])],
-                limit=1)
-            if not apis:
-                self.raise_user_error('carrier_api', {
-                        'carrier': carrier,
+                if not shipment.carrier.apis:
+                    self.raise_user_error('add_carrier_api', {
+                        'carrier': shipment.carrier.rec_name,
                         })
-            api = apis[0]
+                api, = shipment.carrier.apis
+                if api.zips:
+                    zips = api.zips.split(',')
+                    if (shipment.delivery_address.zip
+                            and shipment.delivery_address.zip in zips):
+                        self.raise_user_error('shipment_zip', {
+                                'code': shipment.code,
+                                'zip': shipment.delivery_address.zip,
+                                })
 
-            if api.zips:
-                zips = api.zips.split(',')
-                if (shipment.delivery_address.zip
-                        and shipment.delivery_address.zip in zips):
-                    self.raise_user_error('shipment_zip', {
-                            'code': shipment.code,
-                            'zip': shipment.delivery_address.zip,
-                            })
-
-            if not api.method in methods:
-                methods.append(api.method)
-
-        if len(methods) > 1:
-            self.raise_user_error('shipment_different_carrier', {
-                    'methods': ', '.join(methods),
-                    })
-
-        default['carrier'] = shipment.carrier.id
-        if api.default_service:
-            default['service'] = api.default_service.id
+        default = {}
+        default['shipments'] = active_ids
         return default
 
     def default_result(self, fields):
@@ -435,73 +425,26 @@ class CarrierPrintShipment(Wizard):
     def __setup__(cls):
         super(CarrierPrintShipment, cls).__setup__()
         cls._error_messages.update({
-            'shipment_state_mismatch': 'The shipment %(shipment)s is not in '
-                'any of these states "%(state)s".',
-            'no_carrier_assigned': 'The shipment "%(shipment)s" has not any '
-                'carrier assigned. Please, select one carrier before trying '
-                'to print the label.',
-            'shipment_already_sent': 'The shipment (%(shipment)s) is already '
-                'sent.',
-            'carrier_without_api': 'The carrier "%(carrier)s" has not any '
-                'API method available.',
-            'shipment_zip_unavailable': 'The zip "%(zip)s" of the shipment '
-                '"%(shipment)s" is not available for this carrier.',
-            'method_mismatch': 'You\'ve selected shipments with different '
-                'methods of shipping. Please, select shipments of a unique '
-                'carrier.',
+            'shipment_not_tracking_ref': 'The is not a carrier tracking reference '
+                'in shipment "%(shipment)s".',
         })
 
     def default_start(self, fields):
-        pool = Pool()
-        Shipment = pool.get('stock.shipment.out')
-        API = pool.get('carrier.api')
+        Shipment = Pool().get('stock.shipment.out')
 
-        methods = set()
+        context = Transaction().context
+
+        active_ids = context.get('active_ids')
+        if active_ids:
+            # validate some shipment data before to send carrier API
+            for shipment in Shipment.browse(active_ids):
+                if not shipment.carrier_tracking_ref:
+                    self.raise_user_error('shipment_not_tracking_ref', {
+                        'shipment': shipment.code,
+                        })
+
         default = {}
-        shipments = Shipment.search([
-                ('id', 'in', Transaction().context['active_ids']),
-                ])
-
-        for shipment in shipments:
-            if not shipment.state in _SHIPMENT_STATES:
-                self.raise_user_error('shipment_state_mismatch', {
-                        'shipment': shipment.code,
-                        'state': ', '.join(_SHIPMENT_STATES)
-                        })
-
-            carrier = shipment.carrier
-            if not carrier:
-                self.raise_user_error('no_carrier_assigned', {
-                        'shipment': shipment.code,
-                        })
-
-            apis = API.search([('carriers', 'in', [carrier.id])], limit=1)
-            if not apis:
-                self.raise_user_error('carrier_without_api', {
-                        'carrier': carrier.rec_name,
-                        })
-
-            api = apis[0]
-            if api.zips:
-                zips = [z.strip() for z in api.zips.split(',')]
-                zip_code = (shipment.delivery_address
-                    and shipment.delivery_address.zip or 0)
-                if zip_code and zip_code in zips:
-                    self.raise_user_error('shipment_zip_unavailable', {
-                            'shipment': shipment.code,
-                            'zip': zip_code,
-                            })
-
-            if shipment.carrier_delivery:
-                default['carrier_printed'] = True
-
-            methods.add(api.method)
-            if len(methods) > 1:
-                self.raise_user_error('method_mismatch')
-
-        default['carrier'] = carrier.id
-        default['printed'] = bool([s for s in shipments if s.carrier_printed])
-
+        default['shipments'] = active_ids
         return default
 
     def default_result(self, fields):
@@ -520,7 +463,7 @@ class CarrierPrintShipment(Wizard):
         config_stock = Config(1)
         attach_label = config_stock.attach_label
 
-        dbname = Transaction().database.name
+        dbname = Transaction().cursor.dbname
         labels = []
 
         shipments = Shipment.search([
@@ -652,7 +595,7 @@ class CarrierGetLabel(Wizard):
                     }
 
                 attachments.append(attach)
-                
+
         attachments = Attachment.create(attachments)
         self.result.attachments = attachments
 
