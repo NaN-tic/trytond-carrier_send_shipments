@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -7,60 +7,32 @@ msgid "Not available manifest \"%s\" carrier."
 msgstr "Manifest \"%s\" de transportista no disponible."
 
 msgctxt "error:carrier.print.shipment:"
-msgid "The carrier \"%(carrier)s\" has not any API method available."
-msgstr "El transportista \"%(carrier)s\" no té disponible cap API."
-
-msgctxt "error:carrier.print.shipment:"
-msgid ""
-"The shipment \"%(shipment)s\" has not any carrier assigned. Please, select "
-"one carrier before trying to print the label."
-msgstr ""
-"L'albarà \"%(shipment)s\" no té cap transportista assignat. Si us plau, "
-"seleccioneu un transportista abans d'intentar imprimir l'etiqueta."
-
-msgctxt "error:carrier.print.shipment:"
-msgid "The shipment %(shipment)s is not in any of these states \"%(state)s\"."
-msgstr "L'albarà %(shipment)s no està en cap d'aquests estats \"%(state)s\"."
-
-msgctxt "error:carrier.print.shipment:"
-msgid "The shipment (%(shipment)s) is already sent."
-msgstr "L'albarà (%(shipment)s) ja s'ha enviat."
-
-msgctxt "error:carrier.print.shipment:"
-msgid ""
-"The zip \"%(zip)s\" of the shipment \"%(shipment)s\" is not available for "
-"this carrier."
-msgstr ""
-"El codi postal \"%(zip)s\" de l'albarà \"%(shipment)s\" no està disponible "
-"per aquest transportista."
-
-msgctxt "error:carrier.print.shipment:"
-msgid ""
-"You've selected shipments with different methods of shipping. Please, select"
-" shipments of a unique carrier."
-msgstr ""
-"Heu seleccionat varis albarans amb diferents mètodes d'enviament. Si us "
-"plau, seleccioneu enviaments d'un únic transportista."
+msgid "The is not a carrier tracking reference in shipment \"%(shipment)s\"."
+msgstr "No hi ha una referencia del transportista en l'albarà \"%(shipment)s\"."
 
 msgctxt "error:carrier.send.shipments:"
-msgid "Not available method API in carrier \"%(carrier)s\""
-msgstr "No es troba el mètode del transportista \"%(carrier)s\"."
+msgid "Not available \"%(code)s\" to delivery at zip: \"%(zip)s\""
+msgstr "No es pot enviar el \"%(code)s\" per entregar al codi postal: \"%(zip)s\""
+
+msgctxt "error:carrier.send.shipments:"
+msgid "Not found an API in carrier \"%(carrier)s\""
+msgstr "No es troba la API en el transportista\"%(carrier)s\""
 
 msgctxt "error:carrier.send.shipments:"
 msgid "Select a carrier in shipment \"%(shipment)s\""
 msgstr "Selecciona un transportista per l'enviament \"%(shipment)s\"."
 
 msgctxt "error:carrier.send.shipments:"
-msgid "Shipment \"%(code)s\" not available to send zip \"%(zip)s\""
-msgstr "Enviament \"%(code)s\" no es pot enviar aquest codi postal \"%(zip)s\""
+msgid ""
+"Shipment \"%(shipment)s\" state is \"%(state)s\".Can not delivery with this "
+"state."
+msgstr ""
+"L'estat de l'albarà \"%(shipment)s\" és \"%(state)s\". No pot enviar-ho amb "
+"aquest estat."
 
 msgctxt "error:carrier.send.shipments:"
-msgid "Shipment (%(shipment)s) was sended"
-msgstr "L'albarà (%(shipment)s) ja s'havia enviat en un altre moment"
-
-msgctxt "error:carrier.send.shipments:"
-msgid "Shipment ID (%(shipment)s) not state \"%(state)s\""
-msgstr "L'albarà ID (%(shipment)s) no es troba en els estats \"%(state)s\""
+msgid "Shipment \"%(shipment)s\" was sended. Can not delivery again."
+msgstr "L'albarà \"%(shipment)s\" ja ha estat enviat. No pot tornar-lo a enviar."
 
 msgctxt "error:carrier.send.shipments:"
 msgid ""
