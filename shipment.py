@@ -17,18 +17,19 @@ __all__ = ['Configuration', 'ShipmentOut', 'CarrierSendShipmentsStart',
     'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
     'CarrierPrintShipment', 'CarrierGetLabelStart', 'CarrierGetLabelResult',
     'CarrierGetLabel']
-__metaclass__ = PoolMeta
 
 _SHIPMENT_STATES = ['packed', 'done']
 logger = logging.getLogger(__name__)
 
 
 class Configuration:
+    __metaclass__ = PoolMeta
     __name__ = 'stock.configuration'
     attach_label = fields.Boolean('Attach Label')
 
 
 class ShipmentOut:
+    __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.out'
     carrier_service_domain = fields.Function(fields.One2Many(
             'carrier.api.service', None, 'Carrier Domain',
