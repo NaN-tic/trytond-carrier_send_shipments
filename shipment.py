@@ -60,6 +60,9 @@ class ShipmentOut:
             'invisible': ~Eval('carrier'),
             },
         help='Add notes when send API shipment')
+    carrier_weight = fields.Function(fields.Float('Carrier Weight',
+        digits=(16, Eval('weight_digits', 2)),
+        depends=['weight_digits']), 'on_change_with_carrier_weight')
     carrier_send_employee = fields.Many2One('company.employee', 'Carrier Send Employee', readonly=True)
     carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
 
@@ -102,6 +105,27 @@ class ShipmentOut:
             carrier_api_services = [service.id for api_carrier in api_carriers
                 for service in api_carrier.api.services]
         return carrier_api_services
+
+    @fields.depends('weight_func', 'carrier')
+    def on_change_with_carrier_weight(self, name=None):
+        Uom = Pool().get('product.uom')
+
+        if not hasattr(self, 'weight_func'):
+            return 1.0
+
+        weight = self.weight_func
+        if weight == 0 or weight == 0.0:
+            weight = 1.0
+
+        if self.carrier and self.carrier.apis:
+            api = self.carrier.apis[0]
+            if self.weight_uom:
+                weight = Uom.compute_qty(
+                    self.weight_uom, weight, api.weight_api_unit)
+            elif api.weight_unit:
+                weight = Uom.compute_qty(
+                    api.weight_unit, weight, api.weight_api_unit)
+        return weight
 
     def on_change_customer(self):
         super(ShipmentOut, self).on_change_customer()
