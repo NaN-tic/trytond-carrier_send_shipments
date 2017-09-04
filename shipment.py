@@ -63,6 +63,8 @@ class ShipmentOut:
     carrier_weight = fields.Function(fields.Float('Carrier Weight',
         digits=(16, Eval('weight_digits', 2)),
         depends=['weight_digits']), 'on_change_with_carrier_weight')
+    carrier_weight_uom = fields.Function(fields.Many2One('product.uom',
+        'Carrier Weight UOM'), 'on_change_with_carrier_weight_uom')
     carrier_send_employee = fields.Many2One('company.employee', 'Carrier Send Employee', readonly=True)
     carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
 
@@ -126,6 +128,12 @@ class ShipmentOut:
                 weight = Uom.compute_qty(
                     api.weight_unit, weight, api.weight_api_unit)
         return weight
+
+    @fields.depends('carrier')
+    def on_change_with_carrier_weight_uom(self, name=None):
+        if self.carrier and self.carrier.apis:
+            api = self.carrier.apis[0]
+            return api.weight_api_unit.id if api.weight_api_unit else None
 
     def on_change_customer(self):
         super(ShipmentOut, self).on_change_customer()
