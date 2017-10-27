@@ -173,17 +173,6 @@ class ShipmentOut:
         return super(ShipmentOut, cls).copy(shipments, default=default)
 
     @staticmethod
-    def get_price_ondelivery_shipment_out(shipment):
-        '''Get price ondelivery from shipment out'''
-        if shipment.carrier_cashondelivery_total:
-            price_ondelivery = shipment.carrier_cashondelivery_total
-        elif shipment.carrier_sale_price_total:
-            price_ondelivery = shipment.carrier_sale_price_total
-        else:
-            price_ondelivery = shipment.total_amount
-        return price_ondelivery
-
-    @staticmethod
     def get_phone_shipment_out(shipment, phone=True):
         '''Get default phone from shipment out'''
         if phone:
