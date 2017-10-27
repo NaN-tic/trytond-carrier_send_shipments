@@ -485,7 +485,7 @@ class CarrierPrintShipment(Wizard):
         config_stock = Config(1)
         attach_label = config_stock.attach_label
 
-        dbname = Transaction().cursor.dbname
+        dbname = Transaction().database.name
         labels = []
 
         shipments = Shipment.search([
