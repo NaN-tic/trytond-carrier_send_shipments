@@ -295,18 +295,18 @@ class CarrierSendShipments(Wizard):
     def __setup__(cls):
         super(CarrierSendShipments, cls).__setup__()
         cls._error_messages.update({
-            'shipment_state': 'Shipment "%(shipment)s" state is "%(state)s".'
-                'Can not delivery with this state.',
-            'shipment_sended': 'Shipment "%(shipment)s" was sended. '
-                'Can not delivery again.',
+            'shipment_state': ('Shipment "%(shipment)s" state is "%(state)s".'
+                'You must send the shipment with the "%(states)s" states'),
+            'shipment_sended': ('Shipment "%(shipment)s" was sended. '
+                'Can not delivery again.'),
             'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
             'add_carrier_api': 'Not found an API in carrier "%(carrier)s"',
-            'shipment_info':
-                'Successfully:\n%(references)s\n\nErrors:\n%(errors)s',
-            'shipment_different_carrier': 'You select different shipments to '
-                'send %(methods)s. Select shipment grouped by carrier',
-            'shipment_zip': 'Not available "%(code)s" to delivery at zip: '
-                '"%(zip)s"',
+            'shipment_info': ('Successfully:\n%(references)s\n\n'
+                'Errors:\n%(errors)s'),
+            'shipment_different_carrier': ('You select different shipments to '
+                'send %(methods)s. Select shipment grouped by carrier'),
+            'shipment_zip': ('Not available "%(code)s" to delivery at zip: '
+                '"%(zip)s"'),
             })
 
     def transition_send(self):
@@ -371,7 +371,8 @@ class CarrierSendShipments(Wizard):
                 if not shipment.state in _SHIPMENT_STATES:
                     self.raise_user_error('shipment_state', {
                         'shipment': shipment.code,
-                        'state': ', '.join(_SHIPMENT_STATES)
+                        'state': shipment.state,
+                        'states': ', '.join(_SHIPMENT_STATES)
                         })
                 if not shipment.carrier:
                     self.raise_user_error('add_carrier', {
