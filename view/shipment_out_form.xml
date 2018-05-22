@@ -2,7 +2,7 @@
 <!-- This file is part carrier_send_shipments module for Tryton.
 The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
 <data>
-    <xpath expr="/form/notebook/page[@id=&quot;carrier-delivery&quot;]" position="inside">
+    <xpath expr="/form/notebook/page[@id='carrier-delivery']" position="inside">
         <label name="carrier_delivery"/>
         <field name="carrier_delivery"/>
         <label name="carrier_printed"/>
@@ -17,7 +17,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
         <field name="carrier_notes"/>
     </xpath>
 
-    <xpath expr="/form/group[@id=&quot;state_buttons&quot;]/group[@id=&quot;buttons&quot;]/button[@name=&quot;done&quot;]" position="before">
-        <button string="Send API Carrier" name="wizard_carrier_send_shipments" icon="tryton-ok"/>
+    <xpath expr="/form/group[@id='state_buttons']/group[@id='buttons']/button[@name='done']" position="before">
+        <button name="wizard_carrier_send_shipments" icon="tryton-ok"/>
     </xpath>
 </data>

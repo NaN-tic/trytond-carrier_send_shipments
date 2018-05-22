@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!-- This file is part carrier_send_shipments module for Tryton.
 The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
-<tree string="Print Shipment">
-    <field name="code"/>
+<tree>
+    <field name="number"/>
     <field name="customer"/>
     <field name="delivery_address"/>
     <field name="carrier"/>

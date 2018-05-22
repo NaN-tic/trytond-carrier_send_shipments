@@ -73,10 +73,6 @@ class ShipmentOut:
         super(ShipmentOut, cls).__setup__()
         if 'carrier' not in cls.carrier_cashondelivery_total.depends:
             cls.carrier_cashondelivery_total.depends.append('carrier')
-        if ('cost_currency_digits' not in
-                cls.carrier_cashondelivery_total.depends):
-            cls.carrier_cashondelivery_total.depends.append(
-                'cost_currency_digits')
         cls._error_messages.update({
             'not_carrier': 'Shipment "%(name)s" not have carrier',
             'not_carrier_api': 'Carrier "%(name)s" not have API',
@@ -98,6 +94,7 @@ class ShipmentOut:
     def _comment2txt(self, comment):
         return comment.replace('\n', '. ').replace('\r', '')
 
+    @fields.depends('carrier')
     def on_change_with_carrier_service_domain(self, name=None):
         ApiCarrier = Pool().get('carrier.api-carrier.carrier')
         carrier_api_services = []
@@ -420,7 +417,7 @@ class CarrierPrintShipmentStart(ModelView):
 
     @staticmethod
     def default_shipments():
-        return Transaction().context['active_ids']
+        return Transaction().context.get('active_ids')
 
 
 class CarrierPrintShipmentResult(ModelView):

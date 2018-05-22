@@ -1,7 +1,7 @@
 <!-- This file is part of the carrier_send_shipments module for Tryton.
 The COPYRIGHT file at the top level of this repository contains the full
 copyright notices and license terms. -->
-<form string="Print Shipment">
+<form>
     <label name="labels"/>
     <field name="labels"/>
     <field name="file_name" invisible="1"/>
