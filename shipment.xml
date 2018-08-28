@@ -20,6 +20,13 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="name">shipment_out_tree</field>
         </record>
 
+        <!-- buttons -->
+        <record model="ir.model.button" id="wizard_carrier_send_shipments_button">
+            <field name="name">wizard_carrier_send_shipments</field>
+            <field name="string">Send API Carrier</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out')]"/>
+        </record>
+
         <!-- Carrier Send Shipments - Wizard Views -->
         <record model="ir.ui.view" id="stock_shipment_to_carrier_view_tree">
             <field name="model">stock.shipment.out</field>
