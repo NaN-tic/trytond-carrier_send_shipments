@@ -6,7 +6,7 @@
 from setuptools import setup
 import re
 import os
-import ConfigParser
+from configparser import ConfigParser
 
 MODULE = 'carrier_send_shipments'
 PREFIX = 'trytonzz'

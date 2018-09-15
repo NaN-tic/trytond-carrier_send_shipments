@@ -22,14 +22,12 @@ _SHIPMENT_STATES = ['packed', 'done']
 logger = logging.getLogger(__name__)
 
 
-class Configuration:
-    __metaclass__ = PoolMeta
+class Configuration(metaclass=PoolMeta):
     __name__ = 'stock.configuration'
     attach_label = fields.Boolean('Attach Label')
 
 
-class ShipmentOut:
-    __metaclass__ = PoolMeta
+class ShipmentOut(metaclass=PoolMeta):
     __name__ = 'stock.shipment.out'
     carrier_service_domain = fields.Function(fields.One2Many(
             'carrier.api.service', None, 'Carrier Domain',
@@ -599,7 +597,7 @@ class CarrierGetLabel(Wizard):
             apis[api.method] = shipments
 
         attachments = []
-        for method, shipments in apis.iteritems():
+        for method, shipments in apis.items():
             api, = API.search([('method', '=', method)],
                 limit=1)
             print_label = getattr(Shipment, 'print_labels_%s' % method)
