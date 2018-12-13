@@ -31,6 +31,10 @@ class Configuration:
 class ShipmentOut:
     __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.out'
+    phone = fields.Function(fields.Char('Phone'), 'get_mechanism')
+    mobile = fields.Function(fields.Char('Mobile'), 'get_mechanism')
+    fax = fields.Function(fields.Char('Fax'), 'get_mechanism')
+    email = fields.Function(fields.Char('E-Mail'), 'get_mechanism')
     carrier_service_domain = fields.Function(fields.One2Many(
             'carrier.api.service', None, 'Carrier Domain',
             depends=['carrier']),
@@ -172,20 +176,12 @@ class ShipmentOut:
         default['carrier_printed'] = None
         return super(ShipmentOut, cls).copy(shipments, default=default)
 
-    @staticmethod
-    def get_phone_shipment_out(shipment, phone=True):
-        '''Get default phone from shipment out'''
-        if phone:
-            if shipment.delivery_address.phone:
-                return shipment.delivery_address.phone
-            if shipment.customer.phone:
-                return shipment.customer.phone
-            return shipment.company.party.phone \
-                if shipment.company.party.phone else ''
-        if shipment.delivery_address.mobile:
-            return shipment.delivery_address.mobile
-        if shipment.customer.mobile:
-            return shipment.customer.mobile
+    def get_mechanism(self, name):
+        if getattr(self.delivery_address, name):
+            return getattr(self.delivery_address, name)
+        for mechanism in self.customer.contact_mechanisms:
+            if mechanism.type == name:
+                return mechanism.value
         return ''
 
     @staticmethod
