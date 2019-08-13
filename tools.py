@@ -19,4 +19,6 @@ def unaccent(text):
 
 
 def unspaces(text):
-    return text.replace(" ", "")
+    if text:
+        return text.replace(" ", "")
+    return ''

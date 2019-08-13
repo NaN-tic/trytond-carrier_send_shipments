@@ -177,12 +177,20 @@ class ShipmentOut:
         return super(ShipmentOut, cls).copy(shipments, default=default)
 
     def get_mechanism(self, name):
-        if getattr(self.delivery_address, name):
-            return getattr(self.delivery_address, name)
-        for mechanism in self.customer.contact_mechanisms:
-            if mechanism.type == name:
-                return mechanism.value
-        return ''
+        pool = Pool()
+        ContactMechanism = pool.get('party.contact_mechanism')
+
+        value = getattr(self.delivery_address, name)
+        if value:
+            return value
+
+        mechanisms = ContactMechanism.search([
+            ('party', '=', self.customer),
+            ('type', '=', name),
+            ], order=[('write_date', 'DESC')], limit=1)
+        if mechanisms:
+            return mechanisms[0].value
+        return None
 
     @staticmethod
     def get_carrier_employee():
