@@ -187,10 +187,28 @@ class ShipmentOut:
         mechanisms = ContactMechanism.search([
             ('party', '=', self.customer),
             ('type', '=', name),
+            ('write_date', '!=', None),
             ], order=[('write_date', 'DESC')], limit=1)
-        if mechanisms:
-            return mechanisms[0].value
-        return None
+        mechanism_write_date = (mechanisms[0] if mechanisms else None)
+
+        mechanisms = ContactMechanism.search([
+            ('party', '=', self.customer),
+            ('type', '=', name),
+            ], order=[('create_date', 'DESC')], limit=1)
+        mechanism_create_date = (mechanisms[0] if mechanisms else None)
+
+        mechanism_value = None
+        if mechanism_write_date and mechanism_create_date:
+            if (mechanism_write_date.write_date >
+                    mechanism_create_date.create_date):
+                mechanism_value = mechanism_write_date.value
+            else:
+                mechanism_value = mechanism_create_date.value
+        elif mechanism_create_date and not mechanism_write_date:
+            mechanism_value = mechanism_create_date.value
+        elif not mechanism_create_date and mechanism_write_date:
+            mechanism_value = mechanism_write_date.value
+        return mechanism_value
 
     @staticmethod
     def get_carrier_employee():
