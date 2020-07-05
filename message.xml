@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data grouped="1">
+      <record model="ir.message" id="msg_domain_field_error">
+          <field name="text">Error in field domain: %(domain)s</field>
+      </record>
+      <record model="ir.message" id="msg_domain_field_help">
+          <field name="text">This field must returns a variable called "domain" with a Tryton domain.</field>
+      </record>
+
+      <record model="ir.message" id="msg_not_implemented_error">
+          <field name="text">Error. Field of type %(field)s is not implemented yet.</field>
+      </record>
+      <record model="ir.message" id="msg_datetime_format_error">
+          <field name="text">Error building domain of type DateTime or Timestamp.
+Please, check the format:
+Field: %(field)s
+Value: %(value)s
+Format: %%d/%%m/%%Y %%H:%%M:%%S</field>
+      </record>
+      <record model="ir.message" id="msg_date_format_error">
+          <field name="text">Error building domain of type Date.
+Please, check the format:
+Field: %(field)s
+Value: %(value)s
+Format: %%d/%%m/%%Y</field>
+      </record>
+      <record model="ir.message" id="msg_number_format_error">
+          <field name="text">Error building domain of type Float.
+Please, ensure you have put a number.
+Field: %(field)s
+Value: %(value)s</field>
+      </record>
+      <record model="ir.message" id="msg_error_domain">
+          <field name="text">Error "%s(domain)s".</field>
+      </record>
+    </data>
+</tryton>

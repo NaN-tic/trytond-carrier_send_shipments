@@ -3,8 +3,10 @@
 # the full copyright notices and license terms.
 from datetime import datetime
 from trytond.model import ModelView, fields
-from trytond.wizard import Wizard, StateTransition, StateView, Button, \
-    StateAction
+from trytond.wizard import (Wizard, StateTransition, StateView, Button,
+    StateAction)
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.pyson import Bool, Eval, Not, Equal
@@ -75,12 +77,6 @@ class ShipmentOut(metaclass=PoolMeta):
         super(ShipmentOut, cls).__setup__()
         if 'carrier' not in cls.carrier_cashondelivery_total.depends:
             cls.carrier_cashondelivery_total.depends.append('carrier')
-        cls._error_messages.update({
-            'not_carrier': 'Shipment "%(name)s" not have carrier',
-            'not_carrier_api': 'Carrier "%(name)s" not have API',
-            'shipmnet_delivery_address': 'Shipment "%(name)s" not have address details: '
-                'street, zip, city or country.',
-            })
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
@@ -232,9 +228,8 @@ class ShipmentOut(metaclass=PoolMeta):
         attach_label = config_stock.attach_label
 
         if not shipment.carrier:
-            message = cls.raise_user_error('not_carrier', {
-                    'name': shipment.rec_name,
-                    }, raise_exception=False)
+            message = gettext('carrier_send_shipments.msg_not_carrier',
+                name=shipment.rec_name)
             refs = []
             labs = []
             errs = [message]
@@ -243,9 +238,8 @@ class ShipmentOut(metaclass=PoolMeta):
         apis = API.search([('carriers', 'in', [shipment.carrier.id])],
             limit=1)
         if not apis:
-            message = cls.raise_user_error('not_carrier_api', {
-                    'name': shipment.carrier.rec_name,
-                    }, raise_exception=False)
+            message = gettext('carrier_send_shipments.msg_not_carrier_api',
+                name=shipment.rec_name)
             logger.warning(message)
             refs = []
             labs = []
@@ -256,9 +250,8 @@ class ShipmentOut(metaclass=PoolMeta):
 
         if not shipment.delivery_address.street or not shipment.delivery_address.zip \
                 or not shipment.delivery_address.city or not shipment.delivery_address.country:
-            message = cls.raise_user_error('shipmnet_delivery_address', {
-                        'name': shipment.rec_name,
-                        }, raise_exception=False)
+            message = gettext('carrier_send_shipments.msg_shipmnet_delivery_address',
+                name=shipment.rec_name)
             logger.warning(message)
             refs = []
             labs = []
@@ -308,24 +301,6 @@ class CarrierSendShipments(Wizard):
     print_ = StateAction(
         'carrier_send_shipments.wizard_carrier_print_shipment')
 
-    @classmethod
-    def __setup__(cls):
-        super(CarrierSendShipments, cls).__setup__()
-        cls._error_messages.update({
-            'shipment_state': ('Shipment "%(shipment)s" state is "%(state)s".'
-                'You must send the shipment with the "%(states)s" states'),
-            'shipment_sended': ('Shipment "%(shipment)s" was sended. '
-                'Can not delivery again.'),
-            'add_carrier': 'Select a carrier in shipment "%(shipment)s"',
-            'add_carrier_api': 'Not found an API in carrier "%(carrier)s"',
-            'shipment_info': ('Successfully:\n%(references)s\n\n'
-                'Errors:\n%(errors)s'),
-            'shipment_different_carrier': ('You select different shipments to '
-                'send %(methods)s. Select shipment grouped by carrier'),
-            'shipment_zip': ('Not available "%(code)s" to delivery at zip: '
-                '"%(zip)s"'),
-            })
-
     def transition_send(self):
         Shipment = Pool().get('stock.shipment.out')
 
@@ -349,10 +324,9 @@ class CarrierSendShipments(Wizard):
                 errors += errs
 
             #  Save results in info and labels fields
-            info = u'%s' % self.raise_user_error('shipment_info', {
-                    'references': ', '.join(references) if references else '',
-                    'errors': ', '.join(errors) if errors else '',
-                    }, raise_exception=False)
+            info = gettext('carrier_send_shipments.msg_shipment_info',
+                references=', '.join(references) if references else '',
+                errors=', '.join(errors) if errors else '')
 
             #  Save file label in labels field
             if len(labels) == 1:  # A label generate simple file
@@ -386,32 +360,27 @@ class CarrierSendShipments(Wizard):
             # validate some shipment data before to send carrier API
             for shipment in Shipment.browse(active_ids):
                 if not shipment.state in _SHIPMENT_STATES:
-                    self.raise_user_error('shipment_state', {
-                        'shipment': shipment.code,
-                        'state': shipment.state,
-                        'states': ', '.join(_SHIPMENT_STATES)
-                        })
+                    raise UserError(gettext('carrier_send_shipments.msg_shipment_state',
+                        shipment=shipment.number,
+                        state=shipment.state,
+                        states=', '.join(_SHIPMENT_STATES)))
                 if not shipment.carrier:
-                    self.raise_user_error('add_carrier', {
-                        'shipment': shipment.code,
-                        })
+                    raise UserError(gettext('carrier_send_shipments.msg_add_carrier',
+                        shipment=shipment.number))
                 if shipment.carrier_tracking_ref:
-                    self.raise_user_error('shipment_sended', {
-                        'shipment': shipment.code,
-                        })
+                    raise UserError(gettext('carrier_send_shipments.msg_shipment_sended',
+                        shipment=shipment.number))
                 if not shipment.carrier.apis:
-                    self.raise_user_error('add_carrier_api', {
-                        'carrier': shipment.carrier.rec_name,
-                        })
+                    raise UserError(gettext('carrier_send_shipments.msg_add_carrier_api',
+                        carrier=shipment.carrier.rec_name))
                 api, = shipment.carrier.apis
                 if api.zips:
                     zips = api.zips.split(',')
                     if (shipment.delivery_address.zip
                             and shipment.delivery_address.zip in zips):
-                        self.raise_user_error('shipment_zip', {
-                                'code': shipment.code,
-                                'zip': shipment.delivery_address.zip,
-                                })
+                        raise UserError(gettext('carrier_send_shipments.msg_shipment_zip',
+                            shipment=shipment.number,
+                            zip=shipment.delivery_address.zip))
 
         default = {}
         default['shipments'] = active_ids
@@ -461,14 +430,6 @@ class CarrierPrintShipment(Wizard):
             Button('Close', 'end', 'tryton-close'),
             ])
 
-    @classmethod
-    def __setup__(cls):
-        super(CarrierPrintShipment, cls).__setup__()
-        cls._error_messages.update({
-            'shipment_not_tracking_ref': 'The is not a carrier tracking reference '
-                'in shipment "%(shipment)s".',
-        })
-
     def default_start(self, fields):
         Shipment = Pool().get('stock.shipment.out')
 
@@ -479,9 +440,8 @@ class CarrierPrintShipment(Wizard):
             # validate some shipment data before to send carrier API
             for shipment in Shipment.browse(active_ids):
                 if not shipment.carrier_tracking_ref:
-                    self.raise_user_error('shipment_not_tracking_ref', {
-                        'shipment': shipment.code,
-                        })
+                    raise UserError(gettext('carrier_send_shipments.msg_shipment_not_tracking_ref',
+                        shipment=shipment.number))
 
         default = {}
         default['shipments'] = active_ids
@@ -630,7 +590,7 @@ class CarrierGetLabel(Wizard):
                     'name': datetime.now().strftime("%y/%m/%d %H:%M:%S"),
                     'type': 'data',
                     'data': fields.Binary.cast(open(label, "rb").read()),
-                    'description': '%s - %s' % (shipment.code, method),
+                    'description': '%s - %s' % (shipment.number, method),
                     'resource': '%s' % str(shipment),
                     }
 

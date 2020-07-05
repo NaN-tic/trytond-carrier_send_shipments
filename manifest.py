@@ -48,13 +48,6 @@ class CarrierManifest(Wizard):
             Button('Cancel', 'end', 'tryton-cancel'),
             ])
 
-    @classmethod
-    def __setup__(cls):
-        super(CarrierManifest, cls).__setup__()
-        cls._error_messages.update({
-                'not_manifest': 'Not available manifest "%s" carrier.',
-                })
-
     def default_result(self, fields):
         return {
             'manifest': self.result.manifest,
@@ -65,11 +58,11 @@ class CarrierManifest(Wizard):
         api = self.start.carrier_api
         from_date = self.start.from_date
         to_date = self.start.to_date
-        
+
         get_manifest = getattr(self, 'get_manifest_' + api.method)
         manifest_file = get_manifest(api, from_date, to_date) #return a tuple
 
         self.result.manifest = bytearray(manifest_file[0]) if manifest_file else None
         self.result.file_name = manifest_file[1] if manifest_file else None
-            
+
         return 'result'
