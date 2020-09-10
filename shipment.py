@@ -36,9 +36,8 @@ class ShipmentOut(metaclass=PoolMeta):
     fax = fields.Function(fields.Char('Fax'), 'get_mechanism')
     email = fields.Function(fields.Char('E-Mail'), 'get_mechanism')
     carrier_service_domain = fields.Function(fields.One2Many(
-            'carrier.api.service', None, 'Carrier Domain',
-            depends=['carrier']),
-        'on_change_with_carrier_service_domain')
+            'carrier.api.service', None, 'Carrier Domain'),
+        'on_change_with_carrier_service_domain', setter='set_carrier_service_domain')
     carrier_service = fields.Many2One('carrier.api.service',
         'Carrier API Service',
         domain=[
@@ -102,6 +101,11 @@ class ShipmentOut(metaclass=PoolMeta):
             carrier_api_services = [service.id for api_carrier in api_carriers
                 for service in api_carrier.api.services]
         return carrier_api_services
+
+    @classmethod
+    def set_carrier_service_domain(cls, shipments, name, value):
+        # maybe is a bug client since 5.6
+        pass
 
     @fields.depends('weight_func', 'carrier')
     def on_change_with_carrier_weight(self, name=None):
