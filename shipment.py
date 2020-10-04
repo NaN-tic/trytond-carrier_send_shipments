@@ -375,8 +375,8 @@ class CarrierSendShipments(Wizard):
                     raise UserError(gettext('carrier_send_shipments.msg_shipment_sended',
                         shipment=shipment.number))
                 if not shipment.carrier.apis:
-                    raise UserError(gettext('carrier_send_shipments.msg_add_carrier_api',
-                        carrier=shipment.carrier.rec_name))
+                    raise UserError(gettext('carrier_send_shipments.msg_not_carrier_api',
+                        name=shipment.carrier.rec_name))
                 api, = shipment.carrier.apis
                 if api.zips:
                     zips = api.zips.split(',')

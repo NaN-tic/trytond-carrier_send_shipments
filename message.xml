@@ -36,5 +36,30 @@ Value: %(value)s</field>
       <record model="ir.message" id="msg_error_domain">
           <field name="text">Error "%s(domain)s".</field>
       </record>
+      <record model="ir.message" id="msg_shipment_sended">
+          <field name="text">Shipment "%(shipment)s" was sended. Can not delivery again.</field>
+      </record>
+      <record model="ir.message" id="msg_add_carrier">
+          <field name="text">Select a carrier in shipment "%(shipment)s"</field>
+      </record>
+      <record model="ir.message" id="msg_not_carrier">
+          <field name="text">Shipment "%(name)s" not have carrier</field>
+      </record>
+      <record model="ir.message" id="msg_not_carrier_api">
+          <field name="text">Carrier "%(name)s" not have API</field>
+      </record>
+      <record model="ir.message" id="msg_shipment_zip">
+          <field name="text">Not available "%(shipment)s" to delivery at zip: "%(zip)s"</field>
+      </record>
+      <record model="ir.message" id="msg_shipment_info">
+          <field name="text">Successfully:
+%(references)s
+
+Errors:
+%(errors)s</field>
+      </record>
+      <record model="ir.message" id="msg_shipment_not_tracking_ref">
+          <field name="text">The is not a carrier tracking reference in shipment "%(shipment)s".</field>
+      </record>
     </data>
 </tryton>
