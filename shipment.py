@@ -9,6 +9,7 @@ from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
+from trytond.report import Report
 from trytond.pyson import Bool, Eval, Not, Equal
 import logging
 import tarfile
@@ -558,7 +559,7 @@ class CarrierGetLabel(Wizard):
         shipments = Shipment.search([
                 ('state', 'in', _SHIPMENT_STATES),
                 ['OR',
-                    ('code', 'in', codes),
+                    ('number', 'in', codes),
                     ('carrier_tracking_ref', 'in', codes),
                 ]])
 
@@ -610,3 +611,46 @@ class CarrierGetLabel(Wizard):
             'attachments': [a.id
                 for a in getattr(self.result, 'attachments', [])],
             }
+
+
+class LabelReport(Report):
+    __name__ = 'stock.shipment.out.label.report'
+
+    @classmethod
+    def execute(cls, ids, data):
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.out')
+        API = pool.get('carrier.api')
+        ActionReport = pool.get('ir.action.report')
+        shipments = Shipment.browse(ids)
+        if not shipments:
+            return
+        if len(shipments) != 1:
+            raise UserError(
+                    gettext('carrier_send_shipments.msg_several_shipments'))
+        shipment, = shipments
+
+        if not shipment.carrier:
+            return
+        carrier_api = API.search([('carriers', 'in', [shipment.carrier.id])],
+            limit=1)
+        if not carrier_api:
+            return
+        api, = carrier_api
+        shipments = [shipment]
+        pdf_name = shipment.carrier_tracking_ref
+        print_label = getattr(Shipment, 'get_labels_%s' % api.method)
+        label = print_label(api, shipments)
+        if not label:
+            return
+        Printer = None
+        try:
+            Printer = pool.get('printer')
+        except KeyError:
+            pass
+        if Printer:
+            action_id = data.get('action_id')
+            action_report = ActionReport(action_id)
+            return Printer.send_report('pdf', bytearray(label),
+                pdf_name, action_report)
+        return ('pdf', bytearray(label), False, pdf_name)

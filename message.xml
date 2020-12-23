@@ -61,5 +61,8 @@ Errors:
       <record model="ir.message" id="msg_shipment_not_tracking_ref">
           <field name="text">The is not a carrier tracking reference in shipment "%(shipment)s".</field>
       </record>
+      <record model="ir.message" id="msg_several_shipments">
+          <field name="text">Cannot print carrier labels for more than one shipment at once.</field>
+      </record>
     </data>
 </tryton>

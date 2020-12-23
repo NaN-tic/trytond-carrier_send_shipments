@@ -107,7 +107,17 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="name">Get Labels</field>
             <field name="wiz_name">carrier.get.label</field>
         </record>
-
+        <record model="ir.action.report" id="report_label">
+            <field name="name">Carrier Labels</field>
+            <field name="model">stock.shipment.out.label.report</field>
+            <field name="report_name">stock.shipment.out.label.report</field>
+            <field name="single" eval="True"/>
+        </record>
+        <record model="ir.action.keyword" id="report_label_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">stock.shipment.out,-1</field>
+            <field name="action" ref="report_label"/>
+        </record>
         <menuitem
             name="Carrier Labels"
             id="get_carrier_labels"
