@@ -27,3 +27,6 @@ def register():
         manifest.CarrierManifest,
         shipment.CarrierGetLabel,
         module='carrier_send_shipments', type_='wizard')
+    Pool.register(
+        shipment.LabelReport,
+        module='carrier_send_shipments', type_='report')
