@@ -148,7 +148,10 @@ class ShipmentOut(metaclass=PoolMeta):
         self.carrier_notes = carrier_notes
 
     def on_change_carrier(self):
-        super(ShipmentOut, self).on_change_carrier()
+        try:
+            super(ShipmentOut, self).on_change_carrier()
+        except AttributeError:
+            pass
         self.carrier_service = None
 
     @classmethod
