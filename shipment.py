@@ -253,7 +253,7 @@ class ShipmentOut(metaclass=PoolMeta):
 
         api, = apis
 
-        if not shipment.delivery_address.street or not shipment.delivery_address.zip \
+        if not shipment.delivery_address.street or not shipment.delivery_address.postal_code \
                 or not shipment.delivery_address.city or not shipment.delivery_address.country:
             message = gettext('carrier_send_shipments.msg_shipmnet_delivery_address',
                 name=shipment.rec_name)
@@ -381,11 +381,11 @@ class CarrierSendShipments(Wizard):
                 api, = shipment.carrier.apis
                 if api.zips:
                     zips = api.zips.split(',')
-                    if (shipment.delivery_address.zip
-                            and shipment.delivery_address.zip in zips):
+                    if (shipment.delivery_address.postal_code
+                            and shipment.delivery_address.postal_code in zips):
                         raise UserError(gettext('carrier_send_shipments.msg_shipment_zip',
                             shipment=shipment.number,
-                            zip=shipment.delivery_address.zip))
+                            zip=shipment.delivery_address.postal_code))
 
         default = {}
         default['shipments'] = active_ids
