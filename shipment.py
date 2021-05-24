@@ -475,6 +475,8 @@ class CarrierPrintShipment(Wizard):
                 ('id', 'in', Transaction().context['active_ids']),
                 ])
         for shipment in shipments:
+            if not shipment.carrier:
+                continue
             apis = API.search([('carriers', 'in', [shipment.carrier.id])],
                 limit=1)
             if not apis:
