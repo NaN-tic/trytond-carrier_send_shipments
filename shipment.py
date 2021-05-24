@@ -624,35 +624,41 @@ class LabelReport(Report):
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         ActionReport = pool.get('ir.action.report')
-        shipments = Shipment.browse(ids)
-        if not shipments:
-            return
-        if len(shipments) != 1:
+
+        if not ids or len(ids) != 1:
             raise UserError(
                     gettext('carrier_send_shipments.msg_several_shipments'))
-        shipment, = shipments
 
+        shipment = Shipment(ids[0])
         if not shipment.carrier:
             return
-        carrier_api = API.search([('carriers', 'in', [shipment.carrier.id])],
-            limit=1)
+        carrier_api = API.search([
+            ('carriers', 'in', [shipment.carrier.id]),
+            ], limit=1)
         if not carrier_api:
             return
+
         api, = carrier_api
-        shipments = [shipment]
+        if (not api.print_report
+                or not hasattr(Shipment, 'get_labels_%s' % api.method)):
+            return
+
         pdf_name = shipment.carrier_tracking_ref
         print_label = getattr(Shipment, 'get_labels_%s' % api.method)
-        label = print_label(api, shipments)
-        if not label:
+        labels = print_label(api, [shipment])
+        if not labels:
             return
+
         Printer = None
         try:
             Printer = pool.get('printer')
         except KeyError:
             pass
+
+        label = labels[0]
         if Printer:
             action_id = data.get('action_id')
             action_report = ActionReport(action_id)
-            return Printer.send_report('pdf', bytearray(label),
+            return Printer.send_report(api.print_report, bytearray(label),
                 pdf_name, action_report)
-        return ('pdf', bytearray(label), False, pdf_name)
+        return (api.print_report, bytearray(label), False, pdf_name)
