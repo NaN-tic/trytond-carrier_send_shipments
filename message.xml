@@ -64,5 +64,8 @@ Errors:
       <record model="ir.message" id="msg_several_shipments">
           <field name="text">Cannot print carrier labels for more than one shipment at once.</field>
       </record>
+      <record model="ir.message" id="msg_shipmnet_delivery_address">
+          <field name="text">Shipment "%(name)s" not have address details: street, zip, city or country.</field>
+      </record>
     </data>
 </tryton>
