@@ -170,7 +170,7 @@ msgstr "Manifiesto"
 
 msgctxt "model:ir.action,name:report_label"
 msgid "Carrier Labels"
-msgstr "Etiquetas transportista"
+msgstr "Etiqueta transportista"
 
 msgctxt "model:ir.action,name:wizard_carrier_get_label"
 msgid "Get Labels"
