@@ -6,17 +6,9 @@ msgctxt "field:carrier.get.label.result,attachments:"
 msgid "Attachments"
 msgstr "Adjuntos"
 
-msgctxt "field:carrier.get.label.result,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:carrier.get.label.start,codes:"
 msgid "Codes"
 msgstr "Códigos"
-
-msgctxt "field:carrier.get.label.start,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:carrier.manifest.start,carrier_api:"
 msgid "Carrier API"
@@ -24,31 +16,19 @@ msgstr "API transportista"
 
 msgctxt "field:carrier.manifest.start,from_date:"
 msgid "From Date"
-msgstr "Fecha inicial"
-
-msgctxt "field:carrier.manifest.start,id:"
-msgid "ID"
-msgstr "ID"
+msgstr "Desde la fecha"
 
 msgctxt "field:carrier.manifest.start,to_date:"
 msgid "To Date"
-msgstr "Fecha final"
+msgstr "A la fecha"
 
 msgctxt "field:carrier.print.shipment.result,file_name:"
 msgid "File Name"
-msgstr "Nombre de fichero"
-
-msgctxt "field:carrier.print.shipment.result,id:"
-msgid "ID"
-msgstr "ID"
+msgstr "Nombre fichero"
 
 msgctxt "field:carrier.print.shipment.result,labels:"
 msgid "Labels"
 msgstr "Etiquetas"
-
-msgctxt "field:carrier.print.shipment.start,id:"
-msgid "ID"
-msgstr "ID"
 
 msgctxt "field:carrier.print.shipment.start,shipments:"
 msgid "Shipments"
@@ -56,11 +36,7 @@ msgstr "Albaranes"
 
 msgctxt "field:carrier.result.manifest,file_name:"
 msgid "File Name"
-msgstr "Nombre de fichero"
-
-msgctxt "field:carrier.result.manifest,id:"
-msgid "ID"
-msgstr "ID"
+msgstr "Nombre fichero"
 
 msgctxt "field:carrier.result.manifest,manifest:"
 msgid "Manifest"
@@ -68,11 +44,7 @@ msgstr "Manifiesto"
 
 msgctxt "field:carrier.send.shipments.result,file_name:"
 msgid "File Name"
-msgstr "Nombre de fichero"
-
-msgctxt "field:carrier.send.shipments.result,id:"
-msgid "ID"
-msgstr "ID"
+msgstr "Nombre fichero"
 
 msgctxt "field:carrier.send.shipments.result,info:"
 msgid "Info"
@@ -82,10 +54,6 @@ msgctxt "field:carrier.send.shipments.result,labels:"
 msgid "Labels"
 msgstr "Etiquetas"
 
-msgctxt "field:carrier.send.shipments.start,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:carrier.send.shipments.start,shipments:"
 msgid "Shipments"
 msgstr "Albaranes"
@@ -94,33 +62,17 @@ msgctxt "field:stock.configuration,attach_label:"
 msgid "Attach Label"
 msgstr "Adjuntar etiqueta"
 
-msgctxt "field:stock.shipment.out,carrier_cashondelivery:"
-msgid "Carrier Cash OnDelivery"
-msgstr "Contrarembolso"
-
-msgctxt "field:stock.shipment.out,carrier_cashondelivery_total:"
-msgid "Carrier Cash OnDelivery Total"
-msgstr "Total contrarembolso"
-
 msgctxt "field:stock.shipment.out,carrier_delivery:"
 msgid "Delivered"
-msgstr "Enviado"
+msgstr "Entregado"
 
 msgctxt "field:stock.shipment.out,carrier_notes:"
 msgid "Carrier Notes"
-msgstr "Notas transportista"
-
-msgctxt "field:stock.shipment.out,carrier_price_total:"
-msgid "Price Total"
-msgstr "Precio total"
+msgstr "Notas transportistas"
 
 msgctxt "field:stock.shipment.out,carrier_printed:"
 msgid "Printed"
 msgstr "Imprimido"
-
-msgctxt "field:stock.shipment.out,carrier_sale_price_total:"
-msgid ""
-msgstr ""
 
 msgctxt "field:stock.shipment.out,carrier_send_date:"
 msgid "Carrier Send Date"
@@ -132,64 +84,85 @@ msgstr "Empleado envío transportista"
 
 msgctxt "field:stock.shipment.out,carrier_service:"
 msgid "Carrier API Service"
-msgstr "Servicio transportista"
+msgstr "Servicio API transportista"
 
 msgctxt "field:stock.shipment.out,carrier_service_domain:"
 msgid "Carrier Domain"
 msgstr "Dominio transportista"
 
+msgctxt "field:stock.shipment.out,carrier_weight:"
+msgid "Carrier Weight"
+msgstr "Peso transportista"
+
+msgctxt "field:stock.shipment.out,carrier_weight_uom:"
+msgid "Carrier Weight UOM"
+msgstr "Peso transportista UOM"
+
+msgctxt "field:stock.shipment.out,email:"
+msgid "E-Mail"
+msgstr "Email"
+
+msgctxt "field:stock.shipment.out,fax:"
+msgid "Fax"
+msgstr "Fax"
+
+msgctxt "field:stock.shipment.out,mobile:"
+msgid "Mobile"
+msgstr "Móbil"
+
+msgctxt "field:stock.shipment.out,phone:"
+msgid "Phone"
+msgstr "Teléfono"
+
 msgctxt "help:carrier.get.label.start,codes:"
 msgid ""
 "Introduce codes or tracking reference of shipments separated by commas."
-msgstr "Introduzca códigos o referencias de envíos separados por comas."
-
-msgctxt "help:stock.shipment.out,carrier_cashondelivery:"
-msgid ""
 msgstr ""
+"Introducir códigos o referencia tracking del albarán separados por comas."
 
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
-msgstr "El paquete ha sido enviado"
+msgstr "El paquete no se ha enviado."
 
 msgctxt "help:stock.shipment.out,carrier_notes:"
 msgid "Add notes when send API shipment"
-msgstr "Notas para añadir al transportista"
+msgstr "Añadir notas cuando se envía a la API"
 
 msgctxt "help:stock.shipment.out,carrier_printed:"
 msgid "Picking is already printed"
-msgstr "El albarán ya está impreso."
+msgstr "El albarán ya se ha imprimido"
 
 msgctxt "model:carrier.get.label.result,name:"
 msgid "Carrier Get Label Result"
-msgstr "Resultado de obtención de etiquetas de transportista"
+msgstr "Resultado etiqueta transportista"
 
 msgctxt "model:carrier.get.label.start,name:"
 msgid "Carrier Get Label Start"
-msgstr "Inicio de obtención de etiquetas de transportista"
+msgstr "Inicio etiqueta transportista"
 
 msgctxt "model:carrier.manifest.start,name:"
 msgid "Carrier Manifest Start"
-msgstr "Inicio manifiesto"
+msgstr "Inicio manifiesto transportista"
 
 msgctxt "model:carrier.print.shipment.result,name:"
 msgid "Carrier Print Shipment Result"
-msgstr "Resultado impresión albarán transportista"
+msgstr "Resultado impressión transportista"
 
 msgctxt "model:carrier.print.shipment.start,name:"
 msgid "Carrier Print Shipment Start"
-msgstr "Inicio impresión albarán transportista"
+msgstr "Inicio impressión transportista"
 
 msgctxt "model:carrier.result.manifest,name:"
 msgid "Carrier Enter Manifest"
-msgstr "Manifiesto de entrada del transportista"
+msgstr "Manifiesto transportista"
 
 msgctxt "model:carrier.send.shipments.result,name:"
 msgid "Carrier Send Shipments Result"
-msgstr "Resultado envío albaranes a mensajero"
+msgstr "Resultado envío transportista"
 
 msgctxt "model:carrier.send.shipments.start,name:"
 msgid "Carrier Send Shipments Start"
-msgstr "Inicio envío albaranes a mensajero"
+msgstr "Inicio envío transportista"
 
 msgctxt "model:ir.action,name:act_carrier_manifest"
 msgid "Manifest"
@@ -205,91 +178,163 @@ msgstr "Obtener etiquetas"
 
 msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
 msgid "Label API Carrier"
-msgstr "Imprimir etiquetas del transportista"
+msgstr "Carrier API etiqueta"
 
 msgctxt "model:ir.action,name:wizard_carrier_send_shipments"
 msgid "Send API Carrier"
-msgstr "Enviar a un transportista"
+msgstr "Enviar API transportista"
+
+msgctxt "model:ir.message,text:msg_add_carrier"
+msgid "Select a carrier in shipment \"%(shipment)s\""
+msgstr "Selecciona el transportista en el albarán \"%(shipment)s\""
+
+msgctxt "model:ir.message,text:msg_date_format_error"
+msgid ""
+"Error building domain of type Date.\n"
+"Please, check the format:\n"
+"Field: %(field)s\n"
+"Value: %(value)s\n"
+"Format: %%d/%%m/%%Y"
+msgstr ""
+"Error construeindo el dominio del tipo Date.\n"
+"Compruebe el formato:\n"
+"Campo: %(field)s\n"
+"Valor: %(value)s\n"
+"Formato: %%d/%%m/%%Y"
+
+msgctxt "model:ir.message,text:msg_datetime_format_error"
+msgid ""
+"Error building domain of type DateTime or Timestamp.\n"
+"Please, check the format:\n"
+"Field: %(field)s\n"
+"Value: %(value)s\n"
+"Format: %%d/%%m/%%Y %%H:%%M:%%S"
+msgstr ""
+"Error construeindo el dominio del tipo DateTime o Timestamp.\n"
+"Compruebe el formato:\n"
+"Campo: %(field)s\n"
+"Valor: %(value)s\n"
+"Format: %%d/%%m/%%Y %%H:%%M:%%S"
+
+msgctxt "model:ir.message,text:msg_domain_field_error"
+msgid "Error in field domain: %(domain)s"
+msgstr "Error en el dominio del campo: %(domain)s"
+
+msgctxt "model:ir.message,text:msg_domain_field_help"
+msgid "This field must returns a variable called \"domain\" with a Tryton domain."
+msgstr ""
+"El campo devuelve una variable llamada \"domain\" con un dominio de Tryton."
+
+msgctxt "model:ir.message,text:msg_error_domain"
+msgid "Error \"%s(domain)s\"."
+msgstr "Error \"%s(domain)s\"."
+
+msgctxt "model:ir.message,text:msg_not_carrier"
+msgid "Shipment \"%(name)s\" not have carrier"
+msgstr "El albarán \"%(name)s\" no dispone de transportista"
+
+msgctxt "model:ir.message,text:msg_not_carrier_api"
+msgid "Carrier \"%(name)s\" not have API"
+msgstr "El transportista \"%(name)s\" no dispone de API"
+
+msgctxt "model:ir.message,text:msg_not_implemented_error"
+msgid "Error. Field of type %(field)s is not implemented yet."
+msgstr "Error. El tipo de campo %(field)s  no se ha implementado."
+
+msgctxt "model:ir.message,text:msg_number_format_error"
+msgid ""
+"Error building domain of type Float.\n"
+"Please, ensure you have put a number.\n"
+"Field: %(field)s\n"
+"Value: %(value)s"
+msgstr ""
+"Error construeindo el dominio del tipo Float.\n"
+"Compruebe el formato:\n"
+"Campo: %(field)s\n"
+"Valor: %(value)s"
+
+msgctxt "model:ir.message,text:msg_several_shipments"
+msgid "Cannot print carrier labels for more than one shipment at once."
+msgstr ""
+"No puede imprimir etiquetas cuando han seleccionado más de un albarán."
+
+msgctxt "model:ir.message,text:msg_shipment_info"
+msgid ""
+"Successfully:\n"
+"%(references)s\n"
+"\n"
+"Errors:\n"
+"%(errors)s"
+msgstr ""
+"Enviados correctamente:\n"
+"%(references)s\n"
+"\n"
+"Errores:\n"
+"%(errors)s"
+
+msgctxt "model:ir.message,text:msg_shipment_not_tracking_ref"
+msgid "The is not a carrier tracking reference in shipment \"%(shipment)s\"."
+msgstr "No hay una referencia de tracking en el albarán \"%(shipment)s\"."
+
+msgctxt "model:ir.message,text:msg_shipment_sended"
+msgid "Shipment \"%(shipment)s\" was sended. Can not delivery again."
+msgstr "El albarán \"%(shipment)s\" se ha enviado. No se puede enviar otra vez."
+
+msgctxt "model:ir.message,text:msg_shipment_zip"
+msgid "Not available \"%(shipment)s\" to delivery at zip: \"%(zip)s\""
+msgstr "No se puede enviar el albarán \"%(shipment)s\" al código postal: \"%(zip)s\""
+
+msgctxt "model:ir.message,text:msg_shipmnet_delivery_address"
+msgid ""
+"Shipment \"%(name)s\" not have address details: street, zip, city or "
+"country."
+msgstr ""
+"El albarán \"%(name)s\" no dispone a la direccion: calle, código postal, "
+"ciudad o país."
+
+msgctxt "model:ir.model.button,string:wizard_carrier_print_shipment_button"
+msgid "Print API Carrier"
+msgstr "Impresión API transportista"
+
+msgctxt "model:ir.model.button,string:wizard_carrier_send_shipments_button"
+msgid "Send API Carrier"
+msgstr "Enviar API transportista"
 
 msgctxt "model:ir.ui.menu,name:get_carrier_labels"
 msgid "Carrier Labels"
-msgstr "Etiquetas de transportista"
+msgstr "Etiquetas transportista"
 
 msgctxt "model:ir.ui.menu,name:menu_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifiesto"
-
-msgctxt "view:carrier.get.label.result:"
-msgid "Print Shipment"
-msgstr "Imprimir albarán"
-
-msgctxt "view:carrier.get.label.start:"
-msgid "Get labels from carrier"
-msgstr "Obtener etiquetas de transportista"
-
-msgctxt "view:carrier.manifest.start:"
-msgid "Manifest"
-msgstr "Manifiesto"
-
-msgctxt "view:carrier.print.shipment.result:"
-msgid "Print Shipment"
-msgstr "Imprimir albarán"
 
 msgctxt "view:carrier.print.shipment.start:"
 msgid ""
 "Download a shipment label (PDF) from API carrier (when API carrier available"
 " download option)"
 msgstr ""
-"Descarga una entiqueta de envío (PDF) desde la API del transportista (cuando"
-" la opción de descarga de la API del transportista está disponible)."
-
-msgctxt "view:carrier.print.shipment.start:"
-msgid "Print Shipment"
-msgstr "Imprimir albarán"
+"Descarga una etiqueta del albarán (PDF) de la API del transportista (cuando"
+"  API del transportista dispone de esta opción)"
 
 msgctxt "view:carrier.print.shipment.start:"
 msgid "Print label from carrier"
-msgstr "Imprime etiqueta del transportista"
-
-msgctxt "view:carrier.result.manifest:"
-msgid "Manifest"
-msgstr "Manifiesto"
+msgstr "Imprimir albaran al transportista"
 
 msgctxt "view:carrier.send.shipments.result:"
 msgid "Labels"
 msgstr "Etiquetas"
-
-msgctxt "view:carrier.send.shipments.result:"
-msgid "Send Shipment"
-msgstr "Enviar albarán"
-
-msgctxt "view:carrier.send.shipments.start:"
-msgid "Send API Carrier"
-msgstr "Enviar a un transportista"
 
 msgctxt "view:carrier.send.shipments.start:"
 msgid ""
 "Send shipments in state package or done, related a carrier and not "
 "deliveried"
 msgstr ""
-"Envía albaranes en estado empaquetado o realizado, relacionado con un "
-"transportista y no entregado"
+"Enviar el albarán en el estado del paquete o finalizado, relacionado con el "
+"transportista y todavía no enviado"
 
 msgctxt "view:carrier.send.shipments.start:"
 msgid "Send shipments to carrier"
-msgstr "Envía albaranes al transportista"
-
-msgctxt "view:stock.shipment.out:"
-msgid "Print Shipment"
-msgstr "Imprimir albarán"
-
-msgctxt "view:stock.shipment.out:"
-msgid "Send API Carrier"
-msgstr "Enviar a la API del transportista"
-
-msgctxt "view:stock.shipment.out:"
-msgid "Send Shipment"
-msgstr "Enviar albarán"
+msgstr "Enviar albaraners transportista"
 
 msgctxt "wizard_button:carrier.get.label,result,end:"
 msgid "Close"
@@ -313,7 +358,7 @@ msgstr "Cancelar"
 
 msgctxt "wizard_button:carrier.manifest,start,manifest:"
 msgid "Get Manifest"
-msgstr "Descargar manifiesto"
+msgstr "Obtener Manifiesto"
 
 msgctxt "wizard_button:carrier.print.shipment,result,end:"
 msgid "Close"
