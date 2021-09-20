@@ -229,6 +229,8 @@ class ShipmentOut(metaclass=PoolMeta):
         API = pool.get('carrier.api')
         Config = pool.get('stock.configuration')
         Attachment = pool.get('ir.attachment')
+        ModelData = pool.get('ir.model.data')
+        ActionReport = pool.get('ir.action.report')
 
         config_stock = Config(1)
         attach_label = config_stock.attach_label
@@ -236,10 +238,7 @@ class ShipmentOut(metaclass=PoolMeta):
         if not shipment.carrier:
             message = gettext('carrier_send_shipments.msg_not_carrier',
                 name=shipment.rec_name)
-            refs = []
-            labs = []
-            errs = [message]
-            return refs, labs, errs
+            return [], [], [message]
 
         apis = API.search([('carriers', 'in', [shipment.carrier.id])],
             limit=1)
@@ -247,32 +246,43 @@ class ShipmentOut(metaclass=PoolMeta):
             message = gettext('carrier_send_shipments.msg_not_carrier_api',
                 name=shipment.rec_name)
             logger.warning(message)
-            refs = []
-            labs = []
-            errs = [message]
-            return refs, labs, errs
+            return [], [], [message]
 
         api, = apis
 
-        if not shipment.delivery_address.street or not shipment.delivery_address.zip \
-                or not shipment.delivery_address.city or not shipment.delivery_address.country:
+        if (not shipment.delivery_address.street
+                or not shipment.delivery_address.zip
+                or not shipment.delivery_address.city
+                or not shipment.delivery_address.country):
             message = gettext('carrier_send_shipments.msg_shipmnet_delivery_address',
                 name=shipment.rec_name)
             logger.warning(message)
-            refs = []
-            labs = []
-            errs = [message]
-        else:
-            send_shipment = getattr(Shipment, 'send_%s' % api.method)
-            refs, labs, errs = send_shipment(api, [shipment])
+            return [], [], [message]
 
-            if attach_label and labs:
-                attach = Attachment(
-                    name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
-                    type='data',
-                    data=fields.Binary.cast(open(labs[0], "rb").read()),
-                    resource=str(shipment))
-                attach.save()
+        send_shipment = getattr(Shipment, 'send_%s' % api.method)
+        refs, labs, errs = send_shipment(api, [shipment])
+
+        Printer = None
+        try:
+            Printer = pool.get('printer')
+        except KeyError:
+            pass
+
+        if Printer and labs and len(labs) == 1:
+            pdf_name = refs[0]
+            label, = labs
+            action_id = ModelData.get_id('carrier_send_shipments', 'report_label')
+            action_report = ActionReport(action_id)
+            Printer.send_report(api.print_report, bytearray(label),
+                pdf_name, action_report)
+
+        if attach_label and labs:
+            attach = Attachment(
+                name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
+                type='data',
+                data=fields.Binary.cast(open(labs[0], "rb").read()),
+                resource=str(shipment))
+            attach.save()
         return refs, labs, errs
 
 
