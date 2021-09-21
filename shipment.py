@@ -11,23 +11,26 @@ from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.report import Report
 from trytond.pyson import Bool, Eval, Not, Equal
+from trytond.config import config
+from trytond.tools import slugify
 import logging
 import tarfile
 import tempfile
 
-__all__ = ['Configuration', 'ShipmentOut', 'CarrierSendShipmentsStart',
-    'CarrierSendShipmentsResult', 'CarrierSendShipments',
-    'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult',
-    'CarrierPrintShipment', 'CarrierGetLabelStart', 'CarrierGetLabelResult',
-    'CarrierGetLabel']
+__all__ = ['ShipmentOut',
+    'CarrierSendShipmentsStart', 'CarrierSendShipmentsResult', 'CarrierSendShipments',
+    'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult', 'CarrierPrintShipment',
+    ]
 
 _SHIPMENT_STATES = ['packed', 'done']
 logger = logging.getLogger(__name__)
 
-
-class Configuration(metaclass=PoolMeta):
-    __name__ = 'stock.configuration'
-    attach_label = fields.Boolean('Attach Label')
+if config.getboolean('carrier_send_shipments', 'filestore', default=False):
+    file_id = 'carrier_tracking_label_id'
+    store_prefix = config.get('carrier_send_shipments', 'store_prefix', default=None)
+else:
+    file_id = None
+    store_prefix = None
 
 
 class ShipmentOut(metaclass=PoolMeta):
@@ -71,6 +74,9 @@ class ShipmentOut(metaclass=PoolMeta):
         'Carrier Weight UOM'), 'on_change_with_carrier_weight_uom')
     carrier_send_employee = fields.Many2One('company.employee', 'Carrier Send Employee', readonly=True)
     carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
+    carrier_tracking_label = fields.Binary('Carrier Tracking Label', readonly=True,
+        file_id=file_id, store_prefix=store_prefix)
+    carrier_tracking_label_id = fields.Char('Carrier Tracking Label ID', readonly=True)
 
     @classmethod
     def __setup__(cls):
@@ -171,6 +177,8 @@ class ShipmentOut(metaclass=PoolMeta):
         default = default.copy()
         default['carrier_delivery'] = None
         default['carrier_printed'] = None
+        default['carrier_tracking_label'] = None
+        default['carrier_tracking_label_id'] = None
         return super(ShipmentOut, cls).copy(shipments, default=default)
 
     def get_mechanism(self, name):
@@ -227,13 +235,8 @@ class ShipmentOut(metaclass=PoolMeta):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
-        Config = pool.get('stock.configuration')
-        Attachment = pool.get('ir.attachment')
         ModelData = pool.get('ir.model.data')
         ActionReport = pool.get('ir.action.report')
-
-        config_stock = Config(1)
-        attach_label = config_stock.attach_label
 
         if not shipment.carrier:
             message = gettext('carrier_send_shipments.msg_not_carrier',
@@ -261,28 +264,19 @@ class ShipmentOut(metaclass=PoolMeta):
 
         send_shipment = getattr(Shipment, 'send_%s' % api.method)
         refs, labs, errs = send_shipment(api, [shipment])
+        if errs:
+            return refs, labs, errs
 
-        Printer = None
-        try:
-            Printer = pool.get('printer')
-        except KeyError:
-            pass
-
-        if Printer and labs and len(labs) == 1:
-            pdf_name = refs[0]
-            label, = labs
-            action_id = ModelData.get_id('carrier_send_shipments', 'report_label')
-            action_report = ActionReport(action_id)
-            Printer.send_report(api.print_report, bytearray(label),
-                pdf_name, action_report)
-
-        if attach_label and labs:
-            attach = Attachment(
-                name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
-                type='data',
-                data=fields.Binary.cast(open(labs[0], "rb").read()),
-                resource=str(shipment))
-            attach.save()
+        # call report
+        action_id = ModelData.get_id('carrier_send_shipments', 'report_label')
+        action_report = ActionReport(action_id)
+        Report = pool.get(action_report.report_name, type='report')
+        Report.execute([shipment], {
+            'model': 'stock.shipment.out',
+            'id': shipment.id,
+            'ids': [shipment.id],
+            'action_id': action_id,
+            })
         return refs, labs, errs
 
 
@@ -531,101 +525,6 @@ class CarrierPrintShipment(Wizard):
         return 'result'
 
 
-class CarrierGetLabelStart(ModelView):
-    'Carrier Get Label Start'
-    __name__ = 'carrier.get.label.start'
-    codes = fields.Char('Codes', required=True,
-        help='Introduce codes or tracking reference of shipments separated by commas.')
-
-
-class CarrierGetLabelResult(ModelView):
-    'Carrier Get Label Result'
-    __name__ = 'carrier.get.label.result'
-    attachments = fields.One2Many('ir.attachment', None, 'Attachments',
-        states={
-            'invisible': Not(Bool(Eval('attachments'))),
-            'readonly': True,
-            })
-
-
-class CarrierGetLabel(Wizard):
-    'Carrier Get Label'
-    __name__ = "carrier.get.label"
-    start = StateView('carrier.get.label.start',
-        'carrier_send_shipments.carrier_get_label_start_view_form', [
-            Button('Cancel', 'end', 'tryton-cancel'),
-            Button('Get', 'get', 'tryton-ok', default=True),
-            ])
-    get = StateTransition()
-    result = StateView('carrier.get.label.result',
-        'carrier_send_shipments.carrier_get_label_result_view_form', [
-            Button('Close', 'end', 'tryton-close'),
-            ])
-
-    def transition_get(self):
-        pool = Pool()
-        Attachment = pool.get('ir.attachment')
-        Shipment = pool.get('stock.shipment.out')
-        API = pool.get('carrier.api')
-
-        codes = [l.strip() for l in self.start.codes.split(',')]
-        shipments = Shipment.search([
-                ('state', 'in', _SHIPMENT_STATES),
-                ['OR',
-                    ('number', 'in', codes),
-                    ('carrier_tracking_ref', 'in', codes),
-                ]])
-
-        if not shipments:
-            return 'result'
-
-        apis = {}
-        for shipment in shipments:
-            if not shipment.carrier:
-                continue
-            carrier_apis = API.search([('carriers', 'in', [shipment.carrier.id])],
-                limit=1)
-            if not carrier_apis:
-                continue
-            api, = carrier_apis
-
-            if apis.get(api.method):
-                shipments = apis.get(api.method)
-                shipments.append(shipment)
-            else:
-                shipments = [shipment]
-            apis[api.method] = shipments
-
-        attachments = []
-        for method, shipments in apis.items():
-            api, = API.search([('method', '=', method)],
-                limit=1)
-            print_label = getattr(Shipment, 'print_labels_%s' % method)
-            labels = print_label(api, shipments)
-
-            for label, shipment in zip(labels, shipments):
-                attach = {
-                    'name': datetime.now().strftime("%y/%m/%d %H:%M:%S"),
-                    'type': 'data',
-                    'data': fields.Binary.cast(open(label, "rb").read()),
-                    'description': '%s - %s' % (shipment.number, method),
-                    'resource': '%s' % str(shipment),
-                    }
-
-                attachments.append(attach)
-
-        attachments = Attachment.create(attachments)
-        self.result.attachments = attachments
-
-        return 'result'
-
-    def default_result(self, fields):
-        return {
-            'attachments': [a.id
-                for a in getattr(self.result, 'attachments', [])],
-            }
-
-
 class LabelReport(Report):
     __name__ = 'stock.shipment.out.label.report'
 
@@ -635,41 +534,48 @@ class LabelReport(Report):
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         ActionReport = pool.get('ir.action.report')
+        cls.check_access()
 
         if not ids or len(ids) != 1:
             raise UserError(
                     gettext('carrier_send_shipments.msg_several_shipments'))
 
+        action_id = data.get('action_id')
+        if action_id is None:
+            action_reports = ActionReport.search([
+                    ('report_name', '=', cls.__name__)
+                    ])
+            assert action_reports, '%s not found' % cls
+            action_report = action_reports[0]
+        else:
+            action_report = ActionReport(action_id)
+
         shipment = Shipment(ids[0])
         if not shipment.carrier:
             return
-        carrier_api = API.search([
+
+        carrier_apis = API.search([
             ('carriers', 'in', [shipment.carrier.id]),
             ], limit=1)
-        if not carrier_api:
+        if not carrier_apis:
             return
 
-        api, = carrier_api
-        if (not api.print_report
-                or not hasattr(Shipment, 'get_labels_%s' % api.method)):
+        api, = carrier_apis
+        if not api.print_report:
             return
 
-        pdf_name = shipment.carrier_tracking_ref
-        print_label = getattr(Shipment, 'get_labels_%s' % api.method)
-        labels = print_label(api, [shipment])
-        if not labels:
-            return
+        filename = slugify('%s-%s' % (api.method, action_report.name))
 
-        Printer = None
-        try:
-            Printer = pool.get('printer')
-        except KeyError:
-            pass
+        if not shipment.carrier_tracking_label:
+            if not hasattr(Shipment, 'get_labels_%s' % api.method):
+                return
 
-        label = labels[0]
-        if Printer:
-            action_id = data.get('action_id')
-            action_report = ActionReport(action_id)
-            return Printer.send_report(api.print_report, bytearray(label),
-                pdf_name, action_report)
-        return (api.print_report, bytearray(label), False, pdf_name)
+            print_label = getattr(Shipment, 'get_labels_%s' % api.method)
+            labels = print_label(api, [shipment])
+            if not labels:
+                return
+            label = labels[0]
+        else:
+            label = shipment.carrier_tracking_label
+
+        return (api.print_report, bytearray(label), action_report.direct_print, filename)

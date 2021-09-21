@@ -58,10 +58,6 @@ msgctxt "field:carrier.send.shipments.start,shipments:"
 msgid "Shipments"
 msgstr "Albaranes"
 
-msgctxt "field:stock.configuration,attach_label:"
-msgid "Attach Label"
-msgstr "Adjuntar etiqueta"
-
 msgctxt "field:stock.shipment.out,carrier_delivery:"
 msgid "Delivered"
 msgstr "Entregado"
@@ -77,6 +73,14 @@ msgstr "Imprimido"
 msgctxt "field:stock.shipment.out,carrier_send_date:"
 msgid "Carrier Send Date"
 msgstr "Fecha envío transportista"
+
+msgctxt "field:stock.shipment.out,carrier_tracking_label:"
+msgid "Carrier Tracking Label"
+msgstr "Etiqueta transportista"
+
+msgctxt "field:stock.shipment.out,carrier_tracking_label_id:"
+msgid "Carrier Tracking Label ID"
+msgstr "Etiqueta transportista ID"
 
 msgctxt "field:stock.shipment.out,carrier_send_employee:"
 msgid "Carrier Send Employee"
