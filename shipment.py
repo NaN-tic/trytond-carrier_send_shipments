@@ -141,7 +141,7 @@ class ShipmentOut(metaclass=PoolMeta):
         carrier_notes = None
         if self.customer:
             address = self.customer.address_get(type='delivery')
-            if address.comment_shipment:
+            if address and address.comment_shipment:
                 carrier_notes = self._comment2txt(address.comment_shipment)
             elif self.customer.comment_shipment:
                 carrier_notes = self._comment2txt(self.customer.comment_shipment)
