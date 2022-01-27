@@ -17,17 +17,14 @@ import logging
 import tarfile
 import tempfile
 
-__all__ = ['ShipmentOut',
-    'CarrierSendShipmentsStart', 'CarrierSendShipmentsResult', 'CarrierSendShipments',
-    'CarrierPrintShipmentStart', 'CarrierPrintShipmentResult', 'CarrierPrintShipment',
-    ]
 
 _SHIPMENT_STATES = ['packed', 'done']
 logger = logging.getLogger(__name__)
 
 if config.getboolean('carrier_send_shipments', 'filestore', default=False):
     file_id = 'carrier_tracking_label_id'
-    store_prefix = config.get('carrier_send_shipments', 'store_prefix', default=None)
+    store_prefix = config.get('carrier_send_shipments', 'store_prefix',
+        default=None)
 else:
     file_id = None
     store_prefix = None
@@ -41,7 +38,8 @@ class ShipmentOut(metaclass=PoolMeta):
     email = fields.Function(fields.Char('E-Mail'), 'get_mechanism')
     carrier_service_domain = fields.Function(fields.One2Many(
             'carrier.api.service', None, 'Carrier Domain'),
-        'on_change_with_carrier_service_domain', setter='set_carrier_service_domain')
+        'on_change_with_carrier_service_domain',
+        setter='set_carrier_service_domain')
     carrier_service = fields.Many2One('carrier.api.service',
         'Carrier API Service',
         domain=[
@@ -72,11 +70,13 @@ class ShipmentOut(metaclass=PoolMeta):
         depends=['weight_digits']), 'on_change_with_carrier_weight')
     carrier_weight_uom = fields.Function(fields.Many2One('product.uom',
         'Carrier Weight UOM'), 'on_change_with_carrier_weight_uom')
-    carrier_send_employee = fields.Many2One('company.employee', 'Carrier Send Employee', readonly=True)
+    carrier_send_employee = fields.Many2One('company.employee',
+        'Carrier Send Employee', readonly=True)
     carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
-    carrier_tracking_label = fields.Binary('Carrier Tracking Label', readonly=True,
-        file_id=file_id, store_prefix=store_prefix)
-    carrier_tracking_label_id = fields.Char('Carrier Tracking Label ID', readonly=True)
+    carrier_tracking_label = fields.Binary('Carrier Tracking Label',
+        readonly=True, file_id=file_id, store_prefix=store_prefix)
+    carrier_tracking_label_id = fields.Char('Carrier Tracking Label ID',
+        readonly=True)
 
     @classmethod
     def __setup__(cls):
@@ -151,7 +151,8 @@ class ShipmentOut(metaclass=PoolMeta):
             if address.comment_shipment:
                 carrier_notes = self._comment2txt(address.comment_shipment)
             elif self.customer.comment_shipment:
-                carrier_notes = self._comment2txt(self.customer.comment_shipment)
+                carrier_notes = self._comment2txt(
+                    self.customer.comment_shipment)
         self.carrier_notes = carrier_notes
 
     def on_change_carrier(self):
@@ -257,7 +258,8 @@ class ShipmentOut(metaclass=PoolMeta):
                 or not shipment.delivery_address.zip
                 or not shipment.delivery_address.city
                 or not shipment.delivery_address.country):
-            message = gettext('carrier_send_shipments.msg_shipmnet_delivery_address',
+            message = gettext(
+                'carrier_send_shipments.msg_shipmnet_delivery_address',
                 name=shipment.rec_name)
             logger.warning(message)
             return [], [], [message]
@@ -344,14 +346,15 @@ class CarrierSendShipments(Wizard):
                 carrier_labels = fields.Binary.cast(open(label, "rb").read())
                 file_name = label.split('/')[2]
             elif len(labels) > 1:  # Multiple labels generate tgz
-                temp = tempfile.NamedTemporaryFile(prefix='%s-carrier-' % dbname,
-                    delete=False)
+                temp = tempfile.NamedTemporaryFile(
+                    prefix='%s-carrier-' % dbname, delete=False)
                 temp.close()
                 with tarfile.open(temp.name, "w:gz") as tar:
                     for path_label in labels:
                         tar.add(path_label)
                 tar.close()
-                carrier_labels = fields.Binary.cast(open(temp.name, "rb").read())
+                carrier_labels = fields.Binary.cast(
+                    open(temp.name, "rb").read())
                 file_name = '%s.tgz' % temp.name.split('/')[2]
 
         self.result.info = info
@@ -369,28 +372,33 @@ class CarrierSendShipments(Wizard):
         if active_ids:
             # validate some shipment data before to send carrier API
             for shipment in Shipment.browse(active_ids):
-                if not shipment.state in _SHIPMENT_STATES:
-                    raise UserError(gettext('carrier_send_shipments.msg_shipment_state',
-                        shipment=shipment.number,
-                        state=shipment.state,
-                        states=', '.join(_SHIPMENT_STATES)))
+                if shipment.state not in _SHIPMENT_STATES:
+                    raise UserError(gettext(
+                            'carrier_send_shipments.msg_shipment_state',
+                            shipment=shipment.number,
+                            state=shipment.state,
+                            states=', '.join(_SHIPMENT_STATES)))
                 if not shipment.carrier:
-                    raise UserError(gettext('carrier_send_shipments.msg_add_carrier',
-                        shipment=shipment.number))
+                    raise UserError(gettext(
+                            'carrier_send_shipments.msg_add_carrier',
+                            shipment=shipment.number))
                 if shipment.carrier_tracking_ref:
-                    raise UserError(gettext('carrier_send_shipments.msg_shipment_sended',
-                        shipment=shipment.number))
+                    raise UserError(gettext(
+                            'carrier_send_shipments.msg_shipment_sended',
+                            shipment=shipment.number))
                 if not shipment.carrier.apis:
-                    raise UserError(gettext('carrier_send_shipments.msg_not_carrier_api',
-                        name=shipment.carrier.rec_name))
+                    raise UserError(gettext(
+                            'carrier_send_shipments.msg_not_carrier_api',
+                            name=shipment.carrier.rec_name))
                 api, = shipment.carrier.apis
                 if api.zips:
                     zips = api.zips.split(',')
                     if (shipment.delivery_address.zip
                             and shipment.delivery_address.zip in zips):
-                        raise UserError(gettext('carrier_send_shipments.msg_shipment_zip',
-                            shipment=shipment.number,
-                            zip=shipment.delivery_address.zip))
+                        raise UserError(gettext(
+                                'carrier_send_shipments.msg_shipment_zip',
+                                shipment=shipment.number,
+                                zip=shipment.delivery_address.zip))
 
         default = {}
         default['shipments'] = active_ids
@@ -450,8 +458,10 @@ class CarrierPrintShipment(Wizard):
             # validate some shipment data before to send carrier API
             for shipment in Shipment.browse(active_ids):
                 if not shipment.carrier_tracking_ref:
-                    raise UserError(gettext('carrier_send_shipments.msg_shipment_not_tracking_ref',
-                        shipment=shipment.number))
+                    raise UserError(gettext(
+                            'carrier_send_shipments.'
+                            'msg_shipment_not_tracking_ref',
+                            shipment=shipment.number))
 
         default = {}
         default['shipments'] = active_ids
@@ -578,4 +588,16 @@ class LabelReport(Report):
         else:
             label = shipment.carrier_tracking_label
 
-        return (api.print_report, bytearray(label), action_report.direct_print, filename)
+        Model = 'printer'
+        Printer = None
+        try:
+            Printer = pool.get(Model)
+        except KeyError:
+            logger.warning('Redirect model "%s" not found.', Model)
+
+        if Printer:
+            return Printer.send_report(api.print_report, bytearray(label),
+                filename, action_report)
+
+        return (api.print_report, bytearray(label), action_report.direct_print,
+            filename)
