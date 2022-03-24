@@ -13,6 +13,7 @@ from trytond.report import Report
 from trytond.pyson import Bool, Eval, Not, Equal
 from trytond.config import config
 from trytond.tools import slugify
+from trytond.rpc import RPC
 import logging
 import tarfile
 import tempfile
@@ -537,6 +538,11 @@ class CarrierPrintShipment(Wizard):
 
 class LabelReport(Report):
     __name__ = 'stock.shipment.out.label.report'
+
+    @classmethod
+    def __setup__(cls):
+        super(LabelReport, cls).__setup__()
+        cls.__rpc__['execute'] = RPC(False)
 
     @classmethod
     def execute(cls, ids, data):
