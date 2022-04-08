@@ -397,20 +397,12 @@ class CarrierSendShipments(Wizard):
                 api, = shipment.carrier.apis
                 if api.zips:
                     zips = api.zips.split(',')
-<<<<<<< HEAD
-                    if (shipment.delivery_address.postal_code
-                            and shipment.delivery_address.postal_code in zips):
-                        raise UserError(gettext('carrier_send_shipments.msg_shipment_zip',
-                            shipment=shipment.number,
-                            zip=shipment.delivery_address.postal_code))
-=======
                     if (shipment.delivery_address.zip
                             and shipment.delivery_address.zip in zips):
                         raise UserError(gettext(
                                 'carrier_send_shipments.msg_shipment_zip',
                                 shipment=shipment.number,
                                 zip=shipment.delivery_address.zip))
->>>>>>> 11a3939 (Add support to Printer (#2))
 
         default = {}
         default['shipments'] = active_ids
