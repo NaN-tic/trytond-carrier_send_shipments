@@ -9,7 +9,6 @@ from . import manifest
 
 def register():
     Pool.register(
-        shipment.Configuration,
         shipment.ShipmentOut,
         shipment.CarrierSendShipmentsStart,
         shipment.CarrierSendShipmentsResult,
@@ -18,14 +17,11 @@ def register():
         sale.Sale,
         manifest.CarrierManifestStart,
         manifest.CarrierEnterManifest,
-        shipment.CarrierGetLabelStart,
-        shipment.CarrierGetLabelResult,
         module='carrier_send_shipments', type_='model')
     Pool.register(
         shipment.CarrierSendShipments,
         shipment.CarrierPrintShipment,
         manifest.CarrierManifest,
-        shipment.CarrierGetLabel,
         module='carrier_send_shipments', type_='wizard')
     Pool.register(
         shipment.LabelReport,
