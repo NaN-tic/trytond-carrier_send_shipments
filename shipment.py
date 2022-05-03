@@ -84,7 +84,7 @@ class ShipmentOut(metaclass=PoolMeta):
         super(ShipmentOut, cls).__setup__()
         if hasattr(cls, 'carrier_cashondelivery_total'):
             if 'carrier' not in cls.carrier_cashondelivery_total.depends:
-                cls.carrier_cashondelivery_total.depends.append('carrier')
+                cls.carrier_cashondelivery_total.depends.add('carrier')
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
