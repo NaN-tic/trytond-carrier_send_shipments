@@ -2,7 +2,7 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from datetime import datetime
-from trytond.model import ModelView, fields
+from trytond.model import ModelSQL, ModelView, fields
 from trytond.wizard import (Wizard, StateTransition, StateView, Button,
     StateAction)
 from trytond.i18n import gettext
@@ -20,6 +20,8 @@ import tempfile
 
 
 _SHIPMENT_STATES = ['packed', 'done']
+_SHIPMENT_RETURN_STATES = ['draft']
+
 logger = logging.getLogger(__name__)
 
 if config.getboolean('carrier_send_shipments', 'filestore', default=False):
@@ -31,8 +33,7 @@ else:
     store_prefix = None
 
 
-class ShipmentOut(metaclass=PoolMeta):
-    __name__ = 'stock.shipment.out'
+class CarrierSendShipmentsMixin(ModelSQL, ModelView):
     phone = fields.Function(fields.Char('Phone'), 'get_mechanism')
     mobile = fields.Function(fields.Char('Mobile'), 'get_mechanism')
     fax = fields.Function(fields.Char('Fax'), 'get_mechanism')
@@ -81,21 +82,10 @@ class ShipmentOut(metaclass=PoolMeta):
 
     @classmethod
     def __setup__(cls):
-        super(ShipmentOut, cls).__setup__()
+        super(CarrierSendShipmentsMixin, cls).__setup__()
         if hasattr(cls, 'carrier_cashondelivery_total'):
             if 'carrier' not in cls.carrier_cashondelivery_total.depends:
                 cls.carrier_cashondelivery_total.depends.append('carrier')
-        cls._buttons.update({
-                'wizard_carrier_send_shipments': {
-                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
-                        (Eval('carrier_delivery')) |
-                        Not(Bool(Eval('carrier'))),
-                    },
-                'wizard_carrier_print_shipment': {
-                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
-                        (Eval('carrier_printed')) | Not(Bool(Eval('carrier'))),
-                    },
-                })
 
     def _comment2txt(self, comment):
         return comment.replace('\n', '. ').replace('\r', '')
@@ -144,7 +134,7 @@ class ShipmentOut(metaclass=PoolMeta):
             return api.weight_api_unit.id if api.weight_api_unit else None
 
     def on_change_customer(self):
-        super(ShipmentOut, self).on_change_customer()
+        super(CarrierSendShipmentsMixin, self).on_change_customer()
 
         carrier_notes = None
         if self.customer:
@@ -157,20 +147,11 @@ class ShipmentOut(metaclass=PoolMeta):
         self.carrier_notes = carrier_notes
 
     def on_change_carrier(self):
-        super(ShipmentOut, self).on_change_carrier()
+        try:
+            super(CarrierSendShipmentsMixin, self).on_change_carrier()
+        except AttributeError:
+            pass
         self.carrier_service = None
-
-    @classmethod
-    @ModelView.button_action('carrier_send_shipments.'
-        'wizard_carrier_send_shipments')
-    def wizard_carrier_send_shipments(cls, shipments):
-        pass
-
-    @classmethod
-    @ModelView.button_action('carrier_send_shipments.'
-        'wizard_carrier_print_shipment')
-    def wizard_carrier_print_shipment(cls, shipments):
-        pass
 
     @classmethod
     def copy(cls, shipments, default=None):
@@ -181,7 +162,7 @@ class ShipmentOut(metaclass=PoolMeta):
         default['carrier_printed'] = None
         default['carrier_tracking_label'] = None
         default['carrier_tracking_label_id'] = None
-        return super(ShipmentOut, cls).copy(shipments, default=default)
+        return super(CarrierSendShipmentsMixin, cls).copy(shipments, default=default)
 
     def get_mechanism(self, name):
         pool = Pool()
@@ -235,10 +216,12 @@ class ShipmentOut(metaclass=PoolMeta):
     def send_shipment_api(cls, shipment):
         '''Send Shipmemt to carrier API'''
         pool = Pool()
-        Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         ModelData = pool.get('ir.model.data')
         ActionReport = pool.get('ir.action.report')
+
+        active_model = shipment.__name__
+        Shipment = pool.get(active_model)
 
         if not shipment.carrier:
             message = gettext('carrier_send_shipments.msg_not_carrier',
@@ -271,16 +254,74 @@ class ShipmentOut(metaclass=PoolMeta):
             return refs, labs, errs
 
         # call report
-        action_id = ModelData.get_id('carrier_send_shipments', 'report_label')
-        action_report = ActionReport(action_id)
-        Report = pool.get(action_report.report_name, type='report')
-        Report.execute([shipment], {
-            'model': 'stock.shipment.out',
-            'id': shipment.id,
-            'ids': [shipment.id],
-            'action_id': action_id,
-            })
+        if active_model == 'stock.shipment.out':
+            action_id = ModelData.get_id('carrier_send_shipments', 'report_label')
+            action_report = ActionReport(action_id)
+            Report = pool.get(action_report.report_name, type='report')
+            Report.execute([shipment], {
+                'model': 'stock.shipment.out',
+                'id': shipment.id,
+                'ids': [shipment.id],
+                'action_id': action_id,
+                })
         return refs, labs, errs
+
+
+class ShipmentOut(CarrierSendShipmentsMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.out'
+
+    @classmethod
+    def __setup__(cls):
+        super(ShipmentOut, cls).__setup__()
+        cls._buttons.update({
+                'wizard_carrier_send_shipments': {
+                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
+                        (Eval('carrier_delivery')) |
+                        Not(Bool(Eval('carrier'))),
+                    },
+                'wizard_carrier_print_shipment': {
+                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
+                        (Eval('carrier_printed')) | Not(Bool(Eval('carrier'))),
+                    },
+                })
+
+    @classmethod
+    @ModelView.button_action('carrier_send_shipments.'
+        'wizard_carrier_send_shipments')
+    def wizard_carrier_send_shipments(cls, shipments):
+        pass
+
+    @classmethod
+    @ModelView.button_action('carrier_send_shipments.'
+        'wizard_carrier_print_shipment')
+    def wizard_carrier_print_shipment(cls, shipments):
+        pass
+
+
+class ShipmentOutReturn(CarrierSendShipmentsMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.out.return'
+    carrier = fields.Many2One('carrier', 'Carrier', states={
+            'readonly': ~Eval('state').in_(['draft', 'waiting', 'assigned',
+                    'packed']),
+            },
+        depends=['state'])
+
+    @classmethod
+    def __setup__(cls):
+        super(ShipmentOutReturn, cls).__setup__()
+        cls._buttons.update({
+                'wizard_carrier_send_shipments_return': {
+                    'invisible': (~Eval('state').in_(_SHIPMENT_RETURN_STATES)) |
+                        (Eval('carrier_delivery')) |
+                        Not(Bool(Eval('carrier'))),
+                    },
+                })
+
+    @classmethod
+    @ModelView.button_action('carrier_send_shipments.'
+        'wizard_carrier_send_shipments_return')
+    def wizard_carrier_send_shipments_return(cls, shipments):
+        pass
 
 
 class CarrierSendShipmentsStart(ModelView):
@@ -315,7 +356,11 @@ class CarrierSendShipments(Wizard):
         'carrier_send_shipments.wizard_carrier_print_shipment')
 
     def transition_send(self):
-        Shipment = Pool().get('stock.shipment.out')
+        context = Transaction().context
+        active_model = context.get('active_model')
+        active_ids = context.get('active_ids')
+
+        Shipment = Pool().get(active_model)
 
         dbname = Transaction().database.name
         context = Transaction().context
@@ -327,7 +372,6 @@ class CarrierSendShipments(Wizard):
         labels = []
         errors = []
 
-        active_ids = context.get('active_ids')
         if active_ids:
             for shipment in Shipment.browse(active_ids):
                 refs, labs, errs = Shipment.send_shipment_api(shipment)
@@ -365,20 +409,26 @@ class CarrierSendShipments(Wizard):
         return 'result'
 
     def default_start(self, fields):
-        Shipment = Pool().get('stock.shipment.out')
-
         context = Transaction().context
-
+        active_model = context.get('active_model')
         active_ids = context.get('active_ids')
+
+        Shipment = Pool().get(active_model)
+
+        if active_model == 'stock.shipment.out.return':
+            states = _SHIPMENT_RETURN_STATES
+        else:
+            states = _SHIPMENT_STATES
+
         if active_ids:
             # validate some shipment data before to send carrier API
             for shipment in Shipment.browse(active_ids):
-                if shipment.state not in _SHIPMENT_STATES:
+                if shipment.state not in states:
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_shipment_state',
                             shipment=shipment.number,
                             state=shipment.state,
-                            states=', '.join(_SHIPMENT_STATES)))
+                            states=', '.join(states)))
                 if not shipment.carrier:
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_add_carrier',
