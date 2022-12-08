@@ -328,7 +328,15 @@ class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
     __name__ = 'carrier.send.shipments.start'
     shipments = fields.Many2Many('stock.shipment.out', None, None,
-        'Shipments', readonly=True)
+        'Shipments', readonly=True,
+        states={
+            'invisible': Bool(Eval('shipment_returns')),
+        }, depends=['shipment_returns'])
+    shipment_returns = fields.Many2Many('stock.shipment.out.return', None, None,
+        'Shipment Returns', readonly=True,
+        states={
+            'invisible': Bool(Eval('shipments')),
+        }, depends=['shipments'])
 
 
 class CarrierSendShipmentsResult(ModelView):
@@ -452,7 +460,11 @@ class CarrierSendShipments(Wizard):
                                 zip=shipment.delivery_address.zip))
 
         default = {}
-        default['shipments'] = active_ids
+        if active_model == 'stock.shipment.out.return':
+            default['shipment_returns'] = active_ids
+        else:
+            default['shipments'] = active_ids
+
         return default
 
     def default_result(self, fields):
