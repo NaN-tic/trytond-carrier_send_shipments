@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- This file is part carrier_send_shipments module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<data>
+    <xpath expr="/tree/field[@name='state']" position="after">
+        <field name="carrier"/>
+        <field name="carrier_delivery"/>
+        <field name="carrier_printed"/>
+        <field name="carrier_send_employee"/>
+        <field name="carrier_send_date" widget="date"/>
+    </xpath>
+</data>
