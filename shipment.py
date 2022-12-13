@@ -80,24 +80,6 @@ class CarrierSendShipmentsMixin(ModelSQL, ModelView):
     carrier_tracking_label_id = fields.Char('Carrier Tracking Label ID',
         readonly=True)
 
-    @classmethod
-    def __setup__(cls):
-        super(CarrierSendShipmentsMixin, cls).__setup__()
-        if hasattr(cls, 'carrier_cashondelivery_total'):
-            if 'carrier' not in cls.carrier_cashondelivery_total.depends:
-                cls.carrier_cashondelivery_total.depends.add('carrier')
-        cls._buttons.update({
-                'wizard_carrier_send_shipments': {
-                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
-                        (Eval('carrier_delivery')) |
-                        Not(Bool(Eval('carrier'))),
-                    },
-                'wizard_carrier_print_shipment': {
-                    'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
-                        (Eval('carrier_printed')) | Not(Bool(Eval('carrier'))),
-                    },
-                })
-
     def _comment2txt(self, comment):
         return comment.replace('\n', '. ').replace('\r', '')
 
@@ -284,6 +266,9 @@ class ShipmentOut(CarrierSendShipmentsMixin, metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(ShipmentOut, cls).__setup__()
+        if hasattr(cls, 'carrier_cashondelivery_total'):
+            if 'carrier' not in cls.carrier_cashondelivery_total.depends:
+                cls.carrier_cashondelivery_total.depends.add('carrier')
         cls._buttons.update({
                 'wizard_carrier_send_shipments': {
                     'invisible': (~Eval('state').in_(_SHIPMENT_STATES)) |
