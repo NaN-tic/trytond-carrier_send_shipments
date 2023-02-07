@@ -338,7 +338,7 @@ msgstr ""
 
 msgctxt "view:carrier.send.shipments.start:"
 msgid "Send shipments to carrier"
-msgstr "Enviar albaranes transportista"
+msgstr "Enviar albaraners transportista"
 
 msgctxt "wizard_button:carrier.get.label,result,end:"
 msgid "Close"
