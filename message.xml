@@ -42,9 +42,6 @@ Value: %(value)s</field>
       <record model="ir.message" id="msg_add_carrier">
           <field name="text">Select a carrier in shipment "%(shipment)s"</field>
       </record>
-      <record model="ir.message" id="msg_shipment_state">
-          <field name="text">The shipment "%(shipment)s" "%(state)s" state is not in "%(states)s".</field>
-      </record>
       <record model="ir.message" id="msg_not_carrier">
           <field name="text">Shipment "%(name)s" not have carrier</field>
       </record>
