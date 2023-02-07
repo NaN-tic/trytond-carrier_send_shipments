@@ -10,7 +10,6 @@ from . import manifest
 def register():
     Pool.register(
         shipment.ShipmentOut,
-        shipment.ShipmentOutReturn,
         shipment.CarrierSendShipmentsStart,
         shipment.CarrierSendShipmentsResult,
         shipment.CarrierPrintShipmentStart,
