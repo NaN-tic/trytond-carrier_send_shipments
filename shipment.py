@@ -67,8 +67,8 @@ class ShipmentOut(metaclass=PoolMeta):
             },
         help='Add notes when send API shipment')
     carrier_weight = fields.Function(fields.Float('Carrier Weight',
-        digits=(16, Eval('weight_digits', 2)),
-        depends=['weight_digits']), 'on_change_with_carrier_weight')
+        digits='weight_uom',
+        depends=['weight_uom']), 'on_change_with_carrier_weight')
     carrier_weight_uom = fields.Function(fields.Many2One('product.uom',
         'Carrier Weight UOM'), 'on_change_with_carrier_weight_uom')
     carrier_send_employee = fields.Many2One('company.employee',
@@ -116,14 +116,14 @@ class ShipmentOut(metaclass=PoolMeta):
         # maybe is a bug client since 5.6
         pass
 
-    @fields.depends('weight_func', 'carrier')
+    @fields.depends('weight', 'manual_weight', 'carrier')
     def on_change_with_carrier_weight(self, name=None):
         Uom = Pool().get('product.uom')
 
-        if not hasattr(self, 'weight_func'):
+        if not hasattr(self, 'weight_manual'):
             return 1.0
 
-        weight = self.weight_func
+        weight = self.manual_weight or self.weight
         if weight == 0 or weight == 0.0:
             weight = 1.0
 
