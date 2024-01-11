@@ -49,7 +49,7 @@ class ShipmentOut(metaclass=PoolMeta):
         states={
             'readonly': Equal(Eval('state'), 'done'),
             'invisible': ~Eval('carrier'),
-            }, depends=['carrier', 'state', 'carrier_service_domain'])
+            })
     carrier_delivery = fields.Boolean('Delivered', readonly=True,
         states={
             'invisible': ~Eval('carrier'),
