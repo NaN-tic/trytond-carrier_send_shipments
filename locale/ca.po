@@ -2,14 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "field:carrier.get.label.result,attachments:"
-msgid "Attachments"
-msgstr "Adjunts"
-
-msgctxt "field:carrier.get.label.start,codes:"
-msgid "Codes"
-msgstr "Codis"
-
 msgctxt "field:carrier.manifest.start,carrier_api:"
 msgid "Carrier API"
 msgstr "API transportista"
@@ -70,13 +62,9 @@ msgctxt "field:stock.shipment.out,carrier_printed:"
 msgid "Printed"
 msgstr "Imprès"
 
-msgctxt "field:stock.shipment.out,carrier_tracking_label:"
-msgid "Carrier Tracking Label"
-msgstr "Etiqueta transportista"
-
-msgctxt "field:stock.shipment.out,carrier_tracking_label_id:"
-msgid "Carrier Tracking Label ID"
-msgstr "Etiqueta transportista ID"
+msgctxt "field:stock.shipment.out,carrier_send_date:"
+msgid "Carrier Send Date"
+msgstr "Data enviament transportista"
 
 msgctxt "field:stock.shipment.out,carrier_send_employee:"
 msgid "Carrier Send Employee"
@@ -89,6 +77,14 @@ msgstr "Servei API transportista"
 msgctxt "field:stock.shipment.out,carrier_service_domain:"
 msgid "Carrier Domain"
 msgstr "Domini transportista"
+
+msgctxt "field:stock.shipment.out,carrier_tracking_label:"
+msgid "Carrier Tracking Label"
+msgstr "Etiqueta transportista"
+
+msgctxt "field:stock.shipment.out,carrier_tracking_label_id:"
+msgid "Carrier Tracking Label ID"
+msgstr "Etiqueta transportista ID"
 
 msgctxt "field:stock.shipment.out,carrier_weight:"
 msgid "Carrier Weight"
@@ -114,12 +110,6 @@ msgctxt "field:stock.shipment.out,phone:"
 msgid "Phone"
 msgstr "Telèfon"
 
-msgctxt "help:carrier.get.label.start,codes:"
-msgid ""
-"Introduce codes or tracking reference of shipments separated by commas."
-msgstr ""
-"Introdueix el codi o referencia tracking dels albarans separat per comes."
-
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
 msgstr "El paquet s'ha enviat"
@@ -131,14 +121,6 @@ msgstr "Afegir notes quan s'envia l'albarà"
 msgctxt "help:stock.shipment.out,carrier_printed:"
 msgid "Picking is already printed"
 msgstr "El albarà ja s'ha imprès"
-
-msgctxt "model:carrier.get.label.result,name:"
-msgid "Carrier Get Label Result"
-msgstr "Resultat etiqueta transportista"
-
-msgctxt "model:carrier.get.label.start,name:"
-msgid "Carrier Get Label Start"
-msgstr "Inici etiqueta transportista"
 
 msgctxt "model:carrier.manifest.start,name:"
 msgid "Carrier Manifest Start"
@@ -164,6 +146,10 @@ msgctxt "model:carrier.send.shipments.start,name:"
 msgid "Carrier Send Shipments Start"
 msgstr "Inici enviament transportista"
 
+msgctxt "model:ir.action,name:"
+msgid "Get Labels"
+msgstr "Obtenir etiquetes"
+
 msgctxt "model:ir.action,name:act_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifest"
@@ -171,10 +157,6 @@ msgstr "Manifest"
 msgctxt "model:ir.action,name:report_label"
 msgid "Carrier Labels"
 msgstr "Etiqueta transportista"
-
-msgctxt "model:ir.action,name:wizard_carrier_get_label"
-msgid "Get Labels"
-msgstr "Obtenir etiquetes"
 
 msgctxt "model:ir.action,name:wizard_carrier_print_shipment"
 msgid "Label API Carrier"
@@ -301,7 +283,7 @@ msgctxt "model:ir.model.button,string:wizard_carrier_send_shipments_button"
 msgid "Send API Carrier"
 msgstr "Enviar API transportista"
 
-msgctxt "model:ir.ui.menu,name:get_carrier_labels"
+msgctxt "model:ir.ui.menu,name:"
 msgid "Carrier Labels"
 msgstr "Etiquetes transportista"
 
@@ -337,17 +319,9 @@ msgctxt "view:carrier.send.shipments.start:"
 msgid "Send shipments to carrier"
 msgstr "Enviar albarà al transportista"
 
-msgctxt "wizard_button:carrier.get.label,result,end:"
-msgid "Close"
-msgstr "Tanca"
-
-msgctxt "wizard_button:carrier.get.label,start,end:"
-msgid "Cancel"
-msgstr "Cancel·la"
-
-msgctxt "wizard_button:carrier.get.label,start,get:"
-msgid "Get"
-msgstr "Obtenir"
+msgctxt "view:stock.shipment.out:"
+msgid "Carrier Delivery"
+msgstr "Entrega transportista"
 
 msgctxt "wizard_button:carrier.manifest,result,end:"
 msgid "Cancel"
