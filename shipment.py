@@ -163,6 +163,15 @@ class ShipmentOut(metaclass=PoolMeta):
             pass
         self.carrier_service = None
 
+    def _get_shipment_sale(self, Shipment, key):
+        pool = Pool()
+        ShipmentOut = pool.get('stock.shipment.out')
+
+        shipment = super()._get_shipment_sale(Shipment, key)
+        if isinstance(shipment, ShipmentOut):
+            shipment.on_change_carrier()
+        return shipment
+
     @classmethod
     @ModelView.button_action('carrier_send_shipments.'
         'wizard_carrier_send_shipments')
