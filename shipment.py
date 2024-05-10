@@ -218,8 +218,8 @@ class ShipmentOut(metaclass=PoolMeta):
 
         mechanism_value = None
         if mechanism_write_date and mechanism_create_date:
-            if (mechanism_write_date.write_date >
-                    mechanism_create_date.create_date):
+            if (mechanism_write_date.write_date and (mechanism_write_date.write_date >
+                    mechanism_create_date.create_date)):
                 mechanism_value = mechanism_write_date.value
             else:
                 mechanism_value = mechanism_create_date.value
