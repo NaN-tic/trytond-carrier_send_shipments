@@ -90,7 +90,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
         <!-- carrier report label -->
         <record model="ir.action.report" id="report_label">
             <field name="name">Carrier Labels</field>
-            <field name="model">stock.shipment.out.label.report</field>
+            <field name="model">stock.shipment.out</field>
             <field name="report_name">stock.shipment.out.label.report</field>
             <field name="single" eval="True"/>
         </record>
