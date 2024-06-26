@@ -120,7 +120,7 @@ class ShipmentOut(metaclass=PoolMeta):
     def on_change_with_carrier_weight(self, name=None):
         Uom = Pool().get('product.uom')
 
-        if not hasattr(self, 'weight_manual'):
+        if not hasattr(self, 'manual_weight'):
             return 1.0
 
         weight = self.manual_weight or self.weight
