@@ -3,8 +3,6 @@
 # the full copyright notices and license terms.
 from trytond.pool import PoolMeta
 
-__all__ = ['Sale']
-
 
 class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
@@ -17,10 +15,10 @@ class Sale(metaclass=PoolMeta):
 
             address = shipment.customer.address_get(type='delivery')
             if address.comment_shipment:
-                shipment.carrier_notes = shipment._comment2txt(
+                shipment.carrier_note = shipment._comment2txt(
                         address.comment_shipment)
             elif shipment.customer.comment_shipment:
-                shipment.carrier_notes = shipment._comment2txt(
+                shipment.carrier_note = shipment._comment2txt(
                         shipment.customer.comment_shipment)
 
         return shipment

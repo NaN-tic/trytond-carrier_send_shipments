@@ -21,3 +21,31 @@ def unspaces(text):
     if text:
         return text.replace(" ", "")
     return ''
+
+def split_into_blocks(text, max_length=100):
+    words = text.split()
+    blocks = []
+    current_block = ""
+
+    for word in words:
+        # Check if adding the next word would exceed the max_length
+        if len(current_block) + len(word) + 1 <= max_length:
+            if current_block:
+                current_block += " " + word
+            else:
+                current_block = word
+        else:
+            # If the current block is full, store it and start a new one
+            blocks.append(current_block)
+            current_block = word
+
+    # Add the last block
+    blocks.append(current_block)
+
+    # Handle any remaining words for the last block, making sure it doesn'
+    # exceed max_length characters
+    remaining_words = " ".join(words[len(" ".join(blocks).split()):])
+    if remaining_words and len(remaining_words) <= max_length:
+        blocks.append(remaining_words)
+
+    return blocks
