@@ -14,6 +14,8 @@ from trytond.pyson import Bool, Eval, Not, Equal
 from trytond.config import config
 from trytond.tools import slugify
 from trytond.rpc import RPC
+from sql import Null
+from sql.operators import Concat
 import logging
 import tarfile
 import tempfile
@@ -60,12 +62,6 @@ class ShipmentOut(metaclass=PoolMeta):
             'invisible': ~Eval('carrier'),
             },
         help='Picking is already printed')
-    carrier_notes = fields.Char('Carrier Notes',
-        states={
-            'readonly': Equal(Eval('state'), 'done'),
-            'invisible': ~Eval('carrier'),
-            },
-        help='Add notes when send API shipment')
     carrier_weight = fields.Function(fields.Float('Carrier Weight',
         digits='weight_uom',
         depends=['weight_uom']), 'on_change_with_carrier_weight')
@@ -96,6 +92,30 @@ class ShipmentOut(metaclass=PoolMeta):
                         (Eval('carrier_printed')) | Not(Bool(Eval('carrier'))),
                     },
                 })
+
+    @classmethod
+    def __register__(cls, module_name):
+        cursor = Transaction().connection.cursor()
+        table = cls.__table_handler__(module_name)
+        sql_table = cls.__table__()
+
+        # Migration from 6.8: rename carrier_notes into carrier_note
+        if (table.column_exist('carrier_note')
+                and table.column_exist('carrier_notes')):
+            # cursor.execute(*sql_table.update(
+            #         columns=[sql_table.carrier_note],
+            #         values=[
+            #             Concat(Concat(sql_table.carrier_note, '\n'), sql_table.carrier_notes)
+            #         ],
+            #         where=(sql_table.carrier_notes != Null)))
+            query = "UPDATE stock_shipment_out " \
+                    "set carrier_note = Concat(Concat(carrier_note, '\n', carrier_notes)) " \
+                    "where carrier_notes is not null"
+            cursor.execute(query)
+
+            table.column_rename('carrier_notes', 'carrier_notes_back')
+
+        super(ShipmentOut, cls).__register__(module_name)
 
     def _comment2txt(self, comment):
         return comment.replace('\n', '. ').replace('\r', '')
@@ -146,15 +166,15 @@ class ShipmentOut(metaclass=PoolMeta):
     def on_change_customer(self):
         super(ShipmentOut, self).on_change_customer()
 
-        carrier_notes = None
+        carrier_note = None
         if self.customer:
             address = self.customer.address_get(type='delivery')
             if address and address.comment_shipment:
-                carrier_notes = self._comment2txt(address.comment_shipment)
+                carrier_note = self._comment2txt(address.comment_shipment)
             elif self.customer.comment_shipment:
-                carrier_notes = self._comment2txt(
+                carrier_note = self._comment2txt(
                     self.customer.comment_shipment)
-        self.carrier_notes = carrier_notes
+        self.carrier_note = carrier_note
 
     def on_change_carrier(self):
         try:

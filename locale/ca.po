@@ -54,10 +54,6 @@ msgctxt "field:stock.shipment.out,carrier_delivery:"
 msgid "Delivered"
 msgstr "Entregat"
 
-msgctxt "field:stock.shipment.out,carrier_notes:"
-msgid "Carrier Notes"
-msgstr "Notes transportista"
-
 msgctxt "field:stock.shipment.out,carrier_printed:"
 msgid "Printed"
 msgstr "Imprès"
@@ -113,10 +109,6 @@ msgstr "Telèfon"
 msgctxt "help:stock.shipment.out,carrier_delivery:"
 msgid "The package has been delivered"
 msgstr "El paquet s'ha enviat"
-
-msgctxt "help:stock.shipment.out,carrier_notes:"
-msgid "Add notes when send API shipment"
-msgstr "Afegir notes quan s'envia l'albarà"
 
 msgctxt "help:stock.shipment.out,carrier_printed:"
 msgid "Picking is already printed"
