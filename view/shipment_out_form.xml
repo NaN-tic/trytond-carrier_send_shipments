@@ -14,8 +14,6 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="carrier_send_employee"/>
             <label name="carrier_send_date"/>
             <field name="carrier_send_date"/>
-            <label name="carrier_notes"/>
-            <field name="carrier_notes"/>
         </page>
     </xpath>
 
