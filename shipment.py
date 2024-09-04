@@ -14,8 +14,6 @@ from trytond.pyson import Bool, Eval, Not, Equal
 from trytond.config import config
 from trytond.tools import slugify
 from trytond.rpc import RPC
-from sql import Null
-from sql.operators import Concat
 import logging
 import tarfile
 import tempfile
@@ -511,10 +509,6 @@ class CarrierPrintShipment(Wizard):
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         Attachment = pool.get('ir.attachment')
-        Config = pool.get('stock.configuration')
-
-        config_stock = Config(1)
-        attach_label = config_stock.attach_label
 
         dbname = Transaction().database.name
         labels = []
@@ -534,7 +528,7 @@ class CarrierPrintShipment(Wizard):
             print_label = getattr(Shipment, 'print_labels_%s' % api.method)
             labs = print_label(api, [shipment])
 
-            if attach_label and labs:
+            if labs:
                 attach = Attachment(
                     name=datetime.now().strftime("%y/%m/%d %H:%M:%S"),
                     type='data',
