@@ -138,10 +138,6 @@ msgctxt "model:carrier.send.shipments.start,name:"
 msgid "Carrier Send Shipments Start"
 msgstr "Inicio envío transportista"
 
-msgctxt "model:ir.action,name:"
-msgid "Get Labels"
-msgstr "Obtener etiquetas"
-
 msgctxt "model:ir.action,name:act_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifiesto"
