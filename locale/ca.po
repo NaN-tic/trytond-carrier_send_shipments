@@ -271,10 +271,6 @@ msgctxt "model:ir.model.button,string:wizard_carrier_send_shipments_button"
 msgid "Send API Carrier"
 msgstr "Enviar API transportista"
 
-msgctxt "model:ir.ui.menu,name:"
-msgid "Carrier Labels"
-msgstr "Etiquetes transportista"
-
 msgctxt "model:ir.ui.menu,name:menu_carrier_manifest"
 msgid "Manifest"
 msgstr "Manifest"
