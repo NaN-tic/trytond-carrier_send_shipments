@@ -95,7 +95,6 @@ class ShipmentOut(metaclass=PoolMeta):
     def __register__(cls, module_name):
         cursor = Transaction().connection.cursor()
         table = cls.__table_handler__(module_name)
-        sql_table = cls.__table__()
 
         # Migration from 6.8: rename carrier_notes into carrier_note
         if (table.column_exist('carrier_note')
