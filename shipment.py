@@ -413,10 +413,6 @@ class CarrierSendShipments(Wizard):
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_add_carrier',
                             shipment=shipment.number))
-                if shipment.carrier_tracking_ref:
-                    raise UserError(gettext(
-                            'carrier_send_shipments.msg_shipment_sended',
-                            shipment=shipment.number))
                 if not shipment.carrier.apis:
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_not_carrier_api',
