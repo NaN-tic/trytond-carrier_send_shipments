@@ -95,7 +95,6 @@ class ShipmentOut(metaclass=PoolMeta):
     def __register__(cls, module_name):
         cursor = Transaction().connection.cursor()
         table = cls.__table_handler__(module_name)
-        sql_table = cls.__table__()
 
         # Migration from 6.8: rename carrier_notes into carrier_note
         if (table.column_exist('carrier_note')
@@ -412,10 +411,6 @@ class CarrierSendShipments(Wizard):
                 if not shipment.carrier:
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_add_carrier',
-                            shipment=shipment.number))
-                if shipment.carrier_tracking_ref:
-                    raise UserError(gettext(
-                            'carrier_send_shipments.msg_shipment_sended',
                             shipment=shipment.number))
                 if not shipment.carrier.apis:
                     raise UserError(gettext(
