@@ -95,7 +95,6 @@ class ShipmentOut(metaclass=PoolMeta):
     def __register__(cls, module_name):
         cursor = Transaction().connection.cursor()
         table = cls.__table_handler__(module_name)
-        sql_table = cls.__table__()
 
         # Migration from 6.8: rename carrier_notes into carrier_note
         if (table.column_exist('carrier_note')
@@ -147,12 +146,13 @@ class ShipmentOut(metaclass=PoolMeta):
 
         if self.carrier and self.carrier.apis:
             api = self.carrier.apis[0]
-            if self.weight_uom:
-                weight = Uom.compute_qty(
-                    self.weight_uom, weight, api.weight_api_unit)
-            elif api.weight_unit:
-                weight = Uom.compute_qty(
-                    api.weight_unit, weight, api.weight_api_unit)
+            if api.weight_api_unit:
+                if self.weight_uom:
+                    weight = Uom.compute_qty(
+                        self.weight_uom, weight, api.weight_api_unit)
+                elif api.weight_unit:
+                    weight = Uom.compute_qty(
+                        api.weight_unit, weight, api.weight_api_unit)
         return weight
 
     @fields.depends('carrier')
