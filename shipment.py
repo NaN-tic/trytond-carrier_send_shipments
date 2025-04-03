@@ -20,7 +20,6 @@ import tempfile
 
 
 _SHIPMENT_STATES = ['packed', 'done']
-_SKIP_DUPLICATE_ERROR_FIELDS = ['nacex_ret']
 logger = logging.getLogger(__name__)
 
 if config.getboolean('carrier_send_shipments', 'filestore', default=False):
@@ -312,6 +311,42 @@ class ShipmentOut(metaclass=PoolMeta):
             })
         return refs, labs, errs
 
+    def check_shipment_state(self):
+        if self.state not in _SHIPMENT_STATES:
+            raise UserError(gettext(
+                'carrier_send_shipments.msg_shipment_state',
+                shipment=self.number,
+                state=self.state,
+                states=', '.join(_SHIPMENT_STATES)))
+
+    def check_shipment_carrier(self):
+        if not self.carrier:
+            raise UserError(gettext(
+                'carrier_send_shipments.msg_add_carrier',
+                 shipment=self.number))
+
+    def check_duplicate_package(self):
+        if self.carrier_tracking_ref:
+            raise UserError(gettext(
+            'carrier_send_shipments.msg_shipment_sended',
+            shipment=self.number))
+
+    def check_api(self):
+        if not self.carrier.apis:
+            raise UserError(gettext(
+                'carrier_send_shipments.msg_not_carrier_api',
+                name=self.carrier.rec_name))
+
+    def check_zip(self):
+        api, = self.carrier.apis
+        if api.zips:
+            zips = api.zips.split(',')
+            if (self.delivery_address.zip and
+                self.delivery_address.zip in zips):
+                raise UserError(gettext(
+                    'carrier_send_shipments.msg_shipment_zip',
+                    shipment=self.number,
+                    zip=self.delivery_address.zip))
 
 class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
@@ -402,42 +437,19 @@ class CarrierSendShipments(Wizard):
         active_ids = context.get('active_ids')
         if active_ids:
             # validate some shipment data before to send carrier API
-            for shipment in Shipment.browse(active_ids):
-                skip_duplicate = False
-                for attr in _SKIP_DUPLICATE_ERROR_FIELDS:
-                    if hasattr(shipment, attr):
-                        skip_duplicate = True
-                if shipment.state not in _SHIPMENT_STATES:
-                    raise UserError(gettext(
-                            'carrier_send_shipments.msg_shipment_state',
-                            shipment=shipment.number,
-                            state=shipment.state,
-                            states=', '.join(_SHIPMENT_STATES)))
-                if not shipment.carrier:
-                    raise UserError(gettext(
-                            'carrier_send_shipments.msg_add_carrier',
-                            shipment=shipment.number))
-                if shipment.carrier_tracking_ref and not skip_duplicate:
-                    raise UserError(gettext(
-                            'carrier_send_shipments.msg_shipment_sended',
-                            shipment=shipment.number))
-                if not shipment.carrier.apis:
-                    raise UserError(gettext(
-                            'carrier_send_shipments.msg_not_carrier_api',
-                            name=shipment.carrier.rec_name))
-                api, = shipment.carrier.apis
-                if api.zips:
-                    zips = api.zips.split(',')
-                    if (shipment.delivery_address.zip
-                            and shipment.delivery_address.zip in zips):
-                        raise UserError(gettext(
-                                'carrier_send_shipments.msg_shipment_zip',
-                                shipment=shipment.number,
-                                zip=shipment.delivery_address.zip))
+            self.validate_shipment(Shipment.browse(active_ids))
 
         default = {}
         default['shipments'] = active_ids
         return default
+
+    def validate_shipment(self, shipments):
+        for shipment in shipments:
+            shipment.check_shipment_state()
+            shipment.check_shipment_carrier()
+            shipment.check_duplicate_package()
+            shipment.check_api()
+            shipment.check_zip()
 
     def default_result(self, fields):
         return {
