@@ -20,6 +20,7 @@ import tempfile
 
 
 _SHIPMENT_STATES = ['packed', 'done']
+_SKIP_DUPLICATE_ERROR_FIELDS = ['nacex_ret']
 logger = logging.getLogger(__name__)
 
 if config.getboolean('carrier_send_shipments', 'filestore', default=False):
@@ -402,6 +403,10 @@ class CarrierSendShipments(Wizard):
         if active_ids:
             # validate some shipment data before to send carrier API
             for shipment in Shipment.browse(active_ids):
+                skip_duplicate = False
+                for attr in _SKIP_DUPLICATE_ERROR_FIELDS:
+                    if hasattr(shipment, attr):
+                        skip_duplicate = True
                 if shipment.state not in _SHIPMENT_STATES:
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_shipment_state',
@@ -411,6 +416,10 @@ class CarrierSendShipments(Wizard):
                 if not shipment.carrier:
                     raise UserError(gettext(
                             'carrier_send_shipments.msg_add_carrier',
+                            shipment=shipment.number))
+                if shipment.carrier_tracking_ref and not skip_duplicate:
+                    raise UserError(gettext(
+                            'carrier_send_shipments.msg_shipment_sended',
                             shipment=shipment.number))
                 if not shipment.carrier.apis:
                     raise UserError(gettext(
