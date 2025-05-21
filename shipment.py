@@ -623,7 +623,7 @@ class LabelReport(Report):
         if not api.print_report:
             return
 
-        filename = slugify('%s-%s' % (api.method, action_report.name)).lower()
+        filename = slugify('%s-%s' % (api.method, action_report.name))
 
         if not shipment.carrier_tracking_label:
             if not hasattr(Shipment, 'get_labels_%s' % api.method):
