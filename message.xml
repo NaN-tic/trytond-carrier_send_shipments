@@ -67,5 +67,8 @@ Errors:
       <record model="ir.message" id="msg_shipmnet_delivery_address">
           <field name="text">Shipment "%(name)s" not have address details: street, zip, city or country.</field>
       </record>
+      <record model="ir.message" id="msg_shipment_state">
+          <field name="text">Shipment "%(shipment)s", state "%(state)s" is not available in "%(states)s" to send.</field>
+      </record>
     </data>
 </tryton>
