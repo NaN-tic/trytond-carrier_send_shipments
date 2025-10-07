@@ -338,16 +338,16 @@ class ShipmentOut(metaclass=PoolMeta):
                 'carrier_send_shipments.msg_not_carrier_api',
                 name=self.carrier.rec_name))
 
-    def check_zip(self):
+    def check_postal_code(self):
         api, = self.carrier.apis
         if api.zips:
             zips = api.zips.split(',')
-            if (self.delivery_address.zip and
-                self.delivery_address.zip in zips):
+            if (self.delivery_address.postal_code and
+                    self.delivery_address.postal_code in zips):
                 raise UserError(gettext(
-                    'carrier_send_shipments.msg_shipment_zip',
+                    'carrier_send_shipments.msg_shipment_postal_code',
                     shipment=self.number,
-                    zip=self.delivery_address.zip))
+                    postal_code=self.delivery_address.postal_code))
 
 class CarrierSendShipmentsStart(ModelView):
     'Carrier Send Shipments Start'
@@ -450,7 +450,7 @@ class CarrierSendShipments(Wizard):
             shipment.check_shipment_carrier()
             shipment.check_duplicate_package()
             shipment.check_api()
-            shipment.check_zip()
+            shipment.check_postal_code()
 
     def default_result(self, fields):
         return {

@@ -48,8 +48,8 @@ Value: %(value)s</field>
       <record model="ir.message" id="msg_not_carrier_api">
           <field name="text">Carrier "%(name)s" not have API</field>
       </record>
-      <record model="ir.message" id="msg_shipment_zip">
-          <field name="text">Not available "%(shipment)s" to delivery at zip: "%(zip)s"</field>
+      <record model="ir.message" id="msg_shipment_postal_code">
+          <field name="text">Not available "%(shipment)s" to delivery at postal code: "%(postal_code)s"</field>
       </record>
       <record model="ir.message" id="msg_shipment_info">
           <field name="text">Successfully:
@@ -65,7 +65,7 @@ Errors:
           <field name="text">Cannot print carrier labels for more than one shipment at once.</field>
       </record>
       <record model="ir.message" id="msg_shipmnet_delivery_address">
-          <field name="text">Shipment "%(name)s" not have address details: street, zip, city or country.</field>
+          <field name="text">Shipment "%(name)s" not have address details: street, postal code, city or country.</field>
       </record>
       <record model="ir.message" id="msg_shipment_state">
           <field name="text">Shipment "%(shipment)s", state "%(state)s" is not available in "%(states)s" to send.</field>
