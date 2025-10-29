@@ -217,7 +217,10 @@ class ShipmentOut(metaclass=PoolMeta):
         pool = Pool()
         ContactMechanism = pool.get('party.contact_mechanism')
 
-        value = getattr(self.delivery_address, name)
+        value = None
+        if (hasattr(self.delivery_address, name) and
+                getattr(self.delivery_address, name)):
+            value = getattr(self.delivery_address, name)
         if value:
             return value
 
