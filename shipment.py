@@ -593,7 +593,6 @@ class LabelReport(Report):
         Shipment = pool.get('stock.shipment.out')
         API = pool.get('carrier.api')
         ActionReport = pool.get('ir.action.report')
-        cls.check_access()
 
         if not ids or len(ids) != 1:
             raise UserError(
@@ -608,6 +607,9 @@ class LabelReport(Report):
             action_report = action_reports[0]
         else:
             action_report = ActionReport(action_id)
+
+        model = action_report.model or data.get('model')
+        cls.check_access(action_report, model, ids)
 
         shipment = Shipment(ids[0])
         if not shipment.carrier:
