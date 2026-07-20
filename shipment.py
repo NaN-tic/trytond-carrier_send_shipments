@@ -11,7 +11,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.report import Report
 from trytond.pyson import Bool, Eval, Not, Equal
-from trytond.config import config
+import trytond.config as config
 from trytond.tools import slugify
 from trytond.rpc import RPC
 import logging
