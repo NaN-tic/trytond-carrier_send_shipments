@@ -50,13 +50,15 @@ class ShipmentOut(metaclass=PoolMeta):
             'readonly': Equal(Eval('state'), 'done'),
             'invisible': ~Eval('carrier'),
             })
-    carrier_delivery = fields.Boolean('Delivered', readonly=True,
+    carrier_delivery = fields.Boolean('Delivered',
         states={
+            'editable': False,
             'invisible': ~Eval('carrier'),
             },
         help='The package has been delivered')
-    carrier_printed = fields.Boolean('Printed', readonly=True,
+    carrier_printed = fields.Boolean('Printed',
         states={
+            'editable': False,
             'invisible': ~Eval('carrier'),
             },
         help='Picking is already printed')
@@ -66,12 +68,13 @@ class ShipmentOut(metaclass=PoolMeta):
     carrier_weight_uom = fields.Function(fields.Many2One('product.uom',
         'Carrier Weight UOM'), 'on_change_with_carrier_weight_uom')
     carrier_send_employee = fields.Many2One('company.employee',
-        'Carrier Send Employee', readonly=True)
-    carrier_send_date = fields.DateTime('Carrier Send Date', readonly=True)
+        'Carrier Send Employee', states={'editable': False})
+    carrier_send_date = fields.DateTime(
+        'Carrier Send Date', states={'editable': False})
     carrier_tracking_label = fields.Binary('Carrier Tracking Label',
-        readonly=True, file_id=file_id, store_prefix=store_prefix)
+        states={'editable': False}, file_id=file_id, store_prefix=store_prefix)
     carrier_tracking_label_id = fields.Char('Carrier Tracking Label ID',
-        readonly=True)
+        states={'editable': False})
 
     @classmethod
     def __setup__(cls):
