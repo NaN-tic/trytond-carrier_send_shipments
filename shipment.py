@@ -307,7 +307,7 @@ class ShipmentOut(metaclass=PoolMeta):
         action_id = ModelData.get_id('carrier_send_shipments', 'report_label')
         action_report = ActionReport(action_id)
         Report = pool.get(action_report.report_name, type='report')
-        Report.execute([shipment], {
+        Report.execute([shipment.id], {
             'model': 'stock.shipment.out',
             'id': shipment.id,
             'ids': [shipment.id],
@@ -597,9 +597,6 @@ class LabelReport(Report):
         API = pool.get('carrier.api')
         ActionReport = pool.get('ir.action.report')
 
-        action, model = cls.get_action(data)
-        cls.check_access(action, model, ids)
-
         if not ids or len(ids) != 1:
             raise UserError(
                     gettext('carrier_send_shipments.msg_several_shipments'))
@@ -613,6 +610,9 @@ class LabelReport(Report):
             action_report = action_reports[0]
         else:
             action_report = ActionReport(action_id)
+
+        model = action_report.model or data.get('model')
+        cls.check_access(action_report, model, ids)
 
         shipment = Shipment(ids[0])
         if not shipment.carrier:
