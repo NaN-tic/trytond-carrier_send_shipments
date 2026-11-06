@@ -4,7 +4,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
 <form>
     <separator string="Send shipments to carrier" id="send_shipments" colspan="4"/>
     <newline/>
-    <label string="Send shipments in state package or done, related a carrier and not deliveried" id="send_details"/>
+    <label string="Send shipments in packaged or done state, related a carrier and not deliveried" id="send_details"/>
     <newline/>
     <field name="shipments" view_ids="carrier_send_shipments.stock_shipment_to_carrier_view_tree" colspan="4"/>
 </form>

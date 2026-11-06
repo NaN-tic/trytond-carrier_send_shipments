@@ -292,10 +292,10 @@ msgstr "Etiquetas"
 
 msgctxt "view:carrier.send.shipments.start:"
 msgid ""
-"Send shipments in state package or done, related a carrier and not "
+"Send shipments in packaged or done state, related a carrier and not "
 "deliveried"
 msgstr ""
-"Enviar el albarán en el estado del paquete o finalizado, relacionado con el "
+"Enviar el albarán en estado empaquetado o finalizado, relacionado con el "
 "transportista y todavía no enviado"
 
 msgctxt "view:carrier.send.shipments.start:"
