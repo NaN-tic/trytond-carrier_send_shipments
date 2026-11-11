@@ -25,4 +25,10 @@ copyright notices and license terms. -->
             id="menu_carrier_manifest"
             sequence="50"/>
     </data>
+    <data>
+        <record model="ir.action-res.group" id="carrier_manifest_group_stock">
+            <field name="action" ref="act_carrier_manifest"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+    </data>
 </tryton>
